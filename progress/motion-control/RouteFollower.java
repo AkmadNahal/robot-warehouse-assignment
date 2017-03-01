@@ -19,7 +19,8 @@ public class RouteFollower extends AbstractBehaviour {
 
 	public RouteFollower(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<ActionType> route) {
 		super(_config);
-		
+		int counter = 0;
+
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
 		
@@ -36,7 +37,6 @@ public class RouteFollower extends AbstractBehaviour {
 	@Override
 	public void action() {
 		Rate r = new Rate(20);
-		int counter = 0;
 		
 		while(!isSuppressed){
 			
