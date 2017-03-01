@@ -1,3 +1,5 @@
+package helper_classes;
+
 import java.lang.Math;
 
 public class Location {
