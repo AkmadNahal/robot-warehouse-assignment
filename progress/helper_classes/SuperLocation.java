@@ -1,10 +1,13 @@
 package helper_classes;
 
+import helper_classes.Location;
+import helper_classes.LocationType;
+
 public class SuperLocation {
 	
-	protected int[] currentLocation;
-	private int[] priorLocation;
-	private int[] newLocation;
+	protected Location currentLocation;
+	private Location priorLocation;
+	private Location newLocation;
 	private int newX;
 	private int newY;
 	
@@ -12,33 +15,33 @@ public class SuperLocation {
 		priorLocation = getCurrentLocation();
 		switch(move){
 			case FORWARD:
-				newY = priorLocation[1] + 1;
-				newLocation = new int[]{priorLocation[0], newY};
+				newY = priorLocation.getY()+1;
+				newLocation = new Location(priorLocation.getX(), newY, LocationType.EMPTY);
 				setCurrentLocation(newLocation);
 				break;
 			case BACKWARDS:
-				newY = priorLocation[1] - 1;
-				newLocation = new int[]{priorLocation[0], newY};
+				newY = priorLocation.getY() - 1;
+				newLocation = new Location(priorLocation.getX(), newY, LocationType.EMPTY);
 				setCurrentLocation(newLocation);
 				break;
 			case LEFT:
-				newX = priorLocation[1] + 1;
-				newLocation = new int[]{newX, priorLocation[1]};
+				newX = priorLocation.getX() - 1;
+				newLocation = new Location(newX, priorLocation.getY(), LocationType.EMPTY);
 				setCurrentLocation(newLocation);
 				break;
 			case RIGHT:
-				newX = priorLocation[1] - 1;
-				newLocation = new int[]{newX, priorLocation[1]};
+				newX = priorLocation.getX() + 1;
+				newLocation = new Location(newX, priorLocation.getY(), LocationType.EMPTY);
 				setCurrentLocation(newLocation);
 				break;
 		}
 	}
 	
-	public int[] getCurrentLocation(){
+	public Location getCurrentLocation(){
 		return this.currentLocation;
 	}
 	
-	public void setCurrentLocation(int[] currentLocation){
+	public void setCurrentLocation(Location currentLocation){
 		this.currentLocation = currentLocation;
 	}
 }
