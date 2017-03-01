@@ -17,7 +17,7 @@ public class RoutePlanner {
     maxY = _maxY;
   }
   
-  public ArrayList<Direction> getRoute(){
+  public ArrayList<Direction> getLastRoute(){
 	  return this.directions;
   }
 
