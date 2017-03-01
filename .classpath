@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry excluding="route-planning/|motion-control/" kind="src" path="progress"/>
-	<classpathentry kind="src" path="progress/motion-control"/>
-	<classpathentry kind="src" path="progress/route-planning"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>
