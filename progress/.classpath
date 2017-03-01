@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="route-planning/|motion-control/" kind="src" path=""/>
+	<classpathentry kind="src" path="motion-control"/>
+	<classpathentry kind="src" path="route-planning"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
