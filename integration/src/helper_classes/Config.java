@@ -14,7 +14,7 @@ public class Config {
 	private final LightSensor rhSensor;
 	
 	public Config(){
-		this.config = RobotConfigs.EXPRESS_BOT;
+		this.config = RobotConfigs.CASTOR_BOT;
 		this.lhSensorPort = SensorPort.S4;
 		this.rhSensorPort = SensorPort.S1;
 		this.lhSensor = new LightSensor(this.lhSensorPort);
