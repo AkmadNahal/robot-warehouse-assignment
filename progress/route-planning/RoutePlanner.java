@@ -11,7 +11,7 @@ public class RoutePlanner {
     maxY = _maxY;
   }
 
-  public ArrayList<Location> getRoute(Location startLocation, Location endLocation) {
+  public ArrayList<Direction> getRoute(Location startLocation, Location endLocation) {
 
     ArrayList<LocationNode> open_list = new ArrayList<LocationNode>();
     ArrayList<LocationNode> close_list = new ArrayList<LocationNode>();
@@ -84,7 +84,9 @@ public class RoutePlanner {
       }
     }
 
-    return solution;
+    solution.add(0, startLocation);
+
+    return coordinatesToDirections(solution);
   }
 
   private ArrayList<LocationNode> getSuccessors(LocationNode node) {
@@ -128,5 +130,28 @@ public class RoutePlanner {
     }
     return -1;
   }
+
+  private ArrayList<Direction> coordinatesToDirections(ArrayList<Location> locations){
+
+    ArrayList<Direction> directions = new ArrayList<Direction>();
+
+    for(int i=1;i<=locations.size(); i++) {
+      int diffInX = locations.get(i).getX() - locations.get(i-1).getX();
+      int diffInY = locations.get(i).getY() - locations.get(i-1).getY();
+
+      if (diffInX < 0){
+  			directions.add(Direction.LEFT);
+  		}else if (diffInX > 0){
+  			directions.add(Direction.RIGHT);
+  		}
+  		else if (diffInY < 0){
+  			directions.add(Direction.BACKWARDS);
+  		}else if (diffInY> 0){
+  			directions.add(Direction.FORWARD);
+  		}
+    }
+
+    return directions;
+	}
 
 }
