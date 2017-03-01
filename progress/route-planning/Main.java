@@ -15,10 +15,10 @@ public class Main {
 
     RoutePlanner planner = new RoutePlanner(map,maxMapSize,maxMapSize);
 
-    ArrayList<Location> solution = planner.getRoute(map[0][0], map[3][1]);
+    ArrayList<Direction> solution = planner.getRoute(map[0][0], map[3][1]);
 
-    for(Location location : solution) {
-      System.out.println(location.getX() + " - " + location.getY());
+    for(Direction dir : solution) {
+      System.out.println(dir);
     }
   }
 

@@ -135,7 +135,7 @@ public class RoutePlanner {
 
     ArrayList<Direction> directions = new ArrayList<Direction>();
 
-    for(int i=1;i<=locations.size(); i++) {
+    for(int i=1;i<locations.size(); i++) {
       int diffInX = locations.get(i).getX() - locations.get(i-1).getX();
       int diffInY = locations.get(i).getY() - locations.get(i-1).getY();
 
