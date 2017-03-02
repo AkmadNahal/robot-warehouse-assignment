@@ -3,10 +3,10 @@ package job_selection;
 import java.util.HashMap;
 
 public class Job {
-	private int jobID;
+	private String jobID;
 	private HashMap<String, Integer> picks = new HashMap<String, Integer>();
 	
-	public Job(int id) {
+	public Job(String id) {
 		this.jobID = id;
 	}
 	
@@ -17,5 +17,10 @@ public class Job {
 		else {
 			picks.put(item, count);
 		}
+	}
+
+	public float getReward() {
+		return 0;
+		
 	}
 }

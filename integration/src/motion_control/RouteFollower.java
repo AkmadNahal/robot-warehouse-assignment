@@ -44,6 +44,24 @@ public class RouteFollower extends AbstractBehaviour {
 			
 			//Once movement list has been completed, robot stops
 			if(counter < route.size()){
+				
+				//Will check what the previous move was, so it can re-orientate to always face the same orientation
+				if(counter > 0){
+					Direction previousMove = route.get(counter - 1);
+					
+					if(previousMove == Direction.BACKWARDS){
+						pilot.rotate(180);
+						pilot.stop();
+					}
+					else if(previousMove == Direction.LEFT){
+						pilot.rotate(-90);
+						pilot.stop();
+					}
+					else if(previousMove == Direction.RIGHT){
+						pilot.rotate(90);
+						pilot.stop();
+					}
+				}
 			
 				//Iterates through the arraylist, carrying out the movements in order.
 				Direction currentMove = route.get(counter);
@@ -55,16 +73,19 @@ public class RouteFollower extends AbstractBehaviour {
 				else if(currentMove == Direction.BACKWARDS){
 					counter++;
 					pilot.rotate(180);
+					pilot.stop();
 					pilot.forward();
 				}
 				else if(currentMove == Direction.LEFT){
 					counter++;
 					pilot.rotate(90);
+					pilot.stop();
 					pilot.forward();
 				}
 				else if(currentMove == Direction.RIGHT){
 					counter++;
 					pilot.rotate(-90);
+					pilot.stop();
 					pilot.forward();
 				}
 			}
