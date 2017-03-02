@@ -1,8 +1,8 @@
-package motion_control;
-
 import java.util.ArrayList;
+
 import lejos.nxt.Button;
 import lejos.nxt.SensorPort;
+import lejos.nxt.Sound;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 import rp.config.RobotConfigs;
@@ -19,10 +19,14 @@ public class Main {
 			add(ActionType.RIGHT);
 		}};
 		
-		Behavior drive = new RouteFollower(RobotConfigs.EXPRESS_BOT, SensorPort.S4, SensorPort.S1, route);
-		Behavior junction = new JunctionDetection(RobotConfigs.EXPRESS_BOT, SensorPort.S4, SensorPort.S1);
+		Behavior drive = new RouteFollower(RobotConfigs.CASTOR_BOT, SensorPort.S4, SensorPort.S1, route);
+		Behavior junction = new JunctionDetection(RobotConfigs.CASTOR_BOT, SensorPort.S4, SensorPort.S1);
 		Arbitrator arby = new Arbitrator(new Behavior[] {drive, junction}, true);
 		arby.start();
+		
+		System.out.println("Arbitrator stopped - route complete");
+		Sound.beepSequence();
+		
 	}
 
 }

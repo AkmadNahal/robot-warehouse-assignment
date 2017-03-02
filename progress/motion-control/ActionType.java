@@ -1,4 +1,4 @@
 
 public enum ActionType {
-	FORWARD, BACKWARD, LEFT, RIGHT
+	FORWARD, BACKWARDS, LEFT, RIGHT
 }
