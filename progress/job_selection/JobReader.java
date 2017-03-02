@@ -8,10 +8,10 @@ import java.io.FileNotFoundException;
 
 public class JobReader {
 
-	public static HashMap<Integer, Job> parseJobs(String file) {
+	public static HashMap<String, Job> parseJobs(String file) {
 		BufferedReader reader;
 		String splitBy = ",";
-		HashMap<Integer, Job> jobs = new HashMap<Integer, Job>();
+		HashMap<String, Job> jobs = new HashMap<String, Job>();
 
 		try {
 			reader = new BufferedReader(new FileReader(file));
@@ -20,7 +20,7 @@ public class JobReader {
 			int jobCount = 0;
 			while ((line = reader.readLine()) != null && jobCount < jobLimit) {
 				String[] job = line.split(splitBy);
-				int jobID = Integer.parseInt(job[0]);
+				String jobID = job[0];
 				Job j = new Job(jobID);
 				int numPicks = (job.length - 1)/2;
 				for (int i = 0; i < numPicks; i++) {

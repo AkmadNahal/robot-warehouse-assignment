@@ -7,4 +7,11 @@ public class Item {
 	private float reward;
 	private float weight;
 	private Location location;
+	
+	public Item(String n, float r, float w, Location l) {
+		this.name = n;
+		this.reward = r;
+		this.weight = w;
+		this.location = l;
+	}
 }
