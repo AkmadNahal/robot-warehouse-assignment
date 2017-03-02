@@ -2,15 +2,19 @@ package system_control;
 
 import java.util.ArrayList;
 
-import helper_classes.*;
-import lejos.nxt.SensorPort;
+import helper_classes.Config;
+import helper_classes.Direction;
+import helper_classes.Location;
+import helper_classes.LocationType;
+import helper_classes.SuperLocation;
+import lejos.nxt.Sound;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
-import motion_control.*;
-import route_planning.*;
-import rp.config.RobotConfigs;
+import motion_control.JunctionDetection;
+import motion_control.RouteFollower;
+import route_planning.RoutePlanner;
 
-public class System {
+public class SystemControl {
 	
 	private static int maxMapSize = 10;
 	private static Location[][] map = new Location[maxMapSize + 1][maxMapSize + 1];
@@ -40,6 +44,8 @@ public class System {
 		Arbitrator arby = new Arbitrator(new Behavior[] {movement, junction}, true);
 		arby.start();
 		
+		System.out.println("Arbitrator stopped - Route complete");
+		Sound.beepSequence();
 	}
 	
 	private static void createMap() {
