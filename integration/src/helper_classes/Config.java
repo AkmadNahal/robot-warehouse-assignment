@@ -40,4 +40,5 @@ public class Config {
 	public LightSensor getRightSensor(){
 		return this.rhSensor;
 	}
+	
 }

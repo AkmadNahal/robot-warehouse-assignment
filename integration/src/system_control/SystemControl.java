@@ -1,12 +1,18 @@
 package system_control;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 import helper_classes.Config;
 import helper_classes.Direction;
 import helper_classes.Location;
 import helper_classes.LocationType;
 import helper_classes.SuperLocation;
+import job_selection.Item;
+import job_selection.ItemReader;
+import job_selection.Job;
+import job_selection.JobReader;
 import lejos.nxt.Sound;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
@@ -33,19 +39,29 @@ public class SystemControl {
 	    
 	    SuperLocation locationAccess = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); //start location
 	    
-	    //looping would begin below, takes a job, and cycles through the picks
-	    
-	    Location nextGoal = new Location(2, 3, LocationType.EMPTY); //this will be derived from the chosen job
-
-	    ArrayList<Direction> solution = planner.getRoute(locationAccess.getCurrentLocation(), nextGoal);
-	   
-	    Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution);
-		Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort());
-		Arbitrator arby = new Arbitrator(new Behavior[] {movement, junction}, true);
-		arby.start();
+	    String jfile = "job_selection/jobs.csv";
+		String wrfile = "job_selection/items.csv";
+		String lfile = "job_selection/locations.csv";
+		HashMap<String, Item> itemMap = ItemReader.parseItems(wrfile, lfile);
+		HashMap<String, Job> jobMap = JobReader.parseJobs(jfile, itemMap);
 		
-		System.out.println("Arbitrator stopped - Route complete");
-		Sound.beepSequence();
+		ArrayList<Job> jobs = new ArrayList<Job>(jobMap.values());
+		Collections.sort(jobs);
+		for (Job j : jobs) {
+			HashMap<String, Integer> picks = j.getPicks();
+			for (String i : picks.keySet()) {
+				Location nextGoal = j.getItemList().get(i).getLocation();
+				ArrayList<Direction> solution = planner.getRoute(locationAccess.getCurrentLocation(), nextGoal);
+				
+				Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution);
+				Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort());
+				Arbitrator arby = new Arbitrator(new Behavior[] {movement, junction}, true);
+				arby.start();
+					
+				System.out.println("Arbitrator stopped - Route complete");
+				Sound.beepSequence(); //robot-interface stuff here, to restart the loop!
+			}
+		}
 	}
 	
 	private static void createMap() {

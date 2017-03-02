@@ -14,4 +14,16 @@ public class Item {
 		this.weight = w;
 		this.location = l;
 	}
+	
+	public float getReward() {
+		return reward;
+	}
+
+	public float getWeight() {
+		return weight;
+	}
+	
+	public Location getLocation(){
+		return this.location;
+	}
 }
