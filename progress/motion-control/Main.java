@@ -13,14 +13,13 @@ public class Main {
 		Button.waitForAnyPress();
 		
 		ArrayList<ActionType> route = new ArrayList<ActionType>() {{
-			add(ActionType.FORWARD);
-			add(ActionType.LEFT);
-			add(ActionType.FORWARD);
 			add(ActionType.RIGHT);
+			add(ActionType.BACKWARDS);
+			add(ActionType.LEFT);
 		}};
 		
-		Behavior drive = new RouteFollower(RobotConfigs.CASTOR_BOT, SensorPort.S4, SensorPort.S1, route);
-		Behavior junction = new JunctionDetection(RobotConfigs.CASTOR_BOT, SensorPort.S4, SensorPort.S1);
+		Behavior drive = new RouteFollower(RobotConfigs.CASTOR_BOT, SensorPort.S4, SensorPort.S1, route.size());
+		Behavior junction = new JunctionDetection(RobotConfigs.CASTOR_BOT, SensorPort.S4, SensorPort.S1, route);
 		Arbitrator arby = new Arbitrator(new Behavior[] {drive, junction}, true);
 		arby.start();
 		
