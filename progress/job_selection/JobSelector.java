@@ -18,5 +18,20 @@ public class JobSelector {
 		Collections.sort(jobs);
 		//We now have a list of jobs, sorted based on highest total reward.
 		
+		ArrayList<Round> rounds = new ArrayList<Round>();
+		Round currentRound = new Round(50f);
+		for (Job j : jobs) {
+			for (String s : j.getPicks().keySet()) {
+				if (currentRound.addStop(itemMap.get(s), j.getPicks().get(s))) {
+				} else {
+					currentRound = new Round(50f);
+				}
+			}
+			rounds.add(currentRound);
+		}
+		
+		for (Round r : rounds) {
+			System.out.println(r.getRoute());
+		}
 	}
 }
