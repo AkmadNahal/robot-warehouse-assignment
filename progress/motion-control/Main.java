@@ -16,6 +16,7 @@ public class Main {
 			add(ActionType.RIGHT);
 			add(ActionType.BACKWARDS);
 			add(ActionType.LEFT);
+			add(ActionType.FORWARD);
 		}};
 		
 		Behavior drive = new RouteFollower(RobotConfigs.CASTOR_BOT, SensorPort.S4, SensorPort.S1, route.size());

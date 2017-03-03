@@ -64,19 +64,23 @@ public class JunctionDetection extends AbstractBehaviour {
 				ActionType currentMove = route.get(counter);
 		
 				if(currentMove == ActionType.FORWARD){
+					System.out.println("forward");
 					counter ++;
 				}
 				else if(currentMove == ActionType.BACKWARDS){
+					System.out.println("backwards");
 					counter++;
 					pilot.rotate(180);
 					pilot.stop();
 				}
 				else if(currentMove == ActionType.LEFT){
+					System.out.println("left");
 					counter++;
 					pilot.rotate(90);
 					pilot.stop();
 				}
 				else if(currentMove == ActionType.RIGHT){
+					System.out.println("right");
 					counter++;
 					pilot.rotate(-90);
 					pilot.stop();

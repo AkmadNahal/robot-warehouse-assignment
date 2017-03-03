@@ -45,7 +45,7 @@ public class RouteFollower extends AbstractBehaviour {
 		
 		float P = 1f;
 		
-		if(!(counter == (routeLength + 1))){
+		if(!(counter == (routeLength))){
 			while(!isSuppressed){
 				
 				float rHValue = rhSensor.getLightValue();
@@ -57,7 +57,7 @@ public class RouteFollower extends AbstractBehaviour {
 				float rHOutput = minValue + (valDiff * rHRatio);
 				float lHOutput = minValue + (valDiff * lHRatio);
 				
-				float turnDiff = (lHOutput - rHOutput) - 8;
+				float turnDiff = (rHOutput - lHOutput) + 8;
 				
 				float turnOut = P * turnDiff;
 				
