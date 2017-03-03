@@ -22,4 +22,8 @@ public class Item {
 	public float getWeight() {
 		return weight;
 	}
+	
+	public Location getLoc() {
+		return location;
+	}
 }
