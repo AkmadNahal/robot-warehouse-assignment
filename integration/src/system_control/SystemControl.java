@@ -50,11 +50,11 @@ public class SystemControl {
 		for (Job j : jobs) {
 			HashMap<String, Integer> picks = j.getPicks();
 			for (String i : picks.keySet()) {
-				Location nextGoal = j.getItemList().get(i).getLocation();
+				Location nextGoal = itemMap.get(i).getLocation();
 				ArrayList<Direction> solution = planner.getRoute(locationAccess.getCurrentLocation(), nextGoal);
 				
-				Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution);
-				Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort());
+				Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution.size());
+				Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution);
 				Arbitrator arby = new Arbitrator(new Behavior[] {movement, junction}, true);
 				arby.start();
 					

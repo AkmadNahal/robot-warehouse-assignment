@@ -1,38 +1,35 @@
 package motion_control;
 
 import java.util.ArrayList;
+
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
 import rp.config.WheeledRobotConfiguration;
 import rp.util.Rate;
-import helper_classes.Direction;
 
 public class RouteFollower extends AbstractBehaviour {
 	
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
-	private int counter;
-	
-	private Direction Direction;
-	
-	//Stores the list of moves to carry out
-	ArrayList<Direction> route;
+
 	
 	private boolean isRouteComplete = false;
+	private int counter = 0;
+	private int routeLength;
 
-	public RouteFollower(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<Direction> route) {
+	public RouteFollower(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, int numberOfMoves) {
 		super(_config);
-		this.counter = 0;
-
+		
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
 		
-		this.route = new ArrayList<Direction>(route);
+		routeLength = numberOfMoves;
 		
 	}
 
 	@Override
 	public boolean takeControl() {
+		// TODO Auto-generated method stub
 		return !isRouteComplete;
 	}
 
@@ -40,62 +37,41 @@ public class RouteFollower extends AbstractBehaviour {
 	public void action() {
 		Rate r = new Rate(20);
 		
-		while(!isSuppressed){
-			
-			//Once movement list has been completed, robot stops
-			if(counter < route.size()){
-				
-				//Will check what the previous move was, so it can re-orientate to always face the same orientation
-				if(counter > 0){
-					Direction previousMove = route.get(counter - 1);
-					
-					if(previousMove == Direction.BACKWARDS){
-						pilot.rotate(180);
-						pilot.stop();
-					}
-					else if(previousMove == Direction.LEFT){
-						pilot.rotate(-90);
-						pilot.stop();
-					}
-					else if(previousMove == Direction.RIGHT){
-						pilot.rotate(90);
-						pilot.stop();
-					}
-				}
-			
-				//Iterates through the arraylist, carrying out the movements in order.
-				Direction currentMove = route.get(counter);
-			
-				if(currentMove == Direction.FORWARD){
-					counter ++;
-					pilot.forward();
-				}
-				else if(currentMove == Direction.BACKWARDS){
-					counter++;
-					pilot.rotate(180);
-					pilot.stop();
-					pilot.forward();
-				}
-				else if(currentMove == Direction.LEFT){
-					counter++;
-					pilot.rotate(90);
-					pilot.stop();
-					pilot.forward();
-				}
-				else if(currentMove == Direction.RIGHT){
-					counter++;
-					pilot.rotate(-90);
-					pilot.stop();
-					pilot.forward();
-				}
-			}
-			else{
-				isRouteComplete = true;
-			}
-			r.sleep();
-		}
-		isSuppressed = false;
+		float minRange = 0;
+		float maxRange = 100;
+		float rangeDiff = maxRange - minRange;
 		
+		float minValue = -200;
+		float maxValue = 200;
+		float valDiff = maxValue - minValue;
+		
+		float P = 1f;
+		
+		if(!(counter == (routeLength))){
+			while(!isSuppressed){
+				
+				float rHValue = rhSensor.getLightValue();
+				float lHValue = lhSensor.getLightValue();
+				
+				float rHRatio = (rHValue - minRange)/rangeDiff;
+				float lHRatio = (lHValue - minRange)/rangeDiff;
+				
+				float rHOutput = minValue + (valDiff * rHRatio);
+				float lHOutput = minValue + (valDiff * lHRatio);
+				
+				float turnDiff = (rHOutput - lHOutput) + 8;
+				
+				float turnOut = P * turnDiff;
+				
+				pilot.steer(turnOut);
+				r.sleep();
+			}
+			counter++;
+			isSuppressed = false;
+		}
+		else{
+			isRouteComplete = true;
+		}
 	}
 
 }
