@@ -16,11 +16,7 @@ public class JobSelector {
 		
 		ArrayList<Job> jobs = new ArrayList<Job>(jobMap.values());
 		Collections.sort(jobs);
-		for (Job j : jobs) {
-			System.out.print(j);
-			System.out.print("\tREWARD:" + j.totalReward());
-			System.out.print("\tWEIGHT:" + j.totalWeight());
-			System.out.println();
-		}
+		//We now have a list of jobs, sorted based on highest total reward.
+		
 	}
 }
