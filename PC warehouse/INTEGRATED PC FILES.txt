@@ -1,0 +1,34 @@
+This folder holds an integrated version of all current files that will run on the PC.
+
+05/03/2017:
+
+A main class, called SystemControl, has been created to essentially run a mock version of
+the program. Currently, there is no communication infrastructure, but how components are
+integrated will still, mostly, remain the same.
+
+As of writing, the following has been successfully integrated:
+
+Job selection and Route-Planning - In SystemControl, the job selection classes are called,
+and a list of every job is ran through (starting with the one that yields the highest
+reward), and they are divvied up into viable weights, utilising Jerry's code. Then, the 
+picks of a job are iterated through, and, for each one, the location of the pick is used
+in the constructor of Csongor's route-planning classes, thus integrating the two.
+
+Route-planning and Route Execution - In the current pick, Csongor's route-planning code 
+calculates the fastest route to that pick, using A*. This solution is stored as an list
+of Directions, an enumarated type in helper_classes, that is created through integration
+code that converts changes in coordinates, through the general Location class, to the
+equivalent direction. For example, moving from [0,0] to [1,0] is portrayed as moving
+RIGHT. This list is received by Tom's route execution code, which, using subsumption
+architecture, runs through the list until the path is complete. Each move references to a
+separate project of classes that will run on the robot, that say which direction to go,
+and adjust the robot's pose.
+
+More will soon be integrated, such as Vainas' warehouse management interface and robot
+interface code. For example, after every move of the robot, Tom's code will have to
+integrate with Vainas' code to update where the robot is on the GUI map. Moreover, 
+communication code from Kimberly will be used to connect the two projects, so that it
+can successfully run.
+
+Currently, this integration has kept only one robot in mind, but adding extra ones should
+not require major upheaval of the code.
