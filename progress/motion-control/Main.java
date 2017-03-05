@@ -14,7 +14,15 @@ public class Main {
 		
 		ArrayList<ActionType> route = new ArrayList<ActionType>() {{
 			add(ActionType.RIGHT);
-			add(ActionType.BACKWARDS);
+			add(ActionType.FORWARD);
+			add(ActionType.LEFT);
+			add(ActionType.FORWARD);
+			add(ActionType.RIGHT);
+			add(ActionType.FORWARD);
+			add(ActionType.LEFT);
+			add(ActionType.FORWARD);
+			add(ActionType.RIGHT);
+			add(ActionType.FORWARD);
 			add(ActionType.LEFT);
 			add(ActionType.FORWARD);
 		}};

@@ -12,6 +12,8 @@ public class JunctionDetection extends AbstractBehaviour {
 	boolean isOnJunction = false;
 	private ArrayList<ActionType> route;
 	private int counter = 0;
+	
+	private int threshold = 45;
 
 	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<ActionType> route) {
 		super(_config);
@@ -28,7 +30,7 @@ public class JunctionDetection extends AbstractBehaviour {
 		float lhValue = lhSensor.getLightValue();
 		float rhValue = rhSensor.getLightValue();
 		
-		if(lhValue < 35 && rhValue < 35){
+		if(lhValue < threshold && rhValue < threshold){
 			isOnJunction = true;
 		}
 		return isOnJunction;
@@ -36,11 +38,17 @@ public class JunctionDetection extends AbstractBehaviour {
 
 	@Override
 	public void action() {
+		if(threshold != 45){
+			pilot.travel(0.05);
+		}
 		pilot.stop();
+		
+		System.out.println("threshold: " + threshold);
 		
 			
 		//Will check what the previous move was, so it can re-orientate to always face the same orientation
 		if(!(counter == (route.size() + 1))){
+			threshold = 35;
 			
 			if(counter > 0){
 				ActionType previousMove = route.get(counter - 1);
@@ -87,6 +95,7 @@ public class JunctionDetection extends AbstractBehaviour {
 				}
 			}
 		}
+		threshold = 35;
 		System.out.println(counter);
 		isOnJunction = false;
 	}
