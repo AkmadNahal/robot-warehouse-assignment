@@ -1,9 +1,8 @@
 package motion_control;
 
-import java.util.ArrayList;
-
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
+import motion.Drive;
 import rp.config.WheeledRobotConfiguration;
 import rp.util.Rate;
 
@@ -11,6 +10,7 @@ public class RouteFollower extends AbstractBehaviour {
 	
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
+	private Drive drive;
 
 	
 	private boolean isRouteComplete = false;
@@ -22,6 +22,7 @@ public class RouteFollower extends AbstractBehaviour {
 		
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
+		drive = new Drive (_config, _lhSensor, _rhSensor);
 		
 		routeLength = numberOfMoves;
 		
@@ -29,42 +30,15 @@ public class RouteFollower extends AbstractBehaviour {
 
 	@Override
 	public boolean takeControl() {
-		// TODO Auto-generated method stub
 		return !isRouteComplete;
 	}
 
 	@Override
 	public void action() {
-		Rate r = new Rate(20);
-		
-		float minRange = 0;
-		float maxRange = 100;
-		float rangeDiff = maxRange - minRange;
-		
-		float minValue = -200;
-		float maxValue = 200;
-		float valDiff = maxValue - minValue;
-		
-		float P = 1f;
 		
 		if(!(counter == (routeLength))){
 			while(!isSuppressed){
-				
-				float rHValue = rhSensor.getLightValue();
-				float lHValue = lhSensor.getLightValue();
-				
-				float rHRatio = (rHValue - minRange)/rangeDiff;
-				float lHRatio = (lHValue - minRange)/rangeDiff;
-				
-				float rHOutput = minValue + (valDiff * rHRatio);
-				float lHOutput = minValue + (valDiff * lHRatio);
-				
-				float turnDiff = (rHOutput - lHOutput) + 8;
-				
-				float turnOut = P * turnDiff;
-				
-				pilot.steer(turnOut);
-				r.sleep();
+				drive.followPath();
 			}
 			counter++;
 			isSuppressed = false;

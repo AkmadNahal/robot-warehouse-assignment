@@ -5,22 +5,30 @@ import java.util.ArrayList;
 import helper_classes.Direction;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
+import motion.CorrectPose;
+import motion.Turn;
 import rp.config.WheeledRobotConfiguration;
 
 public class JunctionDetection extends AbstractBehaviour {
 
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
+	private Turn turn;
+	private CorrectPose correctPose;
 	
 	boolean isOnJunction = false;
 	private ArrayList<Direction> route;
 	private int counter = 0;
+	
+	private int threshold = 45;
 
 	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<Direction> route) {
 		super(_config);
 		
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
+		turn = new Turn(config);
+		correctPose = new CorrectPose(config);
 		
 		this.route = new ArrayList<Direction>(route);
 	}
@@ -31,7 +39,7 @@ public class JunctionDetection extends AbstractBehaviour {
 		float lhValue = lhSensor.getLightValue();
 		float rhValue = rhSensor.getLightValue();
 		
-		if(lhValue < 35 && rhValue < 35){
+		if(lhValue < threshold && rhValue < threshold){
 			isOnJunction = true;
 		}
 		return isOnJunction;
@@ -39,57 +47,30 @@ public class JunctionDetection extends AbstractBehaviour {
 
 	@Override
 	public void action() {
+		if (threshold != 45){
+			pilot.travel(0.05);
+		}
 		pilot.stop();
 		
 			
 		//Will check what the previous move was, so it can re-orientate to always face the same orientation
 		if(!(counter == (route.size() + 1))){
 			
+			threshold = 35;
+			
 			if(counter > 0){
 				Direction previousMove = route.get(counter - 1);
-				
-				if(previousMove == Direction.BACKWARDS){
-					pilot.rotate(180);
-					pilot.stop();
-				}
-				else if(previousMove == Direction.LEFT){
-					pilot.rotate(-90);
-					pilot.stop();
-				}
-				else if(previousMove == Direction.RIGHT){
-					pilot.rotate(90);
-					pilot.stop();
-				}
+				correctPose.adjust(previousMove);
 			}
 			
 			if(!(counter == route.size())){
 				//Iterates through the arraylist, carrying out the movements in order.
 				Direction currentMove = route.get(counter);
-		
-				if(currentMove == Direction.FORWARD){
-					System.out.println("forward");
-					counter ++;
-				}
-				else if(currentMove == Direction.BACKWARDS){
-					System.out.println("backwards");
-					counter++;
-					pilot.rotate(180);
-					pilot.stop();
-				}
-				else if(currentMove == Direction.LEFT){
-					System.out.println("left");
-					counter++;
-					pilot.rotate(90);
-					pilot.stop();
-				}
-				else if(currentMove == Direction.RIGHT){
-					System.out.println("right");
-					counter++;
-					pilot.rotate(-90);
-					pilot.stop();
-				}
+				counter++;
+				turn.move(currentMove);
 			}
 		}
+		threshold = 35;
 		System.out.println(counter);
 		isOnJunction = false;
 	}

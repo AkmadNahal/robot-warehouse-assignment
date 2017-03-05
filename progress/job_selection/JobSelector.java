@@ -1,10 +1,9 @@
 package job_selection;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
-import rp.util.Collections;
 
 public class JobSelector {
 	public static void main(String[] args) {
@@ -15,7 +14,7 @@ public class JobSelector {
 		HashMap<String, Job> jobMap = JobReader.parseJobs(jfile, itemMap);
 		
 		ArrayList<Job> jobs = new ArrayList<Job>(jobMap.values());
-		Collections.sort(jobs);
+		Collection.sort(jobs);
 		//We now have a list of jobs, sorted based on highest total reward.
 		
 		ArrayList<Round> rounds = new ArrayList<Round>();

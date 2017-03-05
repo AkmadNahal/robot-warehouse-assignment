@@ -13,6 +13,7 @@ import job_selection.Item;
 import job_selection.ItemReader;
 import job_selection.Job;
 import job_selection.JobReader;
+import job_selection.Round;
 import lejos.nxt.Sound;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
@@ -47,20 +48,30 @@ public class SystemControl {
 		
 		ArrayList<Job> jobs = new ArrayList<Job>(jobMap.values());
 		Collections.sort(jobs);
+		
+		ArrayList<Round> rounds = new ArrayList<Round>();
+		Round currentRound = new Round(50f);
 		for (Job j : jobs) {
 			HashMap<String, Integer> picks = j.getPicks();
 			for (String i : picks.keySet()) {
-				Location nextGoal = itemMap.get(i).getLocation();
-				ArrayList<Direction> solution = planner.getRoute(locationAccess.getCurrentLocation(), nextGoal);
-				
-				Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution.size());
-				Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution);
-				Arbitrator arby = new Arbitrator(new Behavior[] {movement, junction}, true);
-				arby.start();
-					
-				System.out.println("Arbitrator stopped - Route complete");
-				Sound.beepSequence(); //robot-interface stuff here, to restart the loop!
+				if (currentRound.addStop(itemMap.get(i), j.getPicks().get(i))) {
+				} else {
+					currentRound = new Round(50f);
+				}
 			}
+			rounds.add(currentRound);
+		}
+		
+		for (Round r : rounds) {
+			Location nextGoal = itemMap.get(r).getLoc();
+			ArrayList<Direction> solution = planner.getRoute(locationAccess.getCurrentLocation(), nextGoal);
+			Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution.size());
+			Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution);
+			Arbitrator arby = new Arbitrator(new Behavior[] {movement, junction}, true);
+			arby.start();
+				
+			System.out.println("Arbitrator stopped - Route complete");
+			Sound.beepSequence(); //robot-interface stuff here, to restart the loop!
 		}
 	}
 	
@@ -71,5 +82,4 @@ public class SystemControl {
 	      }
 	    }
 	  }
-
 }
