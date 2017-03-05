@@ -1,0 +1,17 @@
+Progress of Motion Control
+
+Updates to motion control (updates are written in the order in which they were implemented)
+
+1 - Behaviour architecture created. Robot can now move along the grid, detect junctions and follow a pre-defined route (an ArrayList of type Direction)
+
+2 - Adjustments to route following. After each movement is carried out, the robot will re-orientate to the same pose that it started. This avoids possible
+problems with system as it no longer has to take into account robots current pose on the grid.
+
+3 - Added a line following mechanic in the base drive behaviour. This will alleviate the unreliabilty in the robots sensors and motors. I.e. if the robot does not
+fully rotate 90 degrees etc. Also reduced the robots travel speed as to make line following more reliable.
+
+To be added:
+
+- distance sensor functionality - if the robot is heading towards a possible collision (with a wall or another robot on the grid) the route following procedure should be
+disbanded and the robot will stop its current route.
+
