@@ -1,0 +1,11 @@
+This folder holds an integrated version of all current files that will run on the robot.
+
+05/03/2017:
+
+The contents of this folder are relatively new, separating motion code from the code that
+will run on the PC. Currently, there's little functionality, since the communication code
+is not yet available, that will connect the 'NXT PC' code and the 'NXT Runtime' code.
+
+Eventually, this will integrate with the PC files, waiting for it to connect the robot
+to the file running on the computer, which will then send it commands, and the robot will
+send commands back, through robot interface. 
