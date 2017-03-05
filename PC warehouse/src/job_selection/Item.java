@@ -23,7 +23,7 @@ public class Item {
 		return weight;
 	}
 	
-	public Location getLocation(){
+	public Location getLoc(){
 		return this.location;
 	}
 }
