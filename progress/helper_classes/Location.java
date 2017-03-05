@@ -32,5 +32,10 @@ public class Location {
   public boolean equalsTo(Location location) {
     return (x == location.getX() && y == location.getY());
   }
+  
+  @Override
+  public String toString() {
+	  return ("(" + x + "," + y + ")");
+  }
 
 }
