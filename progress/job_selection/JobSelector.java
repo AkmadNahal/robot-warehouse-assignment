@@ -27,14 +27,19 @@ public class JobSelector {
 		Round currentRound = new Round(W_LIMIT);
 		for (Job j : jobs) {
 			for (String s : j.getPicks().keySet()) {
-				
+				if (!currentRound.addStop(itemMap.get(s), j.getPicks().get(s))) {
+					rounds.add(currentRound);
+					currentRound = new Round(W_LIMIT);
+					currentRound.addStop(itemMap.get(s), j.getPicks().get(s));
+				}
 			}
-
 		}
-		//
-		// System.out.println(rounds.size());
-		// for (Round r : rounds) {
-		// System.out.println(r.getRoute());
-		// }
+		rounds.add(currentRound);
+
+		System.out.println(rounds.size());
+		for (Round r : rounds) {
+			System.out.print(r.getRoute());
+			System.out.println(r.getCounts());
+		}
 	}
 }

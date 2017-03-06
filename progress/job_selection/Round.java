@@ -31,6 +31,14 @@ public class Round {
 		}
 		return locations;
 	}
+	
+	public ArrayList<Integer> getCounts() {
+		ArrayList<Integer> counts = new ArrayList<Integer>();
+		for (Item i : round.keySet()) {
+			counts.add(round.get(i));
+		}
+		return counts;
+	}
 
 	public float getWeight() {
 		float total = 0;
