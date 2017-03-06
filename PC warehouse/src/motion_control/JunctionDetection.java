@@ -2,19 +2,19 @@ package motion_control;
 
 import java.util.ArrayList;
 
-import helper_classes.Direction;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
-import motion.CorrectPose;
-import motion.Turn;
+//import motion.CorrectPose;
+//import motion.Turn;
 import rp.config.WheeledRobotConfiguration;
+import utils.Direction;
 
 public class JunctionDetection extends AbstractBehaviour {
 
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
-	private Turn turn;
-	private CorrectPose correctPose;
+	//private Turn turn;
+	//private CorrectPose correctPose;
 	
 	boolean isOnJunction = false;
 	private ArrayList<Direction> route;
@@ -27,8 +27,8 @@ public class JunctionDetection extends AbstractBehaviour {
 		
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
-		turn = new Turn(config);
-		correctPose = new CorrectPose(config);
+		//turn = new Turn(config);
+		//correctPose = new CorrectPose(config);
 		
 		this.route = new ArrayList<Direction>(route);
 	}
@@ -60,14 +60,14 @@ public class JunctionDetection extends AbstractBehaviour {
 			
 			if(counter > 0){
 				Direction previousMove = route.get(counter - 1);
-				correctPose.adjust(previousMove);
+				//correctPose.adjust(previousMove);
 			}
 			
 			if(!(counter == route.size())){
 				//Iterates through the arraylist, carrying out the movements in order.
 				Direction currentMove = route.get(counter);
 				counter++;
-				turn.move(currentMove);
+				//turn.move(currentMove);
 			}
 		}
 		threshold = 35;

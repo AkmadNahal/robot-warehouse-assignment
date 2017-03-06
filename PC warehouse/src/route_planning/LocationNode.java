@@ -1,6 +1,6 @@
 package route_planning;
 
-import helper_classes.Location;
+import utils.Location;
 
 public class LocationNode {
 

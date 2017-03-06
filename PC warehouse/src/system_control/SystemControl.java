@@ -4,11 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import helper_classes.Config;
-import helper_classes.Direction;
-import helper_classes.Location;
-import helper_classes.LocationType;
-import helper_classes.SuperLocation;
 import job_selection.Item;
 import job_selection.ItemReader;
 import job_selection.Job;
@@ -20,6 +15,11 @@ import lejos.robotics.subsumption.Behavior;
 import motion_control.JunctionDetection;
 import motion_control.RouteFollower;
 import route_planning.RoutePlanner;
+import helper_classes.Config;
+import utils.Direction;
+import utils.Location;
+import utils.LocationType;
+import utils.SuperLocation;
 
 public class SystemControl {
 	
@@ -67,7 +67,7 @@ public class SystemControl {
 			ArrayList<Direction> solution = planner.getRoute(locationAccess.getCurrentLocation(), nextGoal);
 			Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution.size());
 			Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution);
-			Arbitrator arby = new Arbitrator(new Behavior[] {movement, junction}, true);
+			Arbitrator arby = new Arbitrator(new Behavior[] {movement, junction}, true); //send whole list to robot
 			arby.start();
 				
 			System.out.println("Arbitrator stopped - Route complete");

@@ -1,7 +1,7 @@
-package helper_classes;
+package utils;
 
-import helper_classes.Location;
-import helper_classes.LocationType;
+import utils.Location;
+import utils.LocationType;
 
 public class SuperLocation {
 	
