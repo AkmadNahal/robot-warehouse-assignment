@@ -2,9 +2,10 @@
 package route_planning;
 
 import java.util.*;
-import helper_classes.Direction;
-import helper_classes.Location;
-import helper_classes.LocationType;
+
+import utils.Direction;
+import utils.Location;
+import utils.LocationType;
 
 public class RoutePlanner {
 

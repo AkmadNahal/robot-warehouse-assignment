@@ -1,6 +1,9 @@
 package job_selection;
 
 import helper_classes.*;
+import utils.Location;
+import utils.LocationType;
+
 import java.util.HashMap;
 import java.io.*;
 

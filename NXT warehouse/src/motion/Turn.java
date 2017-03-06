@@ -1,6 +1,6 @@
 package motion;
 
-import helper_classes.Direction;
+import utils.Direction;
 import rp.config.WheeledRobotConfiguration;
 
 public class Turn extends AbstractBehaviour {
