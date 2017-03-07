@@ -16,8 +16,12 @@ public class NetworkComm implements Runnable {
 	private DataOutputStream m_dos;
 	private final NXTInfo m_nxt;
 
+	private boolean should_send;
+	private ArrayList<Direction> sendable;
+
 	public NetworkComm(NXTInfo _nxt) {
 		m_nxt = _nxt;
+		should_send = false;
 	}
 
 	public boolean connect(NXTComm _comm) throws NXTCommException {
@@ -38,8 +42,23 @@ public class NetworkComm implements Runnable {
 
 		try {
 			while (true) {
-				m_dos.writeInt(1);
-				m_dos.flush();
+
+				if(should_send) {
+
+					// Notify starting of route sending
+					m_dos.writeInt(9999);
+
+					// Send the route
+					for(Direction d : sendable) {
+						m_dos.writeInt(d.getValue());
+					}
+
+					// Notify end of route sending
+					m_dos.writeInt(9999);
+					m_dos.flush();
+
+					should_send = false;
+				}
 
 				int answer = m_dis.readInt();
 				System.out.println(m_nxt.name + " returned " + answer);
@@ -50,16 +69,16 @@ public class NetworkComm implements Runnable {
 
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	public void send(ArrayList<Direction> directions) {
+		should_send = true;
+		sendable = directions;
+	}
+
+
+	public void startConnection() {
 		try {
 
-			NXTInfo[] nxts = {
-
-					new NXTInfo(NXTCommFactory.BLUETOOTH, "Vader",
-							"00165308E541") };
+			NXTInfo[] nxts = { m_nxt };
 
 			ArrayList<NetworkComm> connections = new ArrayList<>(
 					nxts.length);
