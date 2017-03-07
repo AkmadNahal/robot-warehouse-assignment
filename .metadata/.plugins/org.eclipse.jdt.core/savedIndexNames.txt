@@ -1,6 +1,0 @@
-INDEX VERSION 1.129+/Users/barabasicsongor/University/First Year/Robot Programming/Warehouse Project/robot-warehouse-assignment/.metadata/.plugins/org.eclipse.jdt.core
-2420352260.index
-3478196277.index
-3705450656.index
-603801516.index
-629914750.index
