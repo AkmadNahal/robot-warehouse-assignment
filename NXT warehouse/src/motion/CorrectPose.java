@@ -3,7 +3,7 @@ package motion;
 import utils.Direction;
 import rp.config.WheeledRobotConfiguration;
 
-public class CorrectPose extends AbstractBehaviour {
+public class CorrectPose extends AbstractBehaviour2 {
 
 	public CorrectPose(WheeledRobotConfiguration _config) {
 		super(_config);

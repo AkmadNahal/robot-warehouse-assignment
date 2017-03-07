@@ -1,4 +1,4 @@
-package motion_control;
+package motion;
 
 import java.util.ArrayList;
 
@@ -10,12 +10,14 @@ import rp.config.WheeledRobotConfiguration;
 import utils.Direction;
 import utils.LocationType;
 import utils.SuperLocation;
-import warehouse_interface.GridWalker;
 
 public class JunctionDetection extends AbstractBehaviour {
 
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
+	
+	private Turn turn = new Turn(config);
+	private CorrectPose correctPose = new CorrectPose(config);
 	
 	private SuperLocation locationAccess;
 	
@@ -64,7 +66,7 @@ public class JunctionDetection extends AbstractBehaviour {
 			
 			if(counter > 0){
 				Direction previousMove = route.get(counter - 1);
-				//correctPose.adjust(previousMove);
+				correctPose.adjust(previousMove);
 				locationAccess.updateCurrentLocation(previousMove);
 			}
 			
@@ -72,11 +74,10 @@ public class JunctionDetection extends AbstractBehaviour {
 				//Iterates through the arraylist, carrying out the movements in order.
 				Direction currentMove = route.get(counter);
 				counter++;
-				//turn.move(currentMove);
+				turn.move(currentMove);
 			}
 		}
 		threshold = 35;
-		System.out.println(counter);
 		isOnJunction = false;
 	}
 

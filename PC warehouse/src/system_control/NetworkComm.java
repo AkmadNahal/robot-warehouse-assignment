@@ -9,6 +9,7 @@ import lejos.pc.comm.NXTComm;
 import lejos.pc.comm.NXTCommException;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
+import utils.Direction;
 
 public class NetworkComm implements Runnable {
 
@@ -39,14 +40,24 @@ public class NetworkComm implements Runnable {
 
 	@Override
 	public void run() {
+		System.out.println("Run started");
 
 		try {
+			NXTInfo nxt = m_nxt;
+			try{
+				NXTComm nxtComm = NXTCommFactory.createNXTComm(NXTCommFactory.BLUETOOTH);
+				this.connect(nxtComm);
+			}
+			catch (Exception e){
+				
+			}
 			while (true) {
-
-				if(should_send) {
+				System.err.println("Running");
+				if(getShouldSend()) {
 
 					// Notify starting of route sending
-					m_dos.writeInt(9999);
+					System.err.println("Started sending");
+					m_dos.writeInt(99);
 
 					// Send the route
 					for(Direction d : sendable) {
@@ -54,10 +65,10 @@ public class NetworkComm implements Runnable {
 					}
 
 					// Notify end of route sending
-					m_dos.writeInt(9999);
+					m_dos.writeInt(99);
 					m_dos.flush();
 
-					should_send = false;
+					setShouldSend(false);
 				}
 
 				int answer = m_dis.readInt();
@@ -70,50 +81,35 @@ public class NetworkComm implements Runnable {
 	}
 
 	public void send(ArrayList<Direction> directions) {
-		should_send = true;
+		setShouldSend(true);
 		sendable = directions;
 	}
 
 
-	public void startConnection() {
+	public Runnable startConnection() {
 		try {
 
-			NXTInfo[] nxts = { m_nxt };
+			NXTInfo nxt = m_nxt;
+			
+			NXTComm nxtComm = NXTCommFactory.createNXTComm(NXTCommFactory.BLUETOOTH);
+			this.connect(nxtComm);
 
-			ArrayList<NetworkComm> connections = new ArrayList<>(
-					nxts.length);
+			return this;
 
-			for (NXTInfo nxt : nxts) {
-				connections.add(new NetworkComm(nxt));
-			}
 
-			for (NetworkComm connection : connections) {
-				NXTComm nxtComm = NXTCommFactory
-						.createNXTComm(NXTCommFactory.BLUETOOTH);
-				connection.connect(nxtComm);
-			}
-
-			ArrayList<Thread> threads = new ArrayList<>(nxts.length);
-
-			for (NetworkComm connection : connections) {
-				threads.add(new Thread(connection));
-			}
-
-			for (Thread thread : threads) {
-				thread.start();
-			}
-
-			for (Thread thread : threads) {
-				try {
-					thread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
 
 		} catch (NXTCommException e) {
 			e.printStackTrace();
 		}
+		return null;
 
+	}
+	
+	private synchronized void setShouldSend(boolean value){
+		should_send = value;
+	}
+	
+	private synchronized boolean getShouldSend(){
+		return should_send;
 	}
 }

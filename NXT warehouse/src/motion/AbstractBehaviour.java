@@ -1,10 +1,11 @@
 package motion;
 
 import lejos.robotics.navigation.DifferentialPilot;
+import lejos.robotics.subsumption.Behavior;
 import rp.config.WheeledRobotConfiguration;
 import rp.systems.WheeledRobotSystem;
 
-public abstract class AbstractBehaviour{
+public abstract class AbstractBehaviour implements Behavior{
 	
 	protected DifferentialPilot pilot;
 	protected boolean isSuppressed = false;
@@ -17,6 +18,7 @@ public abstract class AbstractBehaviour{
 		
 	}
 	
+	@Override
 	public void suppress() {
 		isSuppressed = true;
 	}

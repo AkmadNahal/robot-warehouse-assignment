@@ -9,12 +9,9 @@ import job_selection.ItemReader;
 import job_selection.Job;
 import job_selection.JobReader;
 import job_selection.Round;
-import lejos.nxt.Sound;
+import lejos.pc.comm.NXTCommFactory;
+import lejos.pc.comm.NXTInfo;
 import lejos.robotics.RangeFinder;
-import lejos.robotics.subsumption.Arbitrator;
-import lejos.robotics.subsumption.Behavior;
-import motion_control.JunctionDetection;
-import motion_control.RouteFollower;
 import route_planning.RoutePlanner;
 import rp.robotics.MobileRobotWrapper;
 import rp.robotics.mapping.GridMap;
@@ -36,17 +33,16 @@ import warehouse_interface.WarehouseView;
 public class SystemControl {
 
 	private static final int ROBOT_COUNT = 1;
-	private static int maxMapSize = 10;
-	private static Location[][] map = new Location[maxMapSize + 1][maxMapSize + 1];
-
-	private NetworkComm robot1;
-	private RoutePlanner planner;
+	private static int mapSizeX;
+	private static int mapSizeY;
+	private static Location[][] map;
+	private static GridMap mapModel;
 
 	public static void main(String[] args) {
 
 		// Setup the GUI and initializing the location
-	  SuperLocation locationAccess = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); //start location
-		GridMap mapModel = MapUtils.createRealWarehouse();
+		SuperLocation locationAccess = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); //start location
+		mapModel = MapUtils.createRealWarehouse();
 		MapBasedSimulation sim = new MapBasedSimulation(mapModel);
 		for (int i = 0; i < ROBOT_COUNT; i++) {
 			GridPose gridStart = new GridPose(0, 0, Heading.PLUS_Y);
@@ -63,27 +59,26 @@ public class SystemControl {
 		WarehouseView view = new WarehouseView(ROBOT_COUNT);
 		control.registerView(view);
 
-		// Sets up the robot
-		Config config = new Config();
+		// Setup robot networking
+		NXTInfo robot1Info = new NXTInfo (NXTCommFactory.BLUETOOTH, "Vader",
+			"00165308E541");
+		NetworkComm robot1 = new NetworkComm(robot1Info);
+		
+		(new Thread(robot1)).start();
 
-		// Setup robot networkings
-		robot1 = new NetworkComm(new NXTInfo(NXTCommFactory.BLUETOOTH, "Vader",
-				"00165308E541"));
 
 		// Setup map
 		createMap();
 
-	  map[1][1] = new Location(1,1,LocationType.BLOCK);
-	  map[1][2] = new Location(1,2,LocationType.BLOCK);
-	  map[2][1] = new Location(2,1,LocationType.BLOCK);
 
 		// Init route planner
-		planner = new RoutePlanner(map,maxMapSize,maxMapSize);
+		RoutePlanner planner = new RoutePlanner(map,mapSizeX,mapSizeY);
+		
 
 		// Read job files
-	  String jfile = "job_selection/jobs.csv";
-		String wrfile = "job_selection/items.csv";
-		String lfile = "job_selection/locations.csv";
+	  String jfile = "src/job_selection/jobs.csv";
+		String wrfile = "src/job_selection/items.csv";
+		String lfile = "src/job_selection/locations.csv";
 		HashMap<String, Item> itemMap = ItemReader.parseItems(wrfile, lfile);
 		HashMap<String, Job> jobMap = JobReader.parseJobs(jfile, itemMap);
 
@@ -110,31 +105,36 @@ public class SystemControl {
 
 		// Route planning
 		// TODO: revision
-		for (Round r : rounds) {
+		ArrayList<Direction> testRoute = new ArrayList<Direction>();
+		testRoute.add(Direction.FORWARD);
+		testRoute.add(Direction.FORWARD);
+		testRoute.add(Direction.RIGHT);
+		robot1.send(testRoute);
+		
+		/*for (Round r : rounds) {
 			ArrayList<Location> locationsInJob = r.getRoute();
 			for (int i = 0; i < locationsInJob.size(); i++){
 				Location nextGoal = locationsInJob.get(i);
 				ArrayList<Direction> solution = planner.getRoute(locationAccess.getCurrentLocation(), nextGoal);
-				// robot1.send(solution);
-
-
-				Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution.size());
-				Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), solution, locationAccess);
-				Arbitrator arby = new Arbitrator(new Behavior[] {movement, junction}, true); //needs to send whole list to robot
-				arby.start();
-
-				System.out.println("Arbitrator stopped - Route complete");
-				Sound.beepSequence(); //robot-interface stuff here, to restart the loop!
-
+				robot1.send(solution);
+				break;
+				
 			}
-		}
+		}*/
 
 	}
 
 	private static void createMap() {
-		for(int i=0;i<=maxMapSize;i++) {
-			for(int j=0;j<=maxMapSize;j++) {
-				map[i][j] = new Location(i,j,LocationType.EMPTY);
+		mapSizeX = mapModel.getXSize();
+		mapSizeY = mapModel.getYSize();
+		map = new Location[mapSizeX+1][mapSizeY+1];
+		for(int i=0;i < mapSizeX;i++) {
+			for(int j=0;j < mapSizeY;j++) {
+				if (mapModel.isValidGridPosition(i, j) && !mapModel.isObstructed(i, j)){
+					map[i][j] = new Location(i, j, LocationType.EMPTY);
+				} else if (mapModel.isValidGridPosition(i, j)){
+					map[i][j] = new Location(i, j, LocationType.BLOCK);
+				}
 			}
 	    }
 	}

@@ -3,7 +3,7 @@ package motion;
 import utils.Direction;
 import rp.config.WheeledRobotConfiguration;
 
-public class Turn extends AbstractBehaviour {
+public class Turn extends AbstractBehaviour2 {
 
 	public Turn(WheeledRobotConfiguration _config) {
 		super(_config);
@@ -21,6 +21,5 @@ public class Turn extends AbstractBehaviour {
 			pilot.stop();
 		}
 	}
-
 	
 }

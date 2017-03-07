@@ -1,4 +1,4 @@
-package motion_control;
+package motion;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
@@ -10,7 +10,7 @@ public class RouteFollower extends AbstractBehaviour {
 	
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
-	//private Drive drive;
+	private Drive drive;
 
 	
 	private boolean isRouteComplete = false;
@@ -22,7 +22,7 @@ public class RouteFollower extends AbstractBehaviour {
 		
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
-		//drive = new Drive (_config, _lhSensor, _rhSensor);
+		drive = new Drive (_config, _lhSensor, _rhSensor);
 		
 		routeLength = numberOfMoves;
 		
@@ -38,7 +38,10 @@ public class RouteFollower extends AbstractBehaviour {
 		
 		if(!(counter == (routeLength))){
 			while(!isSuppressed){
-				//drive.followPath();
+				Rate r = new Rate(50);
+				drive.followPath();
+				r.sleep();
+				
 			}
 			counter++;
 			isSuppressed = false;

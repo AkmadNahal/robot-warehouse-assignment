@@ -5,7 +5,7 @@ import lejos.nxt.SensorPort;
 import rp.config.WheeledRobotConfiguration;
 import rp.util.Rate;
 
-public class Drive extends AbstractBehaviour {
+public class Drive extends AbstractBehaviour2 {
 	
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;

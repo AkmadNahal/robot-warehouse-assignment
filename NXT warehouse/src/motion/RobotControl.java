@@ -3,21 +3,35 @@ package motion;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Random;
 
 import lejos.nxt.Button;
+import lejos.nxt.Sound;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
+import lejos.nxt.comm.RConsole;
+import lejos.robotics.subsumption.Arbitrator;
+import lejos.robotics.subsumption.Behavior;
+import utils.Direction;
+import utils.Location;
+import utils.LocationType;
+import utils.SuperLocation;
+import utils.Config;
 
 public class RobotControl {
+	
+	private static Config config = new Config();
+	private static SuperLocation locationAccess = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); 
 
 	public static void main(String[] args) {
+//		redirectOutput(false);
+		ArrayList<Direction> route = new ArrayList<Direction>();
 
 		System.out.println("Waiting for Bluetooth connection...");
 		BTConnection connection = Bluetooth.waitForConnection();
 		System.out.println("OK!");
-
-		int rand = new Random().nextInt();
 
 		System.out.println("Success!");
 
@@ -25,20 +39,27 @@ public class RobotControl {
 		DataOutputStream outputStream = connection.openDataOutputStream();
 
 		boolean run = true;
-
-		ArrayList<Direction> route = new ArrayList<Direction>();
 		boolean is_route_income = false;
 
 		while (run) {
 			try {
 				int input = inputStream.readInt();
-
-				if(input == 9999 && !is_route_income) {
+				
+				System.out.println("Received int: " + input);
+				if(input == 99 && !is_route_income) {
 					// Route sending started
 					is_route_income = true;
 					route = new ArrayList<Direction>();
-				} else if(input == 9999 && is_route_income) {
-					// Route sending ended, send to robot to execute
+				} else if(input == 99 && is_route_income) {
+					// Route sending ended, execute route
+					
+					Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), route.size());
+					Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), route, locationAccess);
+					Arbitrator arby = new Arbitrator(new Behavior[] {movement, junction}, true); //needs to send whole list to robot
+					arby.start();
+					System.out.println("Arbitrator stopped - Route complete");
+					Sound.beepSequence(); //robot-interface stuff here, to restart the loop!
+							
 					is_route_income = false;
 				} else if(is_route_income) {
 					route.add(Direction.fromInteger(input));
@@ -49,6 +70,19 @@ public class RobotControl {
 				run = false;
 			}
 		}
+	}
+	
+	protected static void redirectOutput(boolean _useBluetooth) {
+		if (!RConsole.isOpen()) {
+			if (_useBluetooth) {
+				RConsole.openBluetooth(0);
+			} else {
+				RConsole.openUSB(0);
+			}
+		}
+		PrintStream ps = RConsole.getPrintStream();
+		System.setOut(ps);
+		System.setErr(ps);
 	}
 
 }
