@@ -1,3 +1,5 @@
+package motion_control;
+
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.subsumption.Behavior;
 import rp.config.WheeledRobotConfiguration;

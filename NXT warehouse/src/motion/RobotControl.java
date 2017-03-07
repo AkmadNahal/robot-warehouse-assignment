@@ -23,7 +23,7 @@ public class RobotControl {
 		
 		DataInputStream inputStream = connection.openDataInputStream();
 		DataOutputStream outputStream = connection.openDataOutputStream();
-
+		
 		boolean run = true;
 		while (run) {
 			try {

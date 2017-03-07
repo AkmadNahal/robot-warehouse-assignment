@@ -1,4 +1,4 @@
-package warehouseInterface;
+package warehouse_interface;
 
 import lejos.robotics.RangeFinder;
 import rp.robotics.MobileRobotWrapper;

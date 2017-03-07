@@ -24,11 +24,11 @@ import rp.robotics.visualisation.GridMapVisualisation;
 import rp.robotics.visualisation.MapVisualisationComponent;
 
 public class WarehouseView {
-	public static interface CancelButtonCalback {
+	public static interface CancelButtonCallback {
 		void cancel(int i);
 	}
 
-	public static interface RefreshButtonCalback {
+	public static interface RefreshButtonCallback {
 		void refresh();
 	}
 
@@ -39,8 +39,8 @@ public class WarehouseView {
 	private JPanel vizPanel;
 	private List<JButton> cancelRobotButtons = new ArrayList<>();
 	private JButton refreshRobots;
-	private RefreshButtonCalback refreshCallback;
-	private CancelButtonCalback cancelCallback;
+	private RefreshButtonCallback refreshCallback;
+	private CancelButtonCallback cancelCallback;
 
 	public WarehouseView(int robotCount) {
 		frame = new JFrame("Warehouse");
@@ -124,11 +124,11 @@ public class WarehouseView {
 		return field;
 	}
 
-	public void setCancelCallback(CancelButtonCalback cancelCallback) {
+	public void setCancelCallback(CancelButtonCallback cancelCallback) {
 		this.cancelCallback = cancelCallback;
 	}
 
-	public void setRefreshCallback(RefreshButtonCalback refreshCallback) {
+	public void setRefreshCallback(RefreshButtonCallback refreshCallback) {
 		this.refreshCallback = refreshCallback;
 	}
 

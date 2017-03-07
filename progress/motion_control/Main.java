@@ -1,3 +1,5 @@
+package motion_control;
+
 import java.util.ArrayList;
 
 import lejos.nxt.Button;

@@ -5,37 +5,29 @@ import java.util.ArrayList;
 public class GridToDirections {
 	
 	private Direction direction;
-	private ArrayList<Direction> pathMovement;
 	
-	public GridToDirections(){
-		this.pathMovement = new ArrayList<Direction>();
-	}
-	
-	public void coordinatesToDirections(int[] initialPosition, int[] newPosition){
-		int diffInX = newPosition[0] - initialPosition[0];
-		int diffInY = newPosition[1] - initialPosition[1];
+	public Direction coordinatesToDirections(Location initialPosition, Location newPosition){
+		int diffInX = newPosition.getX() - initialPosition.getX();
+		int diffInY = newPosition.getY() - initialPosition.getY();
 		
 		if (diffInX < 0){
 			for (int i = diffInX; i < 0; i--){
-				pathMovement.add(direction.LEFT);
+				direction = Direction.LEFT;
 			}
 		}else if (diffInX > 0){
 			for (int i = 0; i < diffInX; i++){
-				pathMovement.add(direction.RIGHT);
+				direction = Direction.RIGHT;
 			}
 		}
 		else if (diffInY < 0){
 			for (int i = diffInY; i < 0; i--){
-				pathMovement.add(direction.BACKWARDS);
+				direction = Direction.BACKWARDS;
 			}
 		}else if (diffInY> 0){
 			for (int i = 0; i < diffInX; i++){
-				pathMovement.add(direction.FORWARD);
+				direction = Direction.FORWARD;
 			}
 		}
-	}
-	
-	public ArrayList<Direction> getPath(){
-		return pathMovement;
+		return direction;
 	}
 }

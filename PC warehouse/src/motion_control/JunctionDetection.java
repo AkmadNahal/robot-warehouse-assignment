@@ -8,13 +8,16 @@ import lejos.nxt.SensorPort;
 //import motion.Turn;
 import rp.config.WheeledRobotConfiguration;
 import utils.Direction;
+import utils.LocationType;
+import utils.SuperLocation;
+import warehouse_interface.GridWalker;
 
 public class JunctionDetection extends AbstractBehaviour {
 
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
-	//private Turn turn;
-	//private CorrectPose correctPose;
+	
+	private SuperLocation locationAccess;
 	
 	boolean isOnJunction = false;
 	private ArrayList<Direction> route;
@@ -22,13 +25,14 @@ public class JunctionDetection extends AbstractBehaviour {
 	
 	private int threshold = 45;
 
-	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<Direction> route) {
+	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<Direction> route,
+			SuperLocation locationAccess) {
 		super(_config);
 		
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
-		//turn = new Turn(config);
-		//correctPose = new CorrectPose(config);
+
+		this.locationAccess = locationAccess;
 		
 		this.route = new ArrayList<Direction>(route);
 	}
@@ -61,6 +65,7 @@ public class JunctionDetection extends AbstractBehaviour {
 			if(counter > 0){
 				Direction previousMove = route.get(counter - 1);
 				//correctPose.adjust(previousMove);
+				locationAccess.updateCurrentLocation(previousMove);
 			}
 			
 			if(!(counter == route.size())){

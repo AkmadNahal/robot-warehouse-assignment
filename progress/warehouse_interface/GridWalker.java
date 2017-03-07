@@ -1,4 +1,4 @@
-package warehouseInterface;
+package warehouse_interface;
 
 import java.util.Scanner;
 

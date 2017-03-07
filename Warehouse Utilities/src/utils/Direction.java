@@ -1,5 +1,5 @@
 package utils;
 
 public enum Direction {
-	FORWARD, BACKWARDS, LEFT, RIGHT;
+	FORWARD, BACKWARDS, LEFT, RIGHT, STOP;
 }

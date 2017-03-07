@@ -22,14 +22,14 @@ public class WarehouseController {
 
 	public void registerView(WarehouseView view) {
 		this.view = view;
-		view.setCancelCallback(new WarehouseView.CancelButtonCalback() {
+		view.setCancelCallback(new WarehouseView.CancelButtonCallback() {
 			@Override
 			public void cancel(int i) {
 				// TODO Auto-generated method stub
 
 			}
 		});
-		view.setRefreshCallback(new WarehouseView.RefreshButtonCalback() {
+		view.setRefreshCallback(new WarehouseView.RefreshButtonCallback() {
 			@Override
 			public void refresh() {
 				// TODO Auto-generated method stub

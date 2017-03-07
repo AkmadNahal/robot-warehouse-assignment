@@ -1,11 +1,13 @@
 package job_selection;
 
-import helper_classes.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+
 import utils.Location;
 import utils.LocationType;
-
-import java.util.HashMap;
-import java.io.*;
 
 public class ItemReader {
 	public static HashMap<String, Item> parseItems(String wrfile, String lfile) {

@@ -1,4 +1,4 @@
-package helper_classes;
+package utils;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
