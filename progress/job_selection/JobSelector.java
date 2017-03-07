@@ -16,11 +16,11 @@ public class JobSelector {
 		Collections.sort(jobs);
 		// We now have a list of jobs, sorted based on highest total reward.
 
-		for (Job j : jobs) {
-			System.out.print(j);
-			System.out.print("Reward: " + j.totalReward());
-			System.out.println(" Weight: " + j.totalWeight());
-		}
+//		for (Job j : jobs) {
+//			System.out.print(j);
+//			System.out.print("Reward: " + j.totalReward());
+//			System.out.println(" Weight: " + j.totalWeight());
+//		}
 
 		final float W_LIMIT = 50f;
 		ArrayList<Round> rounds = new ArrayList<Round>();
@@ -39,7 +39,8 @@ public class JobSelector {
 		System.out.println(rounds.size());
 		for (Round r : rounds) {
 			System.out.print(r.getRoute());
-			System.out.println(r.getCounts());
+			System.out.print(r.getCounts());
+			System.out.println(r.getWeight());
 		}
 	}
 }
