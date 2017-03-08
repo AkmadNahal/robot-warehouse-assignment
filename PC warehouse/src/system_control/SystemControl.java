@@ -60,9 +60,10 @@ public class SystemControl {
 		control.registerView(view);
 
 		// Setup robot networking
+		int robotCount = 0;
 		NXTInfo robot1Info = new NXTInfo (NXTCommFactory.BLUETOOTH, "Lil' Bob",
 			"0016531AF650");
-		NetworkComm robot1 = new NetworkComm(robot1Info);
+		NetworkComm robot1 = new NetworkComm(robot1Info, robotCount);
 		
 		(new Thread(robot1)).start();
 
@@ -107,14 +108,23 @@ public class SystemControl {
 		// TODO: revision
 		ArrayList<Direction> testRoute = new ArrayList<Direction>();
 		testRoute = planner.getRoute(locationAccess.getCurrentLocation(), new Location(4,6, LocationType.EMPTY));
-		robot1.send(testRoute);
+		ArrayList<Direction> testRoute2 = new ArrayList<Direction>();
+		testRoute2 = planner.getRoute(new Location(4, 6, LocationType.EMPTY), new Location(8,1, LocationType.EMPTY));
+		ArrayList<Direction> combinedRoute = new ArrayList<Direction>();
+		combinedRoute.addAll(testRoute);
+		combinedRoute.addAll(testRoute2);
+		robot1.send(combinedRoute);
+		
+		for (Direction d : combinedRoute){
+			locationAccess.updateCurrentLocation(d);
+		}
 		
 		/*for (Round r : rounds) {
 			ArrayList<Location> locationsInJob = r.getRoute();
 			for (int i = 0; i < locationsInJob.size(); i++){
 				Location nextGoal = locationsInJob.get(i);
 				ArrayList<Direction> solution = planner.getRoute(locationAccess.getCurrentLocation(), nextGoal);
-				robot1.send(solution);
+				ArrayList
 				break;
 				
 			}

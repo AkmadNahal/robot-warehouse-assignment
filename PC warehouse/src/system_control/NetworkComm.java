@@ -21,11 +21,13 @@ public class NetworkComm implements Runnable {
 
 	private boolean should_send;
 	private ArrayList<Direction> sendable;
+	private int robotCount;
 	
 
-	public NetworkComm(NXTInfo _nxt) {
+	public NetworkComm(NXTInfo _nxt, int robotCount) {
 		m_nxt = _nxt;
 		should_send = false;
+		this.robotCount = robotCount;
 	}
 
 	public boolean connect(NXTComm _comm) throws NXTCommException {
@@ -75,6 +77,11 @@ public class NetworkComm implements Runnable {
 				}
 
 				int fromBot = m_dis.readInt();
+				System.err.println(fromBot);
+				if (fromBot == 99){
+					this.robotCount++;
+					System.err.println(robotCount + ": NETWORK ROBOT COUNT\n---------------------");
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

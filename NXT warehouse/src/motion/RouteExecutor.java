@@ -18,6 +18,8 @@ public class RouteExecutor implements Runnable {
 	private Config config = new Config();
 	private ArrayList<Direction> route;
 	private boolean shouldExecute = false;
+	private boolean isExecuting = false;
+	private boolean hitJunct;
 	
 	@Override
 	public void run() {
@@ -26,9 +28,9 @@ public class RouteExecutor implements Runnable {
 				Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(),
 						config.getRightSensorPort(), route.size());
 				Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(),
-						config.getRightSensorPort(), route);
+						config.getRightSensorPort(), route, this);
 				Arbitrator arby = new Arbitrator(new Behavior[] { movement, junction }, true); 
-				arby.start();
+				arby.start(); //START THE ARBITRATOR
 				System.out.println("Arbitrator stopped - Route complete");
 				Sound.beepSequence();
 				setShouldExecute(false);
@@ -47,6 +49,22 @@ public class RouteExecutor implements Runnable {
 
 	public synchronized boolean getShouldExecute() {
 		return this.shouldExecute;
+	}
+
+	public synchronized void setIsExecuting(boolean isExecuting) {
+		this.isExecuting = isExecuting;
+	}
+
+	public synchronized boolean getIsExecuting() {
+		return this.isExecuting;
+	}
+	
+	public synchronized void setHitJunct(boolean hitJunct) {
+		this.hitJunct = hitJunct;
+	}
+
+	public synchronized boolean getHitJunct() {
+		return this.hitJunct;
 	}
 
 }

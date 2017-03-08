@@ -69,18 +69,22 @@ public class GridWalker implements StoppableRunnable {
 				m_pilot.rotatePositive();
 				m_pilot.moveForward();
 				m_pilot.rotateNegative();
+				nextMovement = Direction.STOP;
 			} else if (nextMovement == Direction.RIGHT) {
 				m_pilot.rotateNegative();
 				m_pilot.moveForward();
 				m_pilot.rotatePositive();
+				nextMovement = Direction.STOP;
 			}else if (moveAheadClear() && nextMovement == Direction.FORWARD) {
 				m_pilot.moveForward();
+				nextMovement = Direction.STOP;
 			}else if (nextMovement == Direction.BACKWARDS){
 				m_pilot.rotatePositive();
 				m_pilot.rotatePositive();
 				m_pilot.moveForward();
 				m_pilot.rotateNegative();
 				m_pilot.rotateNegative();
+				nextMovement = Direction.STOP;
 			}
 			try {
 				Thread.sleep(16);

@@ -22,8 +22,12 @@ import utils.Config;
 
 public class RobotControl {
 	
+	private static Config config = new Config();
 	private static RouteExecutor routeExecutor = new RouteExecutor();
 	
+	
+	
+	private static boolean shouldSendLocation = false;
 
 	public static void main(String[] args) {
 		(new Thread(routeExecutor)).start();
@@ -43,19 +47,31 @@ public class RobotControl {
 
 		while (run) {
 			try {
-				int input = inputStream.readInt();
+				if (routeExecutor.getHitJunct() && !is_route_income){
+					System.out.println("NOOT NOOT");
+					outputStream.writeInt(99);
+					outputStream.flush();
+					routeExecutor.setHitJunct(false);
+				}else {
 				
-				if(input == 99 && !is_route_income) {
-					// Route sending started
-					is_route_income = true;
-					route = new ArrayList<Direction>();
-				} else if(input == 99 && is_route_income) {
-					// Route sending ended, execute route
-					routeExecutor.setRoute(route);
-					routeExecutor.setShouldExecute(true);
-					is_route_income = false;
-				} else if(is_route_income) {
-					route.add(Direction.fromInteger(input));
+						int input = inputStream.readInt();
+					
+					System.out.println(routeExecutor.getHitJunct() + ": Hit junction in robot control");
+					
+					if(input == 99 && !is_route_income) {
+						// Route sending started
+						is_route_income = true;
+						route = new ArrayList<Direction>();
+					} else if(input == 99 && is_route_income) {
+						// Route sending ended, execute route
+						routeExecutor.setRoute(route);
+						routeExecutor.setShouldExecute(true);
+						if (!routeExecutor.getShouldExecute())
+								
+						is_route_income = false;
+					} else if(is_route_income) {
+						route.add(Direction.fromInteger(input));
+					}
 				}
 				
 			} catch (IOException e) {
