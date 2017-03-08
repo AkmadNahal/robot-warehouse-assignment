@@ -11,6 +11,16 @@ public class RouteFollower extends AbstractBehaviour {
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
 	private Drive drive;
+	
+	private float minRange;
+	private float maxRange;
+	private float rangeDiff;
+	
+	private float minValue;
+	private float maxValue;
+	private float valDiff;
+	
+	private float P;
 
 	
 	private boolean isRouteComplete = false;
@@ -26,6 +36,16 @@ public class RouteFollower extends AbstractBehaviour {
 		
 		routeLength = numberOfMoves;
 		
+		minRange = 0;
+		maxRange = 100;
+		rangeDiff = maxRange - minRange;
+		
+		minValue = -200;
+		maxValue = 200;
+		valDiff = maxValue - minValue;
+		
+		P = 1f;
+		
 	}
 
 	@Override
@@ -38,9 +58,21 @@ public class RouteFollower extends AbstractBehaviour {
 		
 		if(!(counter == (routeLength))){
 			while(!isSuppressed){
-				Rate r = new Rate(50);
-				drive.followPath();
-				r.sleep();
+				//drive.followPath();
+				float rHValue = rhSensor.getLightValue();
+				float lHValue = lhSensor.getLightValue();
+				
+				float rHRatio = (rHValue - minRange)/rangeDiff;
+				float lHRatio = (lHValue - minRange)/rangeDiff;
+				
+				float rHOutput = minValue + (valDiff * rHRatio);
+				float lHOutput = minValue + (valDiff * lHRatio);
+				
+				float turnDiff = (rHOutput - lHOutput) + 8;
+				
+				float turnOut = P * turnDiff;
+				
+				pilot.steer(turnOut);
 				
 			}
 			counter++;

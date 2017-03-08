@@ -1,10 +1,12 @@
 package robot_interface;
 
+import lejos.nxt.Button;
+
 public class RobotInterface {
-	private static int limit;
-	private static int picked;
-	private static int locationPick;
-	private static int pickedInLocation;
+	private int limit;
+	private int picked;
+	private int locationPick;
+	private int pickedInLocation;
 	
 	public RobotInterface (int limit) {
 		this.limit = limit;
@@ -12,7 +14,7 @@ public class RobotInterface {
 		this.pickedInLocation = 0;
 		this.locationPick = getLocationPick();
 	}
-	public static void pick(){ 		
+	public void pick(){ 		
 		while(true){ 			
 			int i = Button.waitForAnyPress(); 
 			if(i == Button.ID_ENTER){

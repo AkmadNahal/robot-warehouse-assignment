@@ -14,37 +14,39 @@ import utils.LocationType;
 import utils.SuperLocation;
 
 public class RouteExecutor implements Runnable {
-	
-	private Config config = new Config();
-	private SuperLocation locationAccess = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); 
-	private ArrayList<Direction> route;
-	
-	public RouteExecutor(ArrayList<Direction> _route) {
-		route = _route;
-	}
 
+	private Config config = new Config();
+	private ArrayList<Direction> route;
+	private boolean shouldExecute = false;
+	
 	@Override
 	public void run() {
-		redirectOutput(false);
-		Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), route.size());
-		Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(), config.getRightSensorPort(), route, locationAccess);
-		Arbitrator arby = new Arbitrator(new Behavior[] {movement, junction}, true); //needs to send whole list to robot
-		arby.start();
-		System.out.println("Arbitrator stopped - Route complete");
-		Sound.beepSequence(); //robot-interface stuff here, to restart the loop!
-	}
-	
-	protected static void redirectOutput(boolean _useBluetooth) {
-		if (!RConsole.isOpen()) {
-			if (_useBluetooth) {
-				RConsole.openBluetooth(0);
-			} else {
-				RConsole.openUSB(0);
+		while (true) {
+			if (getShouldExecute()) {
+				Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(),
+						config.getRightSensorPort(), route.size());
+				Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(),
+						config.getRightSensorPort(), route);
+				Arbitrator arby = new Arbitrator(new Behavior[] { movement, junction }, true); 
+				arby.start();
+				System.out.println("Arbitrator stopped - Route complete");
+				Sound.beepSequence();
+				setShouldExecute(false);
 			}
 		}
-		PrintStream ps = RConsole.getPrintStream();
-		System.setOut(ps);
-		System.setErr(ps);
+
+	}
+
+	public void setRoute(ArrayList<Direction> route) {
+		this.route = route;
+	}
+
+	public synchronized void setShouldExecute(boolean shouldExecute) {
+		this.shouldExecute = shouldExecute;
+	}
+
+	public synchronized boolean getShouldExecute() {
+		return this.shouldExecute;
 	}
 
 }

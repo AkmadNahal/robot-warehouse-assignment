@@ -60,8 +60,8 @@ public class SystemControl {
 		control.registerView(view);
 
 		// Setup robot networking
-		NXTInfo robot1Info = new NXTInfo (NXTCommFactory.BLUETOOTH, "Vader",
-			"00165308E541");
+		NXTInfo robot1Info = new NXTInfo (NXTCommFactory.BLUETOOTH, "Lil' Bob",
+			"0016531AF650");
 		NetworkComm robot1 = new NetworkComm(robot1Info);
 		
 		(new Thread(robot1)).start();
@@ -106,9 +106,7 @@ public class SystemControl {
 		// Route planning
 		// TODO: revision
 		ArrayList<Direction> testRoute = new ArrayList<Direction>();
-		testRoute.add(Direction.FORWARD);
-		testRoute.add(Direction.FORWARD);
-		testRoute.add(Direction.RIGHT);
+		testRoute = planner.getRoute(locationAccess.getCurrentLocation(), new Location(4,6, LocationType.EMPTY));
 		robot1.send(testRoute);
 		
 		/*for (Round r : rounds) {

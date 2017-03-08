@@ -26,6 +26,8 @@ public class GridWalker implements StoppableRunnable {
 			RangeFinder _ranger, SuperLocation _locationAccess) {
 		this.m_map = _map;
 		this.m_pilot = new GridPilot(_robot.getPilot(), _map, _start);
+		this.m_pilot.setTravelSpeed(0.6f);
+		this.m_pilot.setTurnSpeed(60f);
 		this.m_ranger = _ranger;
 		this.m_robot = _robot;
 		this.locationAccess = _locationAccess;
@@ -62,7 +64,7 @@ public class GridWalker implements StoppableRunnable {
 		while (m_running) {
 			
 			Direction nextMovement = updateGUILocation();
-	
+			
 			if (nextMovement == Direction.LEFT) { //re-adjusts pose, just like real robot
 				m_pilot.rotatePositive();
 				m_pilot.moveForward();
@@ -83,6 +85,7 @@ public class GridWalker implements StoppableRunnable {
 			try {
 				Thread.sleep(16);
 			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
-//import motion.CorrectPose;
-//import motion.Turn;
 import rp.config.WheeledRobotConfiguration;
 import utils.Direction;
 import utils.LocationType;
@@ -19,22 +17,19 @@ public class JunctionDetection extends AbstractBehaviour {
 	private Turn turn = new Turn(config);
 	private CorrectPose correctPose = new CorrectPose(config);
 	
-	private SuperLocation locationAccess;
 	
 	boolean isOnJunction = false;
 	private ArrayList<Direction> route;
 	private int counter = 0;
 	
+	
 	private int threshold = 45;
 
-	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<Direction> route,
-			SuperLocation locationAccess) {
+	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<Direction> route) {
 		super(_config);
 		
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
-
-		this.locationAccess = locationAccess;
 		
 		this.route = new ArrayList<Direction>(route);
 	}
@@ -66,15 +61,32 @@ public class JunctionDetection extends AbstractBehaviour {
 			
 			if(counter > 0){
 				Direction previousMove = route.get(counter - 1);
-				correctPose.adjust(previousMove);
-				locationAccess.updateCurrentLocation(previousMove);
+				if (previousMove == Direction.BACKWARDS){
+					pilot.rotate(180);
+					pilot.stop();
+				}else if(previousMove == Direction.LEFT){
+					pilot.rotate(-90);
+					pilot.stop();
+				}else if(previousMove == Direction.RIGHT){
+					pilot.rotate(90);
+					pilot.stop();
+				}
 			}
 			
 			if(!(counter == route.size())){
 				//Iterates through the arraylist, carrying out the movements in order.
 				Direction currentMove = route.get(counter);
 				counter++;
-				turn.move(currentMove);
+				if (currentMove == Direction.BACKWARDS){
+					pilot.rotate(180);
+					pilot.stop();
+				}else if(currentMove == Direction.LEFT){
+					pilot.rotate(90);
+					pilot.stop();
+				}else if(currentMove == Direction.RIGHT){
+					pilot.rotate(-90);
+					pilot.stop();
+				}
 			}
 		}
 		threshold = 35;

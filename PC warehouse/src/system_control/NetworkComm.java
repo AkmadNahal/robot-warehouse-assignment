@@ -9,7 +9,9 @@ import lejos.pc.comm.NXTComm;
 import lejos.pc.comm.NXTCommException;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
+import rp.util.Rate;
 import utils.Direction;
+import utils.SuperLocation;
 
 public class NetworkComm implements Runnable {
 
@@ -19,6 +21,7 @@ public class NetworkComm implements Runnable {
 
 	private boolean should_send;
 	private ArrayList<Direction> sendable;
+	
 
 	public NetworkComm(NXTInfo _nxt) {
 		m_nxt = _nxt;
@@ -71,8 +74,7 @@ public class NetworkComm implements Runnable {
 					setShouldSend(false);
 				}
 
-				int answer = m_dis.readInt();
-				System.out.println(m_nxt.name + " returned " + answer);
+				int fromBot = m_dis.readInt();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
