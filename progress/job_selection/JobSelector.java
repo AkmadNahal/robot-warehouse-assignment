@@ -16,20 +16,8 @@ public class JobSelector {
 		Collections.sort(jobs);
 		// We now have a list of jobs, sorted based on highest total reward.
 
-		final float W_LIMIT = 50f;
 		ArrayList<Round> rounds = new ArrayList<Round>();
-		Round currentRound = new Round(W_LIMIT);
-		for (Job j : jobs) {	
-			for (String s : j.getPicks().keySet()) {
-				if (!currentRound.addStop(itemMap.get(s), j.getPicks().get(s))) {
-					rounds.add(currentRound);
-					currentRound = new Round(W_LIMIT);
-					currentRound.addStop(itemMap.get(s), j.getPicks().get(s));
-				}
-			}
-			rounds.add(currentRound);
-			currentRound = new Round(W_LIMIT);
-		}
+		rounds = RoundCreator.createRounds(50f, itemMap, jobs);
 
 		for (Round r : rounds) {
 			System.out.print(r.getRoute() + " ");

@@ -37,5 +37,13 @@ public class Location {
   public String toString() {
 	  return ("(" + x + "," + y + ")");
   }
+  
+  public boolean equals(Location l) {
+	  if (l.x == this.x && l.y == this.y) {
+		  return true;
+	  } else {
+		  return false;
+	  }
+  }
 
 }
