@@ -16,16 +16,21 @@ public class JobSelector {
 		Collections.sort(jobs);
 		// We now have a list of jobs, sorted based on highest total reward.
 
-//		for (Job j : jobs) {
-//			System.out.print(j);
-//			System.out.print("Reward: " + j.totalReward());
-//			System.out.println(" Weight: " + j.totalWeight());
-//		}
+		int OW = 0;
+		for (Job j : jobs) {
+			System.out.print(j);
+			System.out.print("Reward: " + j.totalReward());
+			System.out.println(" Weight: " + j.totalWeight());
+			if (j.totalWeight() > 50) {
+				OW += 1;
+			}
+		}
+		System.out.println(OW + "\n");
 
 		final float W_LIMIT = 50f;
 		ArrayList<Round> rounds = new ArrayList<Round>();
 		Round currentRound = new Round(W_LIMIT);
-		for (Job j : jobs) {
+		for (Job j : jobs) {	
 			for (String s : j.getPicks().keySet()) {
 				if (!currentRound.addStop(itemMap.get(s), j.getPicks().get(s))) {
 					rounds.add(currentRound);
@@ -33,8 +38,9 @@ public class JobSelector {
 					currentRound.addStop(itemMap.get(s), j.getPicks().get(s));
 				}
 			}
+			rounds.add(currentRound);
+			currentRound = new Round(W_LIMIT);
 		}
-		rounds.add(currentRound);
 
 		System.out.println(rounds.size());
 		for (Round r : rounds) {
