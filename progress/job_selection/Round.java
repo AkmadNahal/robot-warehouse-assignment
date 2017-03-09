@@ -10,6 +10,10 @@ public class Round {
 	public Round(float mw) {
 		MAX_WEIGHT = mw;
 	}
+	
+	public HashMap<Item, Integer> getRound() {
+		return round;
+	}
 
 	public boolean addStop(Item item, Integer count) {
 		if ((item.getWeight() * count) + this.getWeight() < MAX_WEIGHT) {

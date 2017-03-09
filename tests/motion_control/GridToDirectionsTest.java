@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import helper_classes.*;
+
 public class GridToDirectionsTest {
 	
 	
