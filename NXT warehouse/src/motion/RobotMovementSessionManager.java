@@ -1,4 +1,4 @@
-package motion_m;
+package motion;
 
 import java.util.ArrayList;
 

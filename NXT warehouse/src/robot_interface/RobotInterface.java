@@ -1,7 +1,7 @@
 package robot_interface;
 
 import lejos.nxt.Button;
-import motion_m.RobotMovementSessionManager;
+import motion.RobotMovementSessionManager;
 
 public class RobotInterface implements Runnable{
 	private int pickedInLocation;

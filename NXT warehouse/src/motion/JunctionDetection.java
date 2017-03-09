@@ -4,41 +4,39 @@ import java.util.ArrayList;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
+//import motion.CorrectPose;
+//import motion.Turn;
 import rp.config.WheeledRobotConfiguration;
 import utils.Direction;
+import utils.LocationType;
+import utils.SuperLocation;
 
 public class JunctionDetection extends AbstractBehaviour {
 
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
-	
+
 	boolean isOnJunction = false;
 	private ArrayList<Direction> route;
 	private int counter = -1;
-	
-	private RouteExecutor routeExecutor;
-	
+
 	private int threshold = 45;
 
-	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<Direction> route,
-			RouteExecutor _re) {
+	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<Direction> route) {
 		super(_config);
-	
-		
-		this.routeExecutor = _re;
-		
+
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
-		
+
 		this.route = new ArrayList<Direction>(route);
 	}
 
 	@Override
 	public boolean takeControl() {
-		
+
 		float lhValue = lhSensor.getLightValue();
 		float rhValue = rhSensor.getLightValue();
-		
+
 		if(lhValue < threshold && rhValue < threshold){
 			isOnJunction = true;
 		}
