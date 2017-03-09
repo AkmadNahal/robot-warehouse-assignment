@@ -1,7 +1,6 @@
 package job_selection;
 
 import helper_classes.*;
-import utils.Location;
 
 public class Item {
 	private String name;
