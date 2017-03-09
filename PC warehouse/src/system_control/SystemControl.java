@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
+
 import job_selection.Item;
 import job_selection.ItemReader;
 import job_selection.Job;
@@ -12,27 +14,17 @@ import job_selection.Round;
 import job_selection.RoundCreator;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
-import lejos.robotics.RangeFinder;
 import route_planning.RoutePlanner;
-import rp.robotics.MobileRobotWrapper;
-import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
-import rp.robotics.navigation.GridPose;
-import rp.robotics.navigation.Heading;
-import rp.robotics.simulation.MapBasedSimulation;
-import rp.robotics.simulation.MovableRobot;
-import rp.robotics.simulation.SimulatedRobots;
-import utils.Direction;
 import utils.Location;
 import utils.LocationType;
 import utils.SuperLocation;
-import warehouse_interface.GridWalker;
-import warehouse_interface.WarehouseController;
-import warehouse_interface.WarehouseView;
+
 
 public class SystemControl {
 
-
+	private static final Logger logger = Logger.getLogger(SystemControl.class);
+	
 	public static void main(String[] args) {
 
 		SuperLocation locationAccess = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); //start location
@@ -40,6 +32,8 @@ public class SystemControl {
 		GridWalkerManager gridWalkerManager = new GridWalkerManager(MapUtils.createRealWarehouse(), locationAccess);
 		gridWalkerManager.setup();
 		Location[][] map = gridWalkerManager.createMap();
+		
+		logger.debug("Successfully set up map");
 		
 		PCSessionManager sessionManager = new PCSessionManager(locationAccess);
 		ChangeNotifier notifier = new ChangeNotifier();
@@ -51,7 +45,9 @@ public class SystemControl {
 		//starts the PC sending/receiving thread
 		NetworkComm robot1 = new NetworkComm(robot1Info, sessionManager, notifier);
 		(new Thread(robot1)).start();
-
+		
+		logger.debug("Successfully connected to Lil' Bob");
+		
 		// Initialise route planner
 		RoutePlanner planner = new RoutePlanner(map,gridWalkerManager.getMapSizeX(),gridWalkerManager.getMapSizeY());
 		
@@ -60,6 +56,8 @@ public class SystemControl {
 		RouteManager routeManager = new RouteManager(rounds, sessionManager, planner, notifier);
 		
 		(new Thread (routeManager)).start();
+		
+		logger.debug("Successfully ordered jobs, and distributed them");
 	
 	}
 	

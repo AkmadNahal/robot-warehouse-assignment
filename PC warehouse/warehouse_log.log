@@ -1,0 +1,12 @@
+system_control.SystemControl.main(SystemControl.java:36) 0    [main] DEBUG system_control.SystemControl  - Successfully set up map
+system_control.SystemControl.main(SystemControl.java:37) 3    [main] ERROR system_control.SystemControl  - Failed to set up map
+system_control.SystemControl.main(SystemControl.java:50) 5    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Bob
+system_control.SystemControl.main(SystemControl.java:51) 5    [main] FATAL system_control.SystemControl  - Failed to connect to Lil' Bob
+system_control.SystemControl.main(SystemControl.java:62) 14   [main] DEBUG system_control.SystemControl  - Successfully ordered jobs, and 
+system_control.SystemControl.main(SystemControl.java:63) 14   [main] ERROR system_control.SystemControl  - Failed to do job selection
+system_control.RouteManager.run(RouteManager.java:36) 17   [Thread-5] DEBUG system_control.RouteManager  - [RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD]: Correctly generates path
+system_control.RouteManager.run(RouteManager.java:37) 17   [Thread-5] ERROR system_control.RouteManager  - Falied to generate a path
+system_control.NetworkComm.run(NetworkComm.java:54) 1377 [Thread-4] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:55) 1377 [Thread-4] FATAL system_control.NetworkComm  - Failing to send route
+system_control.NetworkComm.run(NetworkComm.java:68) 1377 [Thread-4] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:69) 1377 [Thread-4] FATAL system_control.NetworkComm  - Failed to send route and num of picks

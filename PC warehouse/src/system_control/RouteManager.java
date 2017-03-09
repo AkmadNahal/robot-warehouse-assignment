@@ -2,6 +2,8 @@ package system_control;
 
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 import job_selection.Round;
 import route_planning.RoutePlanner;
 import utils.Direction;
@@ -14,6 +16,8 @@ public class RouteManager implements Runnable {
 	private PCSessionManager sessionManager;
 	private RoutePlanner planner;
 	private ChangeNotifier notifier;
+	
+	private static final Logger logger = Logger.getLogger(RouteManager.class);
 	
 	public RouteManager(ArrayList<Round> sortedJobs, PCSessionManager sessionManager, RoutePlanner planner, ChangeNotifier _notifier){
 		this.sortedJobs = sortedJobs;
@@ -29,8 +33,9 @@ public class RouteManager implements Runnable {
 			for (int i = 0; i < locationsInJob.size(); i++){
 				Location nextGoal = locationsInJob.get(i);
 				ArrayList<Direction> solution = planner.getRoute(sessionManager.getLocationAccess().getCurrentLocation(), nextGoal);
-				System.out.println(solution);
-				sessionManager.setNumOfPicks(4);
+				logger.debug(solution + ": Correctly generates path");
+				int numOfPicks = r.getCounts().get(i);
+				sessionManager.setNumOfPicks(numOfPicks);
 				sessionManager.setRoute(solution);
 				sessionManager.setShouldSend(true);
 				sessionManager.setIsRouteComplete(false);
@@ -50,6 +55,7 @@ public class RouteManager implements Runnable {
 					}
 				}
 				sessionManager.getLocationAccess().setCurrentLocation(nextGoal);
+				logger.debug("Finished executing route");
 			}
 		}
 		
