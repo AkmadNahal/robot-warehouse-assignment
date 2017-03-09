@@ -14,14 +14,16 @@ import utils.Direction;
 public class RobotControl implements Runnable {
 
 	private RobotMovementSessionManager movementManager;
+	private RobotLocationSessionManager locationManager;
 
 	private ArrayList<Direction> route = null;
 	private boolean shouldSendLocation;
 	private boolean m_run;
 	private boolean is_route_income;
 
-	public RobotControl(RobotMovementSessionManager _movementManager) {
+	public RobotControl(RobotMovementSessionManager _movementManager, RobotLocationSessionManager _locationManager) {
 		movementManager = _movementManager;
+		locationManager = _locationManager;
 		shouldSendLocation = false;
 		m_run = true;
 		is_route_income = false;
@@ -29,19 +31,25 @@ public class RobotControl implements Runnable {
 
 	@Override
 	public void run() {
-		
+
 		System.out.println("Waiting for Bluetooth connection...");
 		BTConnection connection = Bluetooth.waitForConnection();
 		System.out.println("Success!");
 
 		DataInputStream inputStream = connection.openDataInputStream();
 		DataOutputStream outputStream = connection.openDataOutputStream();
-		
+
 		boolean isExecutingRoute = false;
 
 		while (m_run) {
 			try {
-				
+
+				if(locationManager.getShouldSendNextMove()) {
+					outputStream.writeInt(99);
+					outputStream.writeInt(locationManager.getNextMove().getValue());
+					locationManager.setShouldSendNextMove(false);
+				}
+
 				if (movementManager.getIsRouteComplete()){
 					System.out.println("Sending 50 to pc");
 					isExecutingRoute = false;
@@ -51,7 +59,7 @@ public class RobotControl implements Runnable {
 				}else{
 					if (!isExecutingRoute){
 						int input = inputStream.readInt();
-	
+
 						if(input == 99 && !is_route_income) {
 							// Route sending started
 							is_route_income = true;
@@ -77,7 +85,7 @@ public class RobotControl implements Runnable {
 		}
 
 	}
-	
+
 	protected static void redirectOutput(boolean _useBluetooth) {
 		if (!RConsole.isOpen()) {
 			if (_useBluetooth) {

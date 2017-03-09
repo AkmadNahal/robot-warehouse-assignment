@@ -16,10 +16,10 @@ public class NetworkComm implements Runnable {
 	private DataInputStream m_dis;
 	private DataOutputStream m_dos;
 	private final NXTInfo m_nxt;
-	
+
 	private PCSessionManager sessionManager;
 	private ChangeNotifier notifier;
-	
+
 
 	public NetworkComm(NXTInfo _nxt, PCSessionManager sessionManager, ChangeNotifier _notifier) {
 		m_nxt = _nxt;
@@ -61,20 +61,31 @@ public class NetworkComm implements Runnable {
 					m_dos.writeInt(100);
 					m_dos.flush();
 					sessionManager.setShouldSend(false);
-					int input = m_dis.readInt();
-					if (input == 50){
-						System.out.println("Input equals 50");
-						while(!notifier.getChanged()){
-							notifier.setChanged(true);
+
+					int input;
+					while((input = m_dis.readInt()) != 50) {
+
+						if(input == 99) {
+							input = m_dis.readInt();
+							Direction nextMove = Direction.fromInteger(input);
+							sessionManager.getLocationAccess().updateCurrentLocation(nextMove);
 						}
+
 					}
+
+					// Route completed
+					System.out.println("Input equals 50");
+					while(!notifier.getChanged()){
+						notifier.setChanged(true);
+					}
+
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NXTCommException e) {
 			e.printStackTrace();
-		} 
+		}
 	}
 
 	public void send(ArrayList<Direction> directions, int nrOfPicks) {
@@ -87,7 +98,7 @@ public class NetworkComm implements Runnable {
 
 	public Runnable startConnection() {
 		try {
-			
+
 			NXTComm nxtComm = NXTCommFactory.createNXTComm(NXTCommFactory.BLUETOOTH);
 			this.connect(nxtComm);
 

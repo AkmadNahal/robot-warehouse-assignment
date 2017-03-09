@@ -12,10 +12,12 @@ public class RouteExecutor implements Runnable {
 
 	private Config config = new Config();
 	private RobotMovementSessionManager movementManager;
+	private RobotLocationSessionManager locationManager;
 
-	public RouteExecutor(Config _config, RobotMovementSessionManager _movementManager) {
+	public RouteExecutor(Config _config, RobotMovementSessionManager _movementManager, RobotLocationSessionManager _locationManager) {
 		config = _config;
 		movementManager = _movementManager;
+		locationManager = _locationManager;
 	}
 
 	@Override
@@ -25,7 +27,7 @@ public class RouteExecutor implements Runnable {
 				Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(),
 						config.getRightSensorPort(), movementManager.getRoute().size());
 				Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(),
-						config.getRightSensorPort(), movementManager.getRoute());
+						config.getRightSensorPort(), movementManager.getRoute(), locationManager);
 				Arbitrator arby = new Arbitrator(new Behavior[] { movement, junction }, true);
 				arby.start(); //START THE ARBITRATOR
 				System.out.println("Arbitrator stopped - Route complete");
@@ -37,7 +39,7 @@ public class RouteExecutor implements Runnable {
 		}
 
 	}
-	
+
 	protected static void redirectOutput(boolean _useBluetooth) {
 		if (!RConsole.isOpen()) {
 			if (_useBluetooth) {
@@ -50,6 +52,6 @@ public class RouteExecutor implements Runnable {
 		System.setOut(ps);
 		System.setErr(ps);
 	}
-	
+
 
 }

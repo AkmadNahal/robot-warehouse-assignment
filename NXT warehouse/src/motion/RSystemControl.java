@@ -10,8 +10,8 @@ public class RSystemControl {
     Config config = new Config();
     RobotLocationSessionManager locationManager = new RobotLocationSessionManager();
     RobotMovementSessionManager movementManager = new RobotMovementSessionManager();
-    RouteExecutor routeExecutor = new RouteExecutor(config, movementManager);
-    RobotControl robotControl = new RobotControl(movementManager);
+    RouteExecutor routeExecutor = new RouteExecutor(config, movementManager, locationManager);
+    RobotControl robotControl = new RobotControl(movementManager, locationManager);
     RobotInterface robotInterface = new RobotInterface(movementManager);
 
     (new Thread(routeExecutor)).start();

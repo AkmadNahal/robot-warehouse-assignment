@@ -22,15 +22,18 @@ public class JunctionDetection extends AbstractBehaviour {
 	private ArrayList<Direction> route;
 	private int counter = -1;
 
+	private RobotLocationSessionManager locationManager;
+
 	private int threshold = 45;
 
-	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<Direction> route) {
+	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<Direction> route, RobotLocationSessionManager _locationManager) {
 		super(_config);
 
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
 
 		this.route = new ArrayList<Direction>(route);
+		this.locationManager = _locationManager;
 	}
 
 	@Override
@@ -71,6 +74,10 @@ public class JunctionDetection extends AbstractBehaviour {
 			threshold = 35;
 			Direction currentMove = route.get(counter);
 			Direction previousMove = null;
+
+			// Send next move to the PC
+			locationManager.setNextMove(currentMove);
+			locationManager.setShouldSendNextMove(true);
 
 			if(counter > 0) {
 				previousMove = route.get(counter - 1);
@@ -119,7 +126,7 @@ public class JunctionDetection extends AbstractBehaviour {
 		threshold = 35;
 		isOnJunction = false;
 	}
-	
+
 	protected static void redirectOutput(boolean _useBluetooth) {
 		if (!RConsole.isOpen()) {
 			if (_useBluetooth) {
