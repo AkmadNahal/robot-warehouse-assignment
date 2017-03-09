@@ -2,15 +2,12 @@ package motion;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
-//import motion.Drive;
 import rp.config.WheeledRobotConfiguration;
-import rp.util.Rate;
 
 public class RouteFollower extends AbstractBehaviour {
 	
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
-	private Drive drive;
 	
 	private float minRange;
 	private float maxRange;
@@ -32,7 +29,6 @@ public class RouteFollower extends AbstractBehaviour {
 		
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
-		drive = new Drive (_config, _lhSensor, _rhSensor);
 		
 		routeLength = numberOfMoves;
 		

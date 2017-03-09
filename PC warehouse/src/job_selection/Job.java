@@ -58,9 +58,9 @@ public class Job implements Comparable<Job>{
 	
 	@Override
 	public String toString() {
-		String output = jobID + " ";
+		String output = jobID;
 		for (String i : picks.keySet()) {
-			output += i + ":" + picks.get(i) + " ";
+			output += " " + i + ":" + picks.get(i);
 		}
 		return output;
 	}

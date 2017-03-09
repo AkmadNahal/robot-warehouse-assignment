@@ -1,7 +1,5 @@
 package utils;
 
-import java.lang.Math;
-
 public class Location {
 
   private int x, y;
@@ -31,6 +29,19 @@ public class Location {
 
   public boolean equalsTo(Location location) {
     return (x == location.getX() && y == location.getY());
+  }
+  
+  @Override
+  public String toString() {
+	  return ("(" + x + "," + y + ")");
+  }
+  
+  public boolean equals(Location l) {
+	  if (l.x == this.x && l.y == this.y) {
+		  return true;
+	  } else {
+		  return false;
+	  }
   }
 
 }

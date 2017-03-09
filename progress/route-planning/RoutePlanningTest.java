@@ -1,9 +1,13 @@
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
+import org.junit.Test;
+
 public class RoutePlanningTest {
 
   @Test
-  public void testRoutePlanning {
+  public void testRoutePlanning() {
     int maxSize = 5;
     Location[][] map = new Location[maxSize][maxSize];
 

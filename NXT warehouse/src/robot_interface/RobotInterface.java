@@ -1,62 +1,47 @@
 package robot_interface;
 
 import lejos.nxt.Button;
+import motion_m.RobotMovementSessionManager;
 
-public class RobotInterface {
-	private int limit;
-	private int picked;
-	private int locationPick;
+public class RobotInterface implements Runnable{
 	private int pickedInLocation;
+	private RobotMovementSessionManager movementManager;
 	
-	public RobotInterface (int limit) {
-		this.limit = limit;
-		this.picked = 0;
+	public RobotInterface (RobotMovementSessionManager movementManager) {
 		this.pickedInLocation = 0;
-		this.locationPick = getLocationPick();
+		this.movementManager = movementManager;
 	}
-	public void pick(){ 		
-		while(true){ 			
-			int i = Button.waitForAnyPress(); 
-			if(i == Button.ID_ENTER){
-				if (pickedInLocation<=locationPick) {
-					System.out.println("Amount is picked: " + pickedInLocation);
-					System.out.println("Left capacity of the robot: " + (limit - pickedInLocation));
-					System.out.println("Please pick " + (locationPick - pickedInLocation) + " items.");
-				} else if (pickedInLocation>=locationPick){
-					System.out.println("Incorrect amount. Needed to pick in this location, " + locationPick + ". Picked in this location: " + pickedInLocation);
+	
+	@Override
+	public void run(){ 		
+		while(true){
+			if (movementManager.getIsAtPickupLocation()){
+				while(!movementManager.getIsRouteComplete()){
+					int i = Button.waitForAnyPress(); 
+					if(i == Button.ID_ENTER){
+						if (pickedInLocation< movementManager.getNumberOfPicks()) {
+							System.out.println("Amount is picked: " + pickedInLocation);
+							System.out.println("Please pick " + (movementManager.getNumberOfPicks() - pickedInLocation) + " items.");
+						}else if (pickedInLocation>movementManager.getNumberOfPicks()){
+							System.out.println("Incorrect amount. Needed to pick in this location, " + movementManager.getNumberOfPicks() + ". Picked in this location: " + pickedInLocation);
+						}else if (pickedInLocation == movementManager.getNumberOfPicks()){
+							System.out.println("Right amount picked.");
+							movementManager.setIsAtPickupLocation(false);
+							movementManager.setIsRouteComplete(true);
+						}
+					}
+					if (i == Button.ID_LEFT){
+						if (pickedInLocation > 0) {
+							pickedInLocation--;
+						}
+						System.out.println("Amount picked:" + pickedInLocation);
+					}
+					if (i == Button.ID_RIGHT){
+						pickedInLocation++;
+						System.out.println("Amount picked:" + pickedInLocation);
+					}
 				}
-				System.out.println("Right amount picked.");
-			}
-			if(i == Button.ID_LEFT){
-				if (picked > 0) {
-					picked--;
-					System.out.println("This robot limit is, " + limit + ", now picked, " + picked);
-				}
-				System.out.println("Amount picked:" + picked);
-			}
-			if(i == Button.ID_RIGHT){
-				picked++;
-				if (picked<=limit) {
-					System.out.println("Amount picked:" + picked);
-				} else {
-					System.out.println("This robot limit is, " + limit + ", now picked, " + picked + ". Please remove items." );
-				}
-			}
 			}
 		}
-	public int getLocationPick() {
-		return locationPick;
 	}
-	public void setLocationPick(int locationPick) {
-		this.locationPick = locationPick;
-	}
-	public void clearPickedinLocation() {
-		pickedInLocation = 0;
-	}
-	public void clearPicked() {
-		picked = 0;
-	}
-	public void setLimit(int limit) {
-		this.limit = limit;
-	} 
 }

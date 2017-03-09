@@ -2,6 +2,8 @@ package helper_classes;
 
 import java.lang.Math;
 
+import helper_classes.LocationType;
+
 public class Location {
 
   private int x, y;

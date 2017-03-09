@@ -2,6 +2,7 @@ package job_selection;
 
 import java.util.*;
 import helper_classes.*;
+import utils.Location;
 
 public class Round {
 	private HashMap<Item, Integer> round = new HashMap<Item, Integer>();
