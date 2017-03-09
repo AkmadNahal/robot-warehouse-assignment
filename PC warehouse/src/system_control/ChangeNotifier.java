@@ -4,11 +4,11 @@ public class ChangeNotifier {
 
 	private boolean changed = false;
 	
-	public void setChanged(boolean value) {
+	public synchronized void setChanged(boolean value) {
 		changed = value;
 	}
 	
-	public boolean getChanged() {
+	public synchronized boolean getChanged() {
 		return changed;
 	}
 	

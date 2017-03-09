@@ -12,7 +12,6 @@ public class PCSessionManager {
 	private int numOfPicks;
 	private SuperLocation locationAccess;
 	private Boolean isRouteComplete;
-	private int readValue;
 	
 	public PCSessionManager(SuperLocation locationAccess){
 		this.should_send = false;
@@ -21,17 +20,8 @@ public class PCSessionManager {
 		this.locationAccess = locationAccess;
 		
 		this.isRouteComplete = false;
-		readValue = 10;
 	}
 	
-	public synchronized void setReadValue(int value) {
-		readValue = value;
-	}
-
-	public synchronized int getReadValue() {
-		return readValue;
-	}
-
 	public synchronized void setRoute(ArrayList<Direction> value) {
 		route = value;
 	}

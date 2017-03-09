@@ -64,8 +64,9 @@ public class NetworkComm implements Runnable {
 					int input = m_dis.readInt();
 					if (input == 50){
 						System.out.println("Input equals 50");
-						notifier.setChanged(true);
-						sessionManager.setReadValue(50);
+						while(!notifier.getChanged()){
+							notifier.setChanged(true);
+						}
 					}
 				}
 			}

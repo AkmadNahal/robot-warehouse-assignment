@@ -5,20 +5,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Random;
 
-import lejos.nxt.Button;
-import lejos.nxt.Sound;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
 import lejos.nxt.comm.RConsole;
-import lejos.robotics.subsumption.Arbitrator;
-import lejos.robotics.subsumption.Behavior;
 import utils.Direction;
-import utils.Location;
-import utils.LocationType;
-import utils.SuperLocation;
-import utils.Config;
 
 public class RobotControl implements Runnable {
 
@@ -38,7 +29,7 @@ public class RobotControl implements Runnable {
 
 	@Override
 	public void run() {
-
+		
 		System.out.println("Waiting for Bluetooth connection...");
 		BTConnection connection = Bluetooth.waitForConnection();
 		System.out.println("Success!");
@@ -52,7 +43,10 @@ public class RobotControl implements Runnable {
 			try {
 				
 				if (movementManager.getIsRouteComplete()){
+					System.out.println("Sending 50 to pc");
+					isExecutingRoute = false;
 					outputStream.writeInt(50);
+					outputStream.flush();
 					movementManager.setIsRouteComplete(false);
 				}else{
 					if (!isExecutingRoute){
@@ -82,6 +76,19 @@ public class RobotControl implements Runnable {
 			}
 		}
 
+	}
+	
+	protected static void redirectOutput(boolean _useBluetooth) {
+		if (!RConsole.isOpen()) {
+			if (_useBluetooth) {
+				RConsole.openBluetooth(0);
+			} else {
+				RConsole.openUSB(0);
+			}
+		}
+		PrintStream ps = RConsole.getPrintStream();
+		System.setOut(ps);
+		System.setErr(ps);
 	}
 
 }

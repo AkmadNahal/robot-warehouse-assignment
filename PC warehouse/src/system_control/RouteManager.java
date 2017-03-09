@@ -24,51 +24,137 @@ public class RouteManager implements Runnable {
 
 	@Override
 	public void run() {
-		/*for (Round r : sortedJobs) {
+		for (Round r : sortedJobs) {
 			ArrayList<Location> locationsInJob = r.getRoute();
 			for (int i = 0; i < locationsInJob.size(); i++){
 				Location nextGoal = locationsInJob.get(i);
 				ArrayList<Direction> solution = planner.getRoute(sessionManager.getLocationAccess().getCurrentLocation(), nextGoal);
+				System.out.println(solution);
 				sessionManager.setNumOfPicks(4);
 				sessionManager.setRoute(solution);
 				sessionManager.setShouldSend(true);
 				sessionManager.setIsRouteComplete(false);
-				while (!sessionManager.getIsRouteComplete()){
-					//do nothing!
+				notifier.setChanged(false);
+				System.out.println("Waiting for route to complete");
+				while(!sessionManager.getIsRouteComplete()) {
+					if(notifier.getChanged()) {
+						System.out.println("Notifier changed");
+						sessionManager.setIsRouteComplete(true);
+					}
+					
+					try {
+						Thread.sleep(20);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-				//loops back
+				sessionManager.getLocationAccess().setCurrentLocation(nextGoal);
 			}
-		}*/
-		ArrayList<Direction> testRoute = new ArrayList<Direction>();
+		}
+		
+		/*ArrayList<Direction> testRoute = new ArrayList<Direction>();
 		testRoute = planner.getRoute(sessionManager.getLocationAccess().getCurrentLocation(), new Location(1,0, LocationType.EMPTY));
 		sessionManager.setNumOfPicks(4);
 		sessionManager.setRoute(testRoute);
 		sessionManager.setShouldSend(true);
 		sessionManager.setIsRouteComplete(false);
 		notifier.setChanged(false);
-		sessionManager.setReadValue(10);
 		System.out.println("Waiting for route to complete");
+		//maybe replace sessionManager.getIsRouteComplete() with a local boolean??
 		
-		synchronized(sessionManager.getIsRouteComplete()) {
-			while(!sessionManager.getIsRouteComplete()) {
-				System.out.println(sessionManager.getReadValue());
-				if(sessionManager.getReadValue() == 50) {
-					sessionManager.setIsRouteComplete(true);
-				}
+		while(!sessionManager.getIsRouteComplete()) {
+			if(notifier.getChanged()) {
+				System.out.println("Notifier changed");
+				sessionManager.setIsRouteComplete(true);
+			}
+			
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
 		System.out.println("Route 1 complete, about to go to next one");
 		
 		ArrayList<Direction> testRoute2 = new ArrayList<Direction>();
-		testRoute2 = planner.getRoute(new Location(1, 0, LocationType.EMPTY), new Location(2, 0, LocationType.EMPTY));
+		testRoute2 = planner.getRoute(new Location(1, 0, LocationType.EMPTY), new Location(0, 0, LocationType.EMPTY));
 		sessionManager.setNumOfPicks(4);
 		sessionManager.setRoute(testRoute2);
 		sessionManager.setShouldSend(true);
 		sessionManager.setIsRouteComplete(false);
-		while (!sessionManager.getIsRouteComplete()){
-			//do nothing!
+		notifier.setChanged(false);
+		System.out.println("Waiting for second route to complete");
+		
+		while(!sessionManager.getIsRouteComplete()) {
+			if(notifier.getChanged()) {
+				System.out.println("Notifier changed");
+				sessionManager.setIsRouteComplete(true);
+			}
+			
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		
+		System.out.println("Route 2 complete, about to go to next one");
+		
+		ArrayList<Direction> testRoute3 = new ArrayList<Direction>();
+		testRoute2 = planner.getRoute(new Location(0, 0, LocationType.EMPTY), new Location(1, 0, LocationType.EMPTY));
+		sessionManager.setNumOfPicks(4);
+		sessionManager.setRoute(testRoute3);
+		sessionManager.setShouldSend(true);
+		sessionManager.setIsRouteComplete(false);
+		notifier.setChanged(false);
+		System.out.println("Waiting for third route to complete");
+		
+		while(!sessionManager.getIsRouteComplete()) {
+			if(notifier.getChanged()) {
+				System.out.println("Notifier changed");
+				sessionManager.setIsRouteComplete(true);
+			}
+			
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("Route 3 complete, about to go to next one");
+		
+		/*ArrayList<Direction> testRoute4 = new ArrayList<Direction>();
+		testRoute2 = planner.getRoute(new Location(1, 0, LocationType.EMPTY), new Location(0, 0, LocationType.EMPTY));
+		sessionManager.setNumOfPicks(4);
+		sessionManager.setRoute(testRoute4);
+		sessionManager.setShouldSend(true);
+		sessionManager.setIsRouteComplete(false);
+		notifier.setChanged(false);
+		System.out.println("Waiting for fourth route to complete");
+		
+		while(!sessionManager.getIsRouteComplete()) {
+			if(notifier.getChanged()) {
+				System.out.println("Notifier changed");
+				sessionManager.setIsRouteComplete(true);
+			}
+			
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("Route 3 complete, about to go to next one");*/
+		
+		
 	}
 
 }

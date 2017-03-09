@@ -1,9 +1,11 @@
 package motion;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
+import lejos.nxt.comm.RConsole;
 //import motion.CorrectPose;
 //import motion.Turn;
 import rp.config.WheeledRobotConfiguration;
@@ -116,6 +118,19 @@ public class JunctionDetection extends AbstractBehaviour {
 
 		threshold = 35;
 		isOnJunction = false;
+	}
+	
+	protected static void redirectOutput(boolean _useBluetooth) {
+		if (!RConsole.isOpen()) {
+			if (_useBluetooth) {
+				RConsole.openBluetooth(0);
+			} else {
+				RConsole.openUSB(0);
+			}
+		}
+		PrintStream ps = RConsole.getPrintStream();
+		System.setOut(ps);
+		System.setErr(ps);
 	}
 
 }

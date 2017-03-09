@@ -1,17 +1,12 @@
 package motion;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
 
 import lejos.nxt.Sound;
 import lejos.nxt.comm.RConsole;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 import utils.Config;
-import utils.Direction;
-import utils.Location;
-import utils.LocationType;
-import utils.SuperLocation;
 
 public class RouteExecutor implements Runnable {
 
@@ -35,11 +30,26 @@ public class RouteExecutor implements Runnable {
 				arby.start(); //START THE ARBITRATOR
 				System.out.println("Arbitrator stopped - Route complete");
 				Sound.beepSequence();
+				movementManager.setRoute(null);
 				movementManager.setShouldExecuteRoute(false);
 				movementManager.setIsAtPickupLocation(true);
 			}
 		}
 
 	}
+	
+	protected static void redirectOutput(boolean _useBluetooth) {
+		if (!RConsole.isOpen()) {
+			if (_useBluetooth) {
+				RConsole.openBluetooth(0);
+			} else {
+				RConsole.openUSB(0);
+			}
+		}
+		PrintStream ps = RConsole.getPrintStream();
+		System.setOut(ps);
+		System.setErr(ps);
+	}
+	
 
 }

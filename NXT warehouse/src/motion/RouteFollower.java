@@ -1,7 +1,10 @@
 package motion;
 
+import java.io.PrintStream;
+
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
+import lejos.nxt.comm.RConsole;
 import rp.config.WheeledRobotConfiguration;
 
 public class RouteFollower extends AbstractBehaviour {
@@ -52,6 +55,7 @@ public class RouteFollower extends AbstractBehaviour {
 	@Override
 	public void action() {
 		
+		
 		if(!(counter == (routeLength))){
 			while(!isSuppressed){
 				//drive.followPath();
@@ -77,6 +81,19 @@ public class RouteFollower extends AbstractBehaviour {
 		else{
 			isRouteComplete = true;
 		}
+	}
+	
+	protected static void redirectOutput(boolean _useBluetooth) {
+		if (!RConsole.isOpen()) {
+			if (_useBluetooth) {
+				RConsole.openBluetooth(0);
+			} else {
+				RConsole.openUSB(0);
+			}
+		}
+		PrintStream ps = RConsole.getPrintStream();
+		System.setOut(ps);
+		System.setErr(ps);
 	}
 
 }

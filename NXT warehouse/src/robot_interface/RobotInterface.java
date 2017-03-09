@@ -1,6 +1,9 @@
 package robot_interface;
 
+import java.io.PrintStream;
+
 import lejos.nxt.Button;
+import lejos.nxt.comm.RConsole;
 import motion.RobotMovementSessionManager;
 
 public class RobotInterface implements Runnable{
@@ -13,7 +16,7 @@ public class RobotInterface implements Runnable{
 	}
 	
 	@Override
-	public void run(){ 		
+	public void run(){ 	
 		while(true){
 			if (movementManager.getIsAtPickupLocation()){
 				while(!movementManager.getIsRouteComplete()){
@@ -26,6 +29,7 @@ public class RobotInterface implements Runnable{
 							System.out.println("Incorrect amount. Needed to pick in this location, " + movementManager.getNumberOfPicks() + ". Picked in this location: " + pickedInLocation);
 						}else if (pickedInLocation == movementManager.getNumberOfPicks()){
 							System.out.println("Right amount picked.");
+							pickedInLocation = 0;
 							movementManager.setIsAtPickupLocation(false);
 							movementManager.setIsRouteComplete(true);
 						}
@@ -43,5 +47,18 @@ public class RobotInterface implements Runnable{
 				}
 			}
 		}
+	}
+	
+	protected static void redirectOutput(boolean _useBluetooth) {
+		if (!RConsole.isOpen()) {
+			if (_useBluetooth) {
+				RConsole.openBluetooth(0);
+			} else {
+				RConsole.openUSB(0);
+			}
+		}
+		PrintStream ps = RConsole.getPrintStream();
+		System.setOut(ps);
+		System.setErr(ps);
 	}
 }
