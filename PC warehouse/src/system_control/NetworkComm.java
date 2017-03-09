@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 import lejos.pc.comm.NXTComm;
 import lejos.pc.comm.NXTCommException;
 import lejos.pc.comm.NXTCommFactory;
@@ -20,6 +22,7 @@ public class NetworkComm implements Runnable {
 	private PCSessionManager sessionManager;
 	private ChangeNotifier notifier;
 	
+	private static final Logger logger = Logger.getLogger(NetworkComm.class);
 
 	public NetworkComm(NXTInfo _nxt, PCSessionManager sessionManager, ChangeNotifier _notifier) {
 		m_nxt = _nxt;
@@ -48,7 +51,7 @@ public class NetworkComm implements Runnable {
 			while (true) {
 				if(sessionManager.getShouldSend()) {
 					// Notify starting of route sending
-					System.err.println("Started sending");
+					logger.debug("Started sending route");
 					m_dos.writeInt(99);
 					// Send the route
 					for(Direction d : sessionManager.getRoute()) {
@@ -61,9 +64,10 @@ public class NetworkComm implements Runnable {
 					m_dos.writeInt(100);
 					m_dos.flush();
 					sessionManager.setShouldSend(false);
+					logger.debug("Finished sending route and number of picks");
 					int input = m_dis.readInt();
 					if (input == 50){
-						System.out.println("Input equals 50");
+						logger.debug("Received completion flag");
 						while(!notifier.getChanged()){
 							notifier.setChanged(true);
 						}
