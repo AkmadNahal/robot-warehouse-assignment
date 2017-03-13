@@ -3,10 +3,12 @@ package job_selection;
 import helper_classes.*;
 
 import java.util.HashMap;
+
 import java.io.*;
 
 public class ItemReader {
 	public static HashMap<String, Item> parseItems(String wrfile, String lfile) {
+		
 		BufferedReader wrreader;
 		BufferedReader lreader;
 		String splitBy = ",";

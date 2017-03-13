@@ -9,12 +9,12 @@ public class JobSelector {
 		String jfile = "csv/jobs.csv";
 		String wrfile = "csv/items.csv";
 		String lfile = "csv/locations.csv";
+		
 		HashMap<String, Item> itemMap = ItemReader.parseItems(wrfile, lfile);
 		HashMap<String, Job> jobMap = JobReader.parseJobs(jfile, itemMap);
 
 		ArrayList<Job> jobs = new ArrayList<Job>(jobMap.values());
 		Collections.sort(jobs);
-		// We now have a list of jobs, sorted based on highest total reward.
 
 		ArrayList<Round> rounds = new ArrayList<Round>();
 		rounds = RoundCreator.createRounds(50f, itemMap, jobs);

@@ -74,12 +74,17 @@ public class JobSelectionTest {
 	
 	@Test
 	public void JobRoundTest() {
+		ArrayList<Job> jobs = new ArrayList<Job>(jobMap.values());
+		Collections.sort(jobs);
+		ArrayList<Round> rounds = new ArrayList<Round>();
+		rounds = RoundCreator.createRounds(50f, itemMap, jobs);
+		
 		int count = 0;
 		for (Job j : jobMap.values()) {
 			if (j.totalWeight() > 50) {
 				count ++;
 			}
 		}
-		
+		assertTrue(rounds.size() == jobs.size() + count);
 	}
 }
