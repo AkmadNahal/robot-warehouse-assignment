@@ -1,9 +1,10 @@
-package motion_control;
-
 import java.util.ArrayList;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
+import lejos.nxt.Sound;
+import lejos.nxt.UltrasonicSensor;
+import lejos.util.Delay;
 import rp.config.WheeledRobotConfiguration;
 import rp.util.Rate;
 
@@ -11,18 +12,24 @@ public class RouteFollower extends AbstractBehaviour {
 	
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
-
+	
+	private final UltrasonicSensor distanceSensor;
+	private ArrayList<ActionType> route;
 	
 	private boolean isRouteComplete = false;
+	private boolean abortRoute = false;
 	private int counter = 0;
 	private int routeLength;
 
-	public RouteFollower(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, int numberOfMoves) {
+	public RouteFollower(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, SensorPort _dsSensor, ArrayList<ActionType> route, int numberOfMoves) {
 		super(_config);
 		
-		lhSensor = new LightSensor(_lhSensor);
-		rhSensor = new LightSensor(_rhSensor);
+		lhSensor = new LightSensor(_lhSensor, true);
+		rhSensor = new LightSensor(_rhSensor, true);
 		
+		distanceSensor = new UltrasonicSensor(_dsSensor);
+		
+		this.route = route;
 		routeLength = numberOfMoves;
 		
 	}
@@ -50,6 +57,40 @@ public class RouteFollower extends AbstractBehaviour {
 		if(!(counter == (routeLength))){
 			while(!isSuppressed){
 				
+				//Ensures the robot will not collide into walls/ other robots
+				//If the safe distance is breached, route following will stop
+				float distance = distanceSensor.getRange();
+				
+				if(distance < 8){
+					System.out.println(pilot.getMovementIncrement());
+					float reverse = pilot.getMovementIncrement();
+					pilot.stop();
+					pilot.travel(-reverse);
+					pilot.stop();
+					
+					ActionType move = route.get(counter);
+					
+					if(move == ActionType.BACKWARDS){
+						pilot.rotate(180);
+						pilot.stop();
+					}
+					else if(move == ActionType.LEFT){
+						pilot.rotate(-90);
+						pilot.stop();
+					}
+					else if(move == ActionType.RIGHT){
+						pilot.rotate(90);
+						pilot.stop();
+					}
+					
+					Sound.buzz();
+					System.out.println("abort");
+					counter = routeLength;
+					abortRoute = true;
+					break;
+				}
+				
+				//Line following calculations
 				float rHValue = rhSensor.getLightValue();
 				float lHValue = lhSensor.getLightValue();
 				
@@ -66,8 +107,11 @@ public class RouteFollower extends AbstractBehaviour {
 				pilot.steer(turnOut);
 				r.sleep();
 			}
-			counter++;
-			isSuppressed = false;
+			
+			if(abortRoute == false){
+				counter++;
+				isSuppressed = false;
+			}
 		}
 		else{
 			isRouteComplete = true;

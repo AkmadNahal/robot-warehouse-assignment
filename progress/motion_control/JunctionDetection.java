@@ -1,9 +1,8 @@
-package motion_control;
-
 import java.util.ArrayList;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
+import lejos.util.Delay;
 import rp.config.WheeledRobotConfiguration;
 
 public class JunctionDetection extends AbstractBehaviour {
@@ -11,46 +10,46 @@ public class JunctionDetection extends AbstractBehaviour {
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
 	
-	boolean isOnJunction = false;
+	boolean isOnJunction = true;
 	private ArrayList<ActionType> route;
 	private int counter = 0;
-	
-	private int threshold = 45;
+	private final int error = 6;
+	private int calibratedValue;
 
-	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<ActionType> route) {
+	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<ActionType> route, int calValue) {
 		super(_config);
 		
-		lhSensor = new LightSensor(_lhSensor);
-		rhSensor = new LightSensor(_rhSensor);
+		lhSensor = new LightSensor(_lhSensor, true);
+		rhSensor = new LightSensor(_rhSensor, true);
 		
 		this.route = new ArrayList<ActionType>(route);
+		this.calibratedValue = calValue;
 	}
+	
 
 	@Override
 	public boolean takeControl() {
 		
-		float lhValue = lhSensor.getLightValue();
-		float rhValue = rhSensor.getLightValue();
+		int valueRight = rhSensor.readValue();
+		int valueLeft = lhSensor.readValue();
 		
-		if(lhValue < threshold && rhValue < threshold){
+		if((valueRight - calibratedValue < error) && (valueLeft - calibratedValue < error)){
 			isOnJunction = true;
 		}
+		
 		return isOnJunction;
 	}
 
 	@Override
 	public void action() {
-		if(threshold != 45){
+		if(counter != 0){
 			pilot.travel(0.05);
 		}
 		pilot.stop();
 		
-		System.out.println("threshold: " + threshold);
-		
 			
 		//Will check what the previous move was, so it can re-orientate to always face the same orientation
 		if(!(counter == (route.size() + 1))){
-			threshold = 35;
 			
 			if(counter > 0){
 				ActionType previousMove = route.get(counter - 1);
@@ -97,7 +96,6 @@ public class JunctionDetection extends AbstractBehaviour {
 				}
 			}
 		}
-		threshold = 35;
 		System.out.println(counter);
 		isOnJunction = false;
 	}
