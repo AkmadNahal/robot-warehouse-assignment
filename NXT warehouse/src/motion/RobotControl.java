@@ -36,7 +36,7 @@ public class RobotControl implements Runnable {
 
 		System.out.println("Waiting for Bluetooth connection...");
 		BTConnection connection = Bluetooth.waitForConnection();
-		System.out.println("Success!");
+		System.out.println("Success!\n\n");
 
 		DataInputStream inputStream = connection.openDataInputStream();
 		DataOutputStream outputStream = connection.openDataOutputStream();
@@ -54,7 +54,6 @@ public class RobotControl implements Runnable {
 				}
 
 				if (movementManager.getIsRouteComplete()){
-					System.out.println("Sending route complete flag to pc");
 					isExecutingRoute = false;
 					outputStream.writeInt(COMPLETE_ROUTE_FLAG);
 					outputStream.flush();

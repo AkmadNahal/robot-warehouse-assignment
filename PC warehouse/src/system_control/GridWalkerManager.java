@@ -20,7 +20,7 @@ public class GridWalkerManager {
 	
 	private GridMap mapModel;
 	private PCSessionManager sessionManager;
-	private final int ROBOT_COUNT = 2;
+	private final int ROBOT_COUNT = 1;
 	private int mapSizeX;
 	private int mapSizeY;
 	private int[] robotStartingXCoordinate = new int[]{0, 6, 11};

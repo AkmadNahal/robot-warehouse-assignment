@@ -30,10 +30,10 @@ public class RouteExecutor implements Runnable {
 						config.getRightSensorPort(), movementManager.getRoute(), locationManager);
 				Arbitrator arby = new Arbitrator(new Behavior[] { movement, junction }, true);
 				arby.start(); //START THE ARBITRATOR
-				System.out.println("Arbitrator stopped - Route complete");
 				Sound.beepSequence();
 				movementManager.setRoute(null);
 				movementManager.setShouldExecuteRoute(false);
+				System.out.println("Please pick " + movementManager.getNumberOfPicks());
 				movementManager.setIsAtPickupLocation(true);
 			}
 		}

@@ -23,12 +23,16 @@ public class RobotInterface implements Runnable{
 					int i = Button.waitForAnyPress(); 
 					if(i == Button.ID_ENTER){
 						if (pickedInLocation< movementManager.getNumberOfPicks()) {
-							System.out.println("Amount is picked: " + pickedInLocation);
-							System.out.println("Please pick " + (movementManager.getNumberOfPicks() - pickedInLocation) + " items.");
+							System.out.println("Incorrect amount");
+							System.out.println("Picked: " + pickedInLocation);
+							System.out.println("Please pick " + (movementManager.getNumberOfPicks() - pickedInLocation) + " more items.");
 						}else if (pickedInLocation>movementManager.getNumberOfPicks()){
-							System.out.println("Incorrect amount. Needed to pick in this location, " + movementManager.getNumberOfPicks() + ". Picked in this location: " + pickedInLocation);
+							System.out.println("Incorrect amount");
+							System.out.println("Picked: " + pickedInLocation);
+							System.out.println("Please pick " + (pickedInLocation - movementManager.getNumberOfPicks()) + " less items.");
 						}else if (pickedInLocation == movementManager.getNumberOfPicks()){
 							System.out.println("Right amount picked.");
+							System.out.println("To the next pick!");
 							pickedInLocation = 0;
 							movementManager.setIsAtPickupLocation(false);
 							movementManager.setIsRouteComplete(true);
@@ -38,11 +42,11 @@ public class RobotInterface implements Runnable{
 						if (pickedInLocation > 0) {
 							pickedInLocation--;
 						}
-						System.out.println("Amount picked:" + pickedInLocation);
+						System.out.println("Picking:" + pickedInLocation);
 					}
 					if (i == Button.ID_RIGHT){
 						pickedInLocation++;
-						System.out.println("Amount picked:" + pickedInLocation);
+						System.out.println("Picking:" + pickedInLocation);
 					}
 				}
 			}
