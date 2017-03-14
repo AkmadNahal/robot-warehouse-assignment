@@ -56,7 +56,9 @@ public class RouteManager implements Runnable {
 				}
 				sessionManager.getLocationAccess().setCurrentLocation(nextGoal);
 				logger.debug("Finished executing route");
+				
 			}
+			logger.debug("Finished executing route");
 		}
 		
 		/*ArrayList<Direction> testRoute = new ArrayList<Direction>();

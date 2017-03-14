@@ -21,7 +21,13 @@ public class NetworkComm implements Runnable {
 
 	private PCSessionManager sessionManager;
 	private ChangeNotifier notifier;
+	
 	private static final Logger logger = Logger.getLogger(NetworkComm.class);
+	
+	private final int RECEIVE_MOVE_FLAG = 99; //matches with RECEIVE_MOVE_FLAG in RobotControl.java
+	private final int COMPLETE_ROUTE_FLAG = 50; //matches with COMPLETE_ROUTE_FLAG in RobotControl.java
+	private final int SENDING_FLAG = 75; //matches with RECEIVING_FLAG in RobotControl.java
+	private final int SENDING_PICK_NUM_FLAG = 100; //matches with SENDING_PICK_NUM_FLAG in RobotControl.java
 
 	public NetworkComm(NXTInfo _nxt, PCSessionManager sessionManager, ChangeNotifier _notifier) {
 		m_nxt = _nxt;
@@ -51,32 +57,34 @@ public class NetworkComm implements Runnable {
 				if(sessionManager.getShouldSend()) {
 					// Notify starting of route sending
 					logger.debug("Started sending route");
-					m_dos.writeInt(99);
+					m_dos.writeInt(SENDING_FLAG);
 					// Send the route
 					for(Direction d : sessionManager.getRoute()) {
 						m_dos.writeInt(d.getValue());
 					}
 					// Notify end of route sending
-					m_dos.writeInt(99);
-					m_dos.writeInt(100);
+					m_dos.writeInt(SENDING_FLAG);
+					m_dos.writeInt(SENDING_PICK_NUM_FLAG);
 					m_dos.writeInt(sessionManager.getNumOfPicks());
-					m_dos.writeInt(100);
+					m_dos.writeInt(SENDING_PICK_NUM_FLAG);
 					m_dos.flush();
 					sessionManager.setShouldSend(false);
+					logger.debug("Finished sending route and number of picks");
 
 					int input;
-					while((input = m_dis.readInt()) != 50) {
+					while((input = m_dis.readInt()) != COMPLETE_ROUTE_FLAG) {
 
-						if(input == 99) {
+						if(input == RECEIVE_MOVE_FLAG) {
 							input = m_dis.readInt();
 							Direction nextMove = Direction.fromInteger(input);
+							logger.debug(nextMove);
 							sessionManager.getLocationAccess().updateCurrentLocation(nextMove);
 						}
 
 					}
 					
 					// Route completed
-					System.out.println("Input equals 50");
+					logger.debug("Received completion flag");
 					while(!notifier.getChanged()){
 						notifier.setChanged(true);
 					}

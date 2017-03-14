@@ -1,8 +1,6 @@
 
 package utils;
 
-import java.util.ArrayList;
-
 public class GridToDirections {
 	
 	private Direction direction;
@@ -12,22 +10,14 @@ public class GridToDirections {
 		int diffInY = newPosition.getY() - initialPosition.getY();
 		
 		if (diffInX < 0){
-			for (int i = diffInX; i < 0; i--){
-				direction = Direction.LEFT;
-			}
+			direction = Direction.LEFT;
 		}else if (diffInX > 0){
-			for (int i = 0; i < diffInX; i++){
-				direction = Direction.RIGHT;
-			}
+			direction = Direction.RIGHT;
 		}
 		else if (diffInY < 0){
-			for (int i = diffInY; i < 0; i--){
-				direction = Direction.BACKWARDS;
-			}
+			direction = Direction.BACKWARDS;
 		}else if (diffInY> 0){
-			for (int i = 0; i < diffInX; i++){
-				direction = Direction.FORWARD;
-			}
+			direction = Direction.FORWARD;
 		}
 		return direction;
 	}

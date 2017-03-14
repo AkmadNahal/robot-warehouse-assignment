@@ -1,6 +1,6 @@
 package warehouse_interface;
 
-import java.util.Scanner;
+import org.apache.log4j.Logger;
 
 import lejos.robotics.RangeFinder;
 import rp.robotics.mapping.GridMap;
@@ -8,10 +8,10 @@ import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
 import rp.robotics.simulation.MovableRobot;
 import rp.systems.StoppableRunnable;
+import system_control.PCSessionManager;
 import utils.Direction;
 import utils.GridToDirections;
 import utils.Location;
-import utils.SuperLocation;
 
 public class GridWalker implements StoppableRunnable {
 	private final GridMap m_map;
@@ -19,19 +19,23 @@ public class GridWalker implements StoppableRunnable {
 	private boolean m_running = true;
 	private final RangeFinder m_ranger;
 	private final MovableRobot m_robot;
-	private SuperLocation locationAccess;
+	private PCSessionManager sessionManager;
 	private Location previousLocation;
+	private Direction previousMove;
+	
+	private static final Logger logger = Logger.getLogger(GridWalker.class);
 
 	public GridWalker(MovableRobot _robot, GridMap _map, GridPose _start,
-			RangeFinder _ranger, SuperLocation _locationAccess) {
+			RangeFinder _ranger, PCSessionManager sessionManager) {
 		this.m_map = _map;
 		this.m_pilot = new GridPilot(_robot.getPilot(), _map, _start);
-		this.m_pilot.setTravelSpeed(0.6f);
-		this.m_pilot.setTurnSpeed(60f);
+		this.m_pilot.setTravelSpeed(1.5f);
+		this.m_pilot.setTurnSpeed(300f);
 		this.m_ranger = _ranger;
 		this.m_robot = _robot;
-		this.locationAccess = _locationAccess;
-		this.previousLocation = locationAccess.getCurrentLocation();
+		this.sessionManager = sessionManager;
+		this.previousLocation = sessionManager.getLocationAccess().getCurrentLocation();
+		this.previousMove = Direction.STOP;
 	}
 
 	private boolean enoughSpace() {
@@ -50,7 +54,7 @@ public class GridWalker implements StoppableRunnable {
 	
 	public Direction updateGUILocation(){
 		GridToDirections converter = new GridToDirections();
-		Location currentLocation = locationAccess.getCurrentLocation();
+		Location currentLocation = sessionManager.getLocationAccess().getCurrentLocation();
 		if (!(previousLocation.equals(currentLocation))){
 			return converter.coordinatesToDirections(previousLocation, currentLocation);
 		}else{
@@ -64,30 +68,35 @@ public class GridWalker implements StoppableRunnable {
 		while (m_running) {
 			
 			Direction nextMovement = updateGUILocation();
+			previousLocation = sessionManager.getLocationAccess().getCurrentLocation();
 			
-			if (nextMovement == Direction.LEFT) { //re-adjusts pose, just like real robot
-				m_pilot.rotatePositive();
+			if(nextMovement == previousMove && nextMovement != Direction.STOP) {
 				m_pilot.moveForward();
-				m_pilot.rotateNegative();
-				nextMovement = Direction.STOP;
-			} else if (nextMovement == Direction.RIGHT) {
-				m_pilot.rotateNegative();
-				m_pilot.moveForward();
-				m_pilot.rotatePositive();
-				nextMovement = Direction.STOP;
-			}else if (moveAheadClear() && nextMovement == Direction.FORWARD) {
-				m_pilot.moveForward();
-				nextMovement = Direction.STOP;
-			}else if (nextMovement == Direction.BACKWARDS){
-				m_pilot.rotatePositive();
-				m_pilot.rotatePositive();
-				m_pilot.moveForward();
-				m_pilot.rotateNegative();
-				m_pilot.rotateNegative();
-				nextMovement = Direction.STOP;
+			} else {
+				if (nextMovement == Direction.LEFT) { //re-adjusts pose, just like real robot
+					m_pilot.rotatePositive();
+					m_pilot.moveForward();
+					m_pilot.rotateNegative();
+					nextMovement = Direction.STOP;
+				} else if (nextMovement == Direction.RIGHT) {
+					m_pilot.rotateNegative();
+					m_pilot.moveForward();
+					m_pilot.rotatePositive();
+					nextMovement = Direction.STOP;
+				}else if (moveAheadClear() && nextMovement == Direction.FORWARD) {
+					m_pilot.moveForward();
+					nextMovement = Direction.STOP;
+				}else if (nextMovement == Direction.BACKWARDS){
+					m_pilot.rotatePositive();
+					m_pilot.rotatePositive();
+					m_pilot.moveForward();
+					m_pilot.rotateNegative();
+					m_pilot.rotateNegative();
+					nextMovement = Direction.STOP;
+				}
 			}
 			try {
-				Thread.sleep(16);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

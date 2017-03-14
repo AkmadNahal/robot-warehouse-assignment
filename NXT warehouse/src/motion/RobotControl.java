@@ -17,14 +17,16 @@ public class RobotControl implements Runnable {
 	private RobotLocationSessionManager locationManager;
 
 	private ArrayList<Direction> route = null;
-	private boolean shouldSendLocation;
 	private boolean m_run;
 	private boolean is_route_income;
+	
+	private final int SEND_MOVE_FLAG = 99; //matches with RECEIVE_MOVE_FLAG in NetworkComm.java
+	private final int COMPLETE_ROUTE_FLAG = 50; //matches with COMPLETE_ROUTE_FLAG in NetworkComm.java
+	private final int RECEIVING_FLAG = 75; //matches with SENDING_FLAG in NetworkComm.java
 
 	public RobotControl(RobotMovementSessionManager _movementManager, RobotLocationSessionManager _locationManager) {
 		movementManager = _movementManager;
 		locationManager = _locationManager;
-		shouldSendLocation = false;
 		m_run = true;
 		is_route_income = false;
 	}
@@ -45,28 +47,29 @@ public class RobotControl implements Runnable {
 			try {
 
 				if(locationManager.getShouldSendNextMove()) {
-					outputStream.writeInt(99);
+					outputStream.writeInt(SEND_MOVE_FLAG);
 					outputStream.writeInt(locationManager.getNextMove().getValue());
+					outputStream.flush();
 					locationManager.setShouldSendNextMove(false);
 				}
 
 				if (movementManager.getIsRouteComplete()){
-					System.out.println("Sending 50 to pc");
+					System.out.println("Sending route complete flag to pc");
 					isExecutingRoute = false;
-					outputStream.writeInt(50);
+					outputStream.writeInt(COMPLETE_ROUTE_FLAG);
 					outputStream.flush();
 					movementManager.setIsRouteComplete(false);
 				}else{
 					if (!isExecutingRoute){
 						int input = inputStream.readInt();
 
-						if(input == 99 && !is_route_income) {
+						if(input == RECEIVING_FLAG && !is_route_income) {
 							// Route sending started
 							is_route_income = true;
 							route = new ArrayList<Direction>();
-						} else if(input == 99 && is_route_income) {
+						} else if(input == RECEIVING_FLAG && is_route_income) {
 							//Route sending ended, execute route
-							input = inputStream.readInt();
+							input = inputStream.readInt(); //matches with SENDING_PICK_NUM_FLAG in RobotControl.java
 							movementManager.setNumberOfPicks(inputStream.readInt());
 							input = inputStream.readInt();
 							movementManager.setRoute(route);

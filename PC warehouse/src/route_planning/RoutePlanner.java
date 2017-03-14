@@ -9,161 +9,161 @@ import utils.LocationType;
 
 public class RoutePlanner {
 
-  private Location[][] map;
-  private int maxX, maxY;
-  private ArrayList<Direction> directions;
+	private Location[][] map;
+	private int maxX, maxY;
+	private ArrayList<Direction> directions;
 
-  public RoutePlanner(Location[][] _map, int _maxX, int _maxY) {
-    map = _map;
-    maxX = _maxX;
-    maxY = _maxY;
-  }
-  
-  public ArrayList<Direction> getLastRoute(){
-	  return this.directions;
-  }
+	public RoutePlanner(Location[][] _map, int _maxX, int _maxY) {
+		map = _map;
+		maxX = _maxX;
+		maxY = _maxY;
+	}
 
-  public ArrayList<Direction> getRoute(Location startLocation, Location endLocation) {
+	public ArrayList<Direction> getLastRoute() {
+		return this.directions;
+	}
 
-    ArrayList<LocationNode> open_list = new ArrayList<LocationNode>();
-    ArrayList<LocationNode> close_list = new ArrayList<LocationNode>();
+	public ArrayList<Direction> getRoute(Location startLocation, Location endLocation) {
 
-    LocationNode startNode = new LocationNode(null, startLocation, 0, startLocation.getDistanceFromLocation(endLocation));
-    open_list.add(startNode);
+		ArrayList<LocationNode> open_list = new ArrayList<LocationNode>();
+		ArrayList<LocationNode> close_list = new ArrayList<LocationNode>();
 
-    LocationNode chosenNode = null;
+		LocationNode startNode = new LocationNode(null, startLocation, 0,
+				startLocation.getDistanceFromLocation(endLocation));
+		open_list.add(startNode);
 
-    while(!open_list.isEmpty()) {
+		LocationNode chosenNode = null;
 
-      chosenNode = open_list.get(0);
+		while (!open_list.isEmpty()) {
 
-      // Check if solution
-      if(chosenNode.getLocation().equalsTo(endLocation)) {
-        break;
-      }
+			chosenNode = open_list.get(0);
 
-      // Get successors
-      ArrayList<LocationNode> successors = getSuccessors(chosenNode);
+			// Check if solution
+			if (chosenNode.getLocation().equalsTo(endLocation)) {
+				break;
+			}
 
-      // Filter successors
-      for(LocationNode node : successors) {
+			// Get successors
+			ArrayList<LocationNode> successors = getSuccessors(chosenNode);
 
-        // Set heuristic value
-        node.setHValue(node.getLocation().getDistanceFromLocation(endLocation));
+			// Filter successors
+			for (LocationNode node : successors) {
 
-        if(containsNode(node, close_list)) {
-          continue;
-        } else if(containsNode(node, open_list)) {
-          int index = getNodeIndex(node, open_list);
-          LocationNode nd = open_list.get(index);
+				// Set heuristic value
+				node.setHValue(node.getLocation().getDistanceFromLocation(endLocation));
 
-          if(node.getGValue() < nd.getGValue()) {
-            open_list.remove(index);
-            open_list.add(node);
-          }
+				if (containsNode(node, close_list)) {
+					continue;
+				} else if (containsNode(node, open_list)) {
+					int index = getNodeIndex(node, open_list);
+					LocationNode nd = open_list.get(index);
 
-        } else {
-          open_list.add(node);
-        }
-      }
+					if (node.getGValue() < nd.getGValue()) {
+						open_list.remove(index);
+						open_list.add(node);
+					}
 
-      // Remove chosen node and add to close_list
-      open_list.remove(0);
-      close_list.add(chosenNode);
+				} else {
+					open_list.add(node);
+				}
+			}
 
-      // Sort open_list
-      Collections.sort(open_list, new Comparator<LocationNode>() {
-        public int compare(LocationNode n1, LocationNode n2) {
-          if(n1.getFValue() < n2.getFValue()) {
-            return -1;
-          } else if(n1.getFValue() > n2.getFValue()) {
-            return 1;
-          } else {
-            return 0;
-          }
-        }
-      });
+			// Remove chosen node and add to close_list
+			open_list.remove(0);
+			close_list.add(chosenNode);
 
-    }
+			// Sort open_list
+			Collections.sort(open_list, new Comparator<LocationNode>() {
+				public int compare(LocationNode n1, LocationNode n2) {
+					if (n1.getFValue() < n2.getFValue()) {
+						return -1;
+					} else if (n1.getFValue() > n2.getFValue()) {
+						return 1;
+					} else {
+						return 0;
+					}
+				}
+			});
 
-    ArrayList<Location> solution = new ArrayList<Location>();
+		}
 
-    if(chosenNode.getLocation().equalsTo(endLocation)) {
+		ArrayList<Location> solution = new ArrayList<Location>();
 
-      while(chosenNode.getParent() != null) {
-        solution.add(0, chosenNode.getLocation());
-        chosenNode = chosenNode.getParent();
-      }
-    }
+		if (chosenNode.getLocation().equalsTo(endLocation)) {
 
-    solution.add(0, startLocation);
+			while (chosenNode.getParent() != null) {
+				solution.add(0, chosenNode.getLocation());
+				chosenNode = chosenNode.getParent();
+			}
+		}
 
-    return coordinatesToDirections(solution);
-  }
+		solution.add(0, startLocation);
 
-  private ArrayList<LocationNode> getSuccessors(LocationNode node) {
-    ArrayList<LocationNode> successors = new ArrayList<LocationNode>();
+		return coordinatesToDirections(solution);
+	}
 
-    int x = node.getLocation().getX();
-    int y = node.getLocation().getY();
+	private ArrayList<LocationNode> getSuccessors(LocationNode node) {
+		ArrayList<LocationNode> successors = new ArrayList<LocationNode>();
 
-    if(x + 1 <= maxX && map[x+1][y].getType() == LocationType.EMPTY) {
-      successors.add(new LocationNode(node, map[x+1][y], node.getGValue() + 1, 0));
-    }
-    if(x - 1 >= 0 && map[x-1][y].getType() == LocationType.EMPTY) {
-      successors.add(new LocationNode(node, map[x-1][y], node.getGValue() + 1, 0));
-    }
-    if(y + 1 <= maxY && map[x][y+1].getType() == LocationType.EMPTY) {
-      successors.add(new LocationNode(node, map[x][y+1], node.getGValue() + 1, 0));
-    }
-    if(y - 1 >= 0 && map[x][y-1].getType() == LocationType.EMPTY) {
-      successors.add(new LocationNode(node, map[x][y-1], node.getGValue() + 1, 0));
-    }
+		int x = node.getLocation().getX();
+		int y = node.getLocation().getY();
 
-    return successors;
-  }
+		if (x + 1 <= maxX && map[x + 1][y].getType() == LocationType.EMPTY) {
+			successors.add(new LocationNode(node, map[x + 1][y], node.getGValue() + 1, 0));
+		}
+		if (x - 1 >= 0 && map[x - 1][y].getType() == LocationType.EMPTY) {
+			successors.add(new LocationNode(node, map[x - 1][y], node.getGValue() + 1, 0));
+		}
+		if (y + 1 <= maxY && map[x][y + 1].getType() == LocationType.EMPTY) {
+			successors.add(new LocationNode(node, map[x][y + 1], node.getGValue() + 1, 0));
+		}
+		if (y - 1 >= 0 && map[x][y - 1].getType() == LocationType.EMPTY) {
+			successors.add(new LocationNode(node, map[x][y - 1], node.getGValue() + 1, 0));
+		}
 
-  private boolean containsNode(LocationNode node, ArrayList<LocationNode> list) {
-    for(LocationNode element : list) {
-      if(element.getLocation().equalsTo(node.getLocation())) {
-        return true;
-      }
-    }
-    return false;
-  }
+		return successors;
+	}
 
-  private int getNodeIndex(LocationNode node, ArrayList<LocationNode> list) {
-    int i = -1;
-    for(LocationNode element : list) {
-      i++;
-      if(element.getLocation().equalsTo(node.getLocation())) {
-        return i;
-      }
-    }
-    return -1;
-  }
+	private boolean containsNode(LocationNode node, ArrayList<LocationNode> list) {
+		for (LocationNode element : list) {
+			if (element.getLocation().equalsTo(node.getLocation())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-  private ArrayList<Direction> coordinatesToDirections(ArrayList<Location> locations){
+	private int getNodeIndex(LocationNode node, ArrayList<LocationNode> list) {
+		int i = -1;
+		for (LocationNode element : list) {
+			i++;
+			if (element.getLocation().equalsTo(node.getLocation())) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
-    ArrayList<Direction> directions = new ArrayList<Direction>();
+	private ArrayList<Direction> coordinatesToDirections(ArrayList<Location> locations) {
 
-    for(int i=1;i<locations.size(); i++) {
-      int diffInX = locations.get(i).getX() - locations.get(i-1).getX();
-      int diffInY = locations.get(i).getY() - locations.get(i-1).getY();
+		ArrayList<Direction> directions = new ArrayList<Direction>();
 
-      if (diffInX < 0){
-  			directions.add(Direction.LEFT);
-  		}else if (diffInX > 0){
-  			directions.add(Direction.RIGHT);
-  		}
-  		else if (diffInY < 0){
-  			directions.add(Direction.BACKWARDS);
-  		}else if (diffInY> 0){
-  			directions.add(Direction.FORWARD);
-  		}
-    }
-    this.directions = directions;
-    return directions;
+		for (int i = 1; i < locations.size(); i++) {
+			int diffInX = locations.get(i).getX() - locations.get(i - 1).getX();
+			int diffInY = locations.get(i).getY() - locations.get(i - 1).getY();
+
+			if (diffInX < 0) {
+				directions.add(Direction.LEFT);
+			} else if (diffInX > 0) {
+				directions.add(Direction.RIGHT);
+			} else if (diffInY < 0) {
+				directions.add(Direction.BACKWARDS);
+			} else if (diffInY > 0) {
+				directions.add(Direction.FORWARD);
+			}
+		}
+		this.directions = directions;
+		return directions;
 	}
 
 }

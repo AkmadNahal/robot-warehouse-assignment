@@ -22,21 +22,21 @@ import utils.SuperLocation;
 
 
 public class SystemControl {
-
+	
 	private static final Logger logger = Logger.getLogger(SystemControl.class);
 	
 	public static void main(String[] args) {
 
 		SuperLocation locationAccess = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); //start location
 		
-		GridWalkerManager gridWalkerManager = new GridWalkerManager(MapUtils.createRealWarehouse(), locationAccess);
+		PCSessionManager sessionManager = new PCSessionManager(locationAccess);
+		ChangeNotifier notifier = new ChangeNotifier();
+		
+		GridWalkerManager gridWalkerManager = new GridWalkerManager(MapUtils.createRealWarehouse(), sessionManager);
 		gridWalkerManager.setup();
 		Location[][] map = gridWalkerManager.createMap();
 		
 		logger.debug("Successfully set up map");
-		
-		PCSessionManager sessionManager = new PCSessionManager(locationAccess);
-		ChangeNotifier notifier = new ChangeNotifier();
 
 		// Setup robot info and networking
 		NXTInfo robot1Info = new NXTInfo (NXTCommFactory.BLUETOOTH, "Lil' Bob",

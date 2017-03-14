@@ -19,29 +19,32 @@ import warehouse_interface.WarehouseView;
 public class GridWalkerManager {
 	
 	private GridMap mapModel;
-	private SuperLocation locationAccess;
-	private final int ROBOT_COUNT = 1;
+	private PCSessionManager sessionManager;
+	private final int ROBOT_COUNT = 2;
 	private int mapSizeX;
 	private int mapSizeY;
-
-	public GridWalkerManager (GridMap mapModel, SuperLocation locationAccess){
+	private int[] robotStartingXCoordinate = new int[]{0, 6, 11};
+	
+	
+	public GridWalkerManager (GridMap mapModel, PCSessionManager sessionManager){
 		this.mapModel = mapModel;
-		this.locationAccess = locationAccess;
+		this.sessionManager = sessionManager;
 	}
 	
 	public void setup(){
 		mapModel = MapUtils.createRealWarehouse();
 		mapSizeX = mapModel.getXSize();
 		mapSizeY = mapModel.getYSize();
+		
 		MapBasedSimulation sim = new MapBasedSimulation(mapModel);
 		for (int i = 0; i < ROBOT_COUNT; i++) {
-			GridPose gridStart = new GridPose(0, 0, Heading.PLUS_Y);
+			GridPose gridStart = new GridPose(robotStartingXCoordinate[i], 0, Heading.PLUS_Y);
 			MobileRobotWrapper<MovableRobot> wrapper = sim.addRobot(
 					SimulatedRobots.makeConfiguration(false, true),
 					mapModel.toPose(gridStart));
 			RangeFinder ranger = sim.getRanger(wrapper);
 			GridWalker controller = new GridWalker(wrapper.getRobot(),
-					mapModel, gridStart, ranger, locationAccess);
+					mapModel, gridStart, ranger, sessionManager);
 			new Thread(controller).start();
 		}
 
@@ -63,6 +66,8 @@ public class GridWalkerManager {
 				}
 			}
 	    }
+		
+		
 		return map;
 	}
 	
