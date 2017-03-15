@@ -3,8 +3,13 @@ package job_selection;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+
 public class RoundCreator {
 	public static ArrayList<Round> createRounds(float W_LIMIT, HashMap<String, Item> itemMap, ArrayList<Job> jobs) {
+
+		
 		ArrayList<Round> rounds = new ArrayList<Round>();
 		Round currentRound = new Round(W_LIMIT);
 		for (Job j : jobs) {	

@@ -4,10 +4,14 @@ import helper_classes.*;
 
 import java.util.HashMap;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+
 import java.io.*;
 
 public class ItemReader {
 	public static HashMap<String, Item> parseItems(String wrfile, String lfile) {
+		
 		
 		BufferedReader wrreader;
 		BufferedReader lreader;
@@ -29,7 +33,7 @@ public class ItemReader {
 				Item i = new Item(iname, r, w, loc);
 				items.put(iname, i);
 			}
-			
+
 			wrreader.close();
 			lreader.close();
 			return items;
