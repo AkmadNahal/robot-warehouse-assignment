@@ -4,11 +4,16 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+
 import java.io.FileNotFoundException;
 
 public class JobReader {
 
 	public static HashMap<String, Job> parseJobs(String file, HashMap<String, Item> il) {
+		
 		BufferedReader reader;
 		String splitBy = ",";
 		HashMap<String, Job> jobs = new HashMap<String, Job>();
