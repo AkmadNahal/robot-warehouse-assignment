@@ -33,17 +33,17 @@ public class RouteManager implements Runnable {
 			for (int i = 0; i < locationsInJob.size(); i++){
 				Location nextGoal = locationsInJob.get(i);
 				ArrayList<Direction> solution = planner.getRoute(sessionManager.getLocationAccess().getCurrentLocation(), nextGoal);
-				logger.debug(solution + ": Correctly generates path");
+				logger.debug("Correctly generates path: " + solution);
 				int numOfPicks = r.getCounts().get(i);
 				sessionManager.setNumOfPicks(numOfPicks);
 				sessionManager.setRoute(solution);
 				sessionManager.setShouldSend(true);
 				sessionManager.setIsRouteComplete(false);
 				notifier.setChanged(false);
-				System.out.println("Waiting for route to complete");
+				logger.debug("Waiting for route to complete");
 				while(!sessionManager.getIsRouteComplete()) {
 					if(notifier.getChanged()) {
-						System.out.println("Notifier changed");
+						logger.debug("Notifier changed");
 						sessionManager.setIsRouteComplete(true);
 					}
 					

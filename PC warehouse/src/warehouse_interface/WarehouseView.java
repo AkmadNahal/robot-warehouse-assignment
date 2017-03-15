@@ -56,7 +56,7 @@ public class WarehouseView {
 		});
 		cancelationPanel = new JPanel();
 		vizPanel = new JPanel();
-		for (int i = 0; i < robotCount; i++) {
+		for (int i = 1; i <= robotCount; i++) {
 			cancelRobotButtons.add(createNewCancelRobotButton(i));
 		}
 		refreshRobots = new JButton("Refresh");

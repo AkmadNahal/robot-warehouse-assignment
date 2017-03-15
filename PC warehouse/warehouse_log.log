@@ -1,50 +1,139 @@
-system_control.SystemControl.main(SystemControl.java:39) 0    [main] DEBUG system_control.SystemControl  - Successfully set up map
-system_control.SystemControl.main(SystemControl.java:49) 10   [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Bob
-system_control.SystemControl.main(SystemControl.java:60) 20   [main] DEBUG system_control.SystemControl  - Successfully ordered jobs, and distributed them
-system_control.RouteManager.run(RouteManager.java:36) 22   [Thread-5] DEBUG system_control.RouteManager  - [RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, FORWARD, FORWARD, FORWARD, FORWARD, FORWARD]: Correctly generates path
-system_control.NetworkComm.run(NetworkComm.java:59) 1594 [Thread-4] DEBUG system_control.NetworkComm  - Started sending route
-system_control.NetworkComm.run(NetworkComm.java:72) 1595 [Thread-4] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
-system_control.NetworkComm.run(NetworkComm.java:80) 2189 [Thread-4] DEBUG system_control.NetworkComm  - RIGHT
-system_control.NetworkComm.run(NetworkComm.java:80) 4876 [Thread-4] DEBUG system_control.NetworkComm  - RIGHT
-system_control.NetworkComm.run(NetworkComm.java:80) 6689 [Thread-4] DEBUG system_control.NetworkComm  - RIGHT
-system_control.NetworkComm.run(NetworkComm.java:80) 8589 [Thread-4] DEBUG system_control.NetworkComm  - RIGHT
-system_control.NetworkComm.run(NetworkComm.java:80) 10488 [Thread-4] DEBUG system_control.NetworkComm  - RIGHT
-system_control.NetworkComm.run(NetworkComm.java:80) 12439 [Thread-4] DEBUG system_control.NetworkComm  - RIGHT
-system_control.NetworkComm.run(NetworkComm.java:80) 14364 [Thread-4] DEBUG system_control.NetworkComm  - FORWARD
-system_control.NetworkComm.run(NetworkComm.java:80) 17101 [Thread-4] DEBUG system_control.NetworkComm  - FORWARD
-system_control.NetworkComm.run(NetworkComm.java:80) 19045 [Thread-4] DEBUG system_control.NetworkComm  - FORWARD
-system_control.NetworkComm.run(NetworkComm.java:80) 20939 [Thread-4] DEBUG system_control.NetworkComm  - FORWARD
-system_control.NetworkComm.run(NetworkComm.java:80) 22838 [Thread-4] DEBUG system_control.NetworkComm  - FORWARD
-system_control.NetworkComm.run(NetworkComm.java:87) 51727 [Thread-4] DEBUG system_control.NetworkComm  - Received completion flag
-system_control.RouteManager.run(RouteManager.java:58) 51761 [Thread-5] DEBUG system_control.RouteManager  - Finished executing route
-system_control.RouteManager.run(RouteManager.java:36) 51761 [Thread-5] DEBUG system_control.RouteManager  - [BACKWARDS, BACKWARDS, BACKWARDS]: Correctly generates path
-system_control.NetworkComm.run(NetworkComm.java:59) 51761 [Thread-4] DEBUG system_control.NetworkComm  - Started sending route
-system_control.NetworkComm.run(NetworkComm.java:72) 51762 [Thread-4] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
-system_control.NetworkComm.run(NetworkComm.java:80) 51863 [Thread-4] DEBUG system_control.NetworkComm  - BACKWARDS
-system_control.NetworkComm.run(NetworkComm.java:80) 54947 [Thread-4] DEBUG system_control.NetworkComm  - BACKWARDS
-system_control.NetworkComm.run(NetworkComm.java:80) 56738 [Thread-4] DEBUG system_control.NetworkComm  - BACKWARDS
-system_control.NetworkComm.run(NetworkComm.java:87) 76041 [Thread-4] DEBUG system_control.NetworkComm  - Received completion flag
-system_control.RouteManager.run(RouteManager.java:58) 76081 [Thread-5] DEBUG system_control.RouteManager  - Finished executing route
-system_control.RouteManager.run(RouteManager.java:36) 76081 [Thread-5] DEBUG system_control.RouteManager  - [FORWARD, FORWARD, FORWARD, FORWARD, RIGHT, RIGHT, BACKWARDS]: Correctly generates path
-system_control.NetworkComm.run(NetworkComm.java:59) 76081 [Thread-4] DEBUG system_control.NetworkComm  - Started sending route
-system_control.NetworkComm.run(NetworkComm.java:72) 76081 [Thread-4] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
-system_control.NetworkComm.run(NetworkComm.java:80) 76190 [Thread-4] DEBUG system_control.NetworkComm  - FORWARD
-system_control.NetworkComm.run(NetworkComm.java:80) 78065 [Thread-4] DEBUG system_control.NetworkComm  - FORWARD
-system_control.NetworkComm.run(NetworkComm.java:80) 79989 [Thread-4] DEBUG system_control.NetworkComm  - FORWARD
-system_control.NetworkComm.run(NetworkComm.java:80) 82082 [Thread-4] DEBUG system_control.NetworkComm  - FORWARD
-system_control.NetworkComm.run(NetworkComm.java:80) 83990 [Thread-4] DEBUG system_control.NetworkComm  - RIGHT
-system_control.NetworkComm.run(NetworkComm.java:80) 86827 [Thread-4] DEBUG system_control.NetworkComm  - RIGHT
-system_control.NetworkComm.run(NetworkComm.java:80) 88715 [Thread-4] DEBUG system_control.NetworkComm  - BACKWARDS
-system_control.NetworkComm.run(NetworkComm.java:87) 105352 [Thread-4] DEBUG system_control.NetworkComm  - Received completion flag
-system_control.RouteManager.run(RouteManager.java:58) 105384 [Thread-5] DEBUG system_control.RouteManager  - Finished executing route
-system_control.RouteManager.run(RouteManager.java:36) 105384 [Thread-5] DEBUG system_control.RouteManager  - [RIGHT]: Correctly generates path
-system_control.NetworkComm.run(NetworkComm.java:59) 105384 [Thread-4] DEBUG system_control.NetworkComm  - Started sending route
-system_control.NetworkComm.run(NetworkComm.java:72) 105384 [Thread-4] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
-system_control.NetworkComm.run(NetworkComm.java:80) 105487 [Thread-4] DEBUG system_control.NetworkComm  - RIGHT
-system_control.NetworkComm.run(NetworkComm.java:87) 115977 [Thread-4] DEBUG system_control.NetworkComm  - Received completion flag
-system_control.RouteManager.run(RouteManager.java:58) 116008 [Thread-5] DEBUG system_control.RouteManager  - Finished executing route
-system_control.RouteManager.run(RouteManager.java:36) 116008 [Thread-5] DEBUG system_control.RouteManager  - [LEFT, BACKWARDS]: Correctly generates path
-system_control.NetworkComm.run(NetworkComm.java:59) 116008 [Thread-4] DEBUG system_control.NetworkComm  - Started sending route
-system_control.NetworkComm.run(NetworkComm.java:72) 116008 [Thread-4] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
-system_control.NetworkComm.run(NetworkComm.java:80) 116137 [Thread-4] DEBUG system_control.NetworkComm  - LEFT
-system_control.NetworkComm.run(NetworkComm.java:80) 117537 [Thread-4] DEBUG system_control.NetworkComm  - BACKWARDS
+system_control.SystemControl.main(SystemControl.java:50) 0    [main] DEBUG system_control.SystemControl  - Successfully set up map
+system_control.SystemControl.main(SystemControl.java:64) 6    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Bob
+system_control.SystemControl.main(SystemControl.java:69) 7    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Vader
+system_control.SystemControl.main(SystemControl.java:103) 16   [main] DEBUG system_control.SystemControl  - Successfully ordered jobs, and distributed them
+system_control.RouteManager.run(RouteManager.java:36) 18   [Thread-8] DEBUG system_control.RouteManager  - Correctly generates path: [RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, FORWARD, FORWARD]
+system_control.RouteManager.run(RouteManager.java:36) 18   [Thread-7] DEBUG system_control.RouteManager  - Correctly generates path: [RIGHT, RIGHT, FORWARD, FORWARD, FORWARD, FORWARD]
+system_control.RouteManager.run(RouteManager.java:43) 19   [Thread-7] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.RouteManager.run(RouteManager.java:43) 19   [Thread-8] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 3564 [Thread-5] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 3565 [Thread-5] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 4095 [Thread-5] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:59) 4353 [Thread-6] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 4353 [Thread-6] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 4949 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 6395 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 6794 [Thread-5] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 8073 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 8720 [Thread-5] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:80) 10071 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 11344 [Thread-5] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:80) 11971 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 13244 [Thread-5] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:80) 13946 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 15195 [Thread-5] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:80) 15970 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 17877 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 18520 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 20199 [Thread-6] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:80) 23895 [Thread-6] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:87) 86043 [Thread-6] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 86060 [Thread-8] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 86080 [Thread-8] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 86081 [Thread-8] DEBUG system_control.RouteManager  - Correctly generates path: [LEFT, FORWARD, FORWARD, FORWARD, FORWARD, LEFT, LEFT, BACKWARDS, BACKWARDS]
+system_control.RouteManager.run(RouteManager.java:43) 86081 [Thread-8] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 86081 [Thread-6] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 86081 [Thread-6] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 86268 [Thread-6] DEBUG system_control.NetworkComm  - LEFT
+system_control.NetworkComm.run(NetworkComm.java:80) 100420 [Thread-6] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:87) 104497 [Thread-6] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 104502 [Thread-8] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 104522 [Thread-8] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 104522 [Thread-8] DEBUG system_control.RouteManager  - Correctly generates path: [LEFT, BACKWARDS, BACKWARDS, BACKWARDS, BACKWARDS, LEFT, LEFT, FORWARD]
+system_control.RouteManager.run(RouteManager.java:43) 104522 [Thread-8] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 104522 [Thread-6] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 104523 [Thread-6] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 104679 [Thread-6] DEBUG system_control.NetworkComm  - LEFT
+system_control.NetworkComm.run(NetworkComm.java:87) 110172 [Thread-6] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 110186 [Thread-8] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 110207 [Thread-8] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 110207 [Thread-8] DEBUG system_control.RouteManager  - Correctly generates path: [LEFT, FORWARD, FORWARD]
+system_control.RouteManager.run(RouteManager.java:43) 110207 [Thread-8] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 110207 [Thread-6] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 110207 [Thread-6] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 110348 [Thread-6] DEBUG system_control.NetworkComm  - LEFT
+system_control.NetworkComm.run(NetworkComm.java:87) 115596 [Thread-6] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 115611 [Thread-8] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 115631 [Thread-8] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:61) 115632 [Thread-8] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 115632 [Thread-8] DEBUG system_control.RouteManager  - Correctly generates path: [RIGHT, FORWARD, FORWARD, FORWARD, RIGHT, RIGHT, BACKWARDS]
+system_control.RouteManager.run(RouteManager.java:43) 115632 [Thread-8] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 115632 [Thread-6] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 115632 [Thread-6] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 115780 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:87) 122597 [Thread-6] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 122608 [Thread-8] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 122629 [Thread-8] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 122629 [Thread-8] DEBUG system_control.RouteManager  - Correctly generates path: [RIGHT, FORWARD, RIGHT, RIGHT, BACKWARDS, BACKWARDS]
+system_control.RouteManager.run(RouteManager.java:43) 122629 [Thread-8] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 122629 [Thread-6] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 122630 [Thread-6] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 122799 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:87) 131849 [Thread-6] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 131863 [Thread-8] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 131884 [Thread-8] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 131884 [Thread-8] DEBUG system_control.RouteManager  - Correctly generates path: [FORWARD]
+system_control.RouteManager.run(RouteManager.java:43) 131884 [Thread-8] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 131884 [Thread-6] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 131884 [Thread-6] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 131999 [Thread-6] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:87) 138035 [Thread-5] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 138042 [Thread-7] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 138062 [Thread-7] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 138062 [Thread-7] DEBUG system_control.RouteManager  - Correctly generates path: [FORWARD]
+system_control.RouteManager.run(RouteManager.java:43) 138062 [Thread-7] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 138062 [Thread-5] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 138062 [Thread-5] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 138207 [Thread-5] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:87) 158916 [Thread-5] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 158933 [Thread-7] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 158954 [Thread-7] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 158954 [Thread-7] DEBUG system_control.RouteManager  - Correctly generates path: [FORWARD, LEFT, LEFT, BACKWARDS]
+system_control.RouteManager.run(RouteManager.java:43) 158954 [Thread-7] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 158954 [Thread-5] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 158954 [Thread-5] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 159095 [Thread-5] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:80) 161070 [Thread-5] DEBUG system_control.NetworkComm  - LEFT
+system_control.NetworkComm.run(NetworkComm.java:80) 163770 [Thread-5] DEBUG system_control.NetworkComm  - LEFT
+system_control.NetworkComm.run(NetworkComm.java:80) 165659 [Thread-5] DEBUG system_control.NetworkComm  - BACKWARDS
+system_control.NetworkComm.run(NetworkComm.java:87) 174116 [Thread-5] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 174120 [Thread-7] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 174140 [Thread-7] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 174140 [Thread-7] DEBUG system_control.RouteManager  - Correctly generates path: [BACKWARDS, BACKWARDS, BACKWARDS]
+system_control.RouteManager.run(RouteManager.java:43) 174140 [Thread-7] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 174140 [Thread-5] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 174140 [Thread-5] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 174296 [Thread-5] DEBUG system_control.NetworkComm  - BACKWARDS
+system_control.NetworkComm.run(NetworkComm.java:80) 177520 [Thread-5] DEBUG system_control.NetworkComm  - BACKWARDS
+system_control.NetworkComm.run(NetworkComm.java:80) 178021 [Thread-5] DEBUG system_control.NetworkComm  - BACKWARDS
+system_control.NetworkComm.run(NetworkComm.java:87) 192671 [Thread-6] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 192683 [Thread-8] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 192705 [Thread-8] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:61) 192705 [Thread-8] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 192706 [Thread-8] DEBUG system_control.RouteManager  - Correctly generates path: [BACKWARDS, BACKWARDS, BACKWARDS, BACKWARDS, BACKWARDS, LEFT, LEFT, LEFT, LEFT, LEFT, FORWARD]
+system_control.RouteManager.run(RouteManager.java:43) 192706 [Thread-8] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 192706 [Thread-6] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 192707 [Thread-6] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 192906 [Thread-6] DEBUG system_control.NetworkComm  - BACKWARDS
+system_control.NetworkComm.run(NetworkComm.java:80) 195855 [Thread-6] DEBUG system_control.NetworkComm  - BACKWARDS
+system_control.NetworkComm.run(NetworkComm.java:80) 197831 [Thread-6] DEBUG system_control.NetworkComm  - BACKWARDS
+system_control.NetworkComm.run(NetworkComm.java:87) 210094 [Thread-6] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 210108 [Thread-8] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 210128 [Thread-8] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 210128 [Thread-8] DEBUG system_control.RouteManager  - Correctly generates path: [FORWARD, FORWARD, FORWARD, FORWARD]
+system_control.RouteManager.run(RouteManager.java:43) 210128 [Thread-8] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 210128 [Thread-6] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 210128 [Thread-6] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 210263 [Thread-6] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:80) 216470 [Thread-6] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:87) 221060 [Thread-6] DEBUG system_control.NetworkComm  - Received completion flag
+system_control.RouteManager.run(RouteManager.java:46) 221081 [Thread-8] DEBUG system_control.RouteManager  - Notifier changed
+system_control.RouteManager.run(RouteManager.java:58) 221111 [Thread-8] DEBUG system_control.RouteManager  - Finished executing route
+system_control.RouteManager.run(RouteManager.java:36) 221111 [Thread-8] DEBUG system_control.RouteManager  - Correctly generates path: [FORWARD, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, BACKWARDS]
+system_control.RouteManager.run(RouteManager.java:43) 221113 [Thread-8] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:59) 221113 [Thread-6] DEBUG system_control.NetworkComm  - Started sending route
+system_control.NetworkComm.run(NetworkComm.java:72) 221113 [Thread-6] DEBUG system_control.NetworkComm  - Finished sending route and number of picks
+system_control.NetworkComm.run(NetworkComm.java:80) 221263 [Thread-6] DEBUG system_control.NetworkComm  - FORWARD
+system_control.NetworkComm.run(NetworkComm.java:80) 223484 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 224836 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT
+system_control.NetworkComm.run(NetworkComm.java:80) 226786 [Thread-6] DEBUG system_control.NetworkComm  - RIGHT

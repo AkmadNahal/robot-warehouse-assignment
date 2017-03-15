@@ -98,7 +98,7 @@ public class GridWalker implements StoppableRunnable {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				logger.fatal("ERROR - I/O exception with GUI grid movements");
 				e.printStackTrace();
 			}
 		}

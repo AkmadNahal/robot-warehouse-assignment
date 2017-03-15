@@ -94,7 +94,8 @@ public class NetworkComm implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NXTCommException e) {
-			e.printStackTrace();
+			logger.fatal("ERROR - Failed to connect to robot");
+			logger.fatal(e);
 		}
 	}
 

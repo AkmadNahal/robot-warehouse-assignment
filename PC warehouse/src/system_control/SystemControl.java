@@ -22,18 +22,29 @@ import utils.SuperLocation;
 
 
 public class SystemControl {
-	
+
 	private static final Logger logger = Logger.getLogger(SystemControl.class);
 	
 	public static void main(String[] args) {
 
-		SuperLocation locationAccess = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); //start location
+		SuperLocation locationAccess1 = new SuperLocation(new Location(6, 0, LocationType.EMPTY)); //start location, ROBOT 1
+		SuperLocation locationAccess2 = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); //start location, ROBOT 2
+		//SuperLocation locationAccess3 = new SuperLocation(new Location(11, 0, LocationType.EMPTY)); //start location, ROBOT 3
 		
-		PCSessionManager sessionManager = new PCSessionManager(locationAccess);
-		ChangeNotifier notifier = new ChangeNotifier();
+		PCSessionManager sessionManager1 = new PCSessionManager(locationAccess1);
+		ChangeNotifier notifier1 = new ChangeNotifier();
 		
-		GridWalkerManager gridWalkerManager = new GridWalkerManager(MapUtils.createRealWarehouse(), sessionManager);
+		PCSessionManager sessionManager2 = new PCSessionManager(locationAccess2);
+		ChangeNotifier notifier2 = new ChangeNotifier();
+		
+		//PCSessionManager sessionManager3 = new PCSessionManager(locationAccess3);
+		//ChangeNotifier notifier3 = new ChangeNotifier();
+		
+		GridWalkerManager gridWalkerManager = new GridWalkerManager(MapUtils.createRealWarehouse());
 		gridWalkerManager.setup();
+		gridWalkerManager.startGridWalker(sessionManager1);
+		gridWalkerManager.startGridWalker(sessionManager2);
+		//gridWalkerManager.startGridWalker(sessionManager3);
 		Location[][] map = gridWalkerManager.createMap();
 		
 		logger.debug("Successfully set up map");
@@ -41,21 +52,53 @@ public class SystemControl {
 		// Setup robot info and networking
 		NXTInfo robot1Info = new NXTInfo (NXTCommFactory.BLUETOOTH, "Lil' Bob",
 			"0016531AF650");
+		NXTInfo robot2Info = new NXTInfo (NXTCommFactory.BLUETOOTH, "Lil' Vader",
+				"00165308E541");
+		//NXTInfo robot3Info = new NXTInfo (NXTCommFactory.BLUETOOTH, "Lil' Yoda",
+				//"0016531AF650");
 		
 		//starts the PC sending/receiving thread
-		NetworkComm robot1 = new NetworkComm(robot1Info, sessionManager, notifier);
+		NetworkComm robot1 = new NetworkComm(robot1Info, sessionManager1, notifier1);
 		(new Thread(robot1)).start();
 		
 		logger.debug("Successfully connected to Lil' Bob");
+		
+		NetworkComm robot2 = new NetworkComm(robot2Info, sessionManager2, notifier2);
+		(new Thread(robot2)).start();
+		
+		logger.debug("Successfully connected to Lil' Vader");
+		
+		//NetworkComm robot3 = new NetworkComm(robot3Info, sessionManager3, notifier3);
+		//(new Thread(robot3)).start();
+		
+		//logger.debug("Successfully connected to Lil' Yoda");
 		
 		// Initialise route planner
 		RoutePlanner planner = new RoutePlanner(map,gridWalkerManager.getMapSizeX(),gridWalkerManager.getMapSizeY());
 		
 		ArrayList<Round> rounds = orderJobs();
 		
-		RouteManager routeManager = new RouteManager(rounds, sessionManager, planner, notifier);
+		ArrayList<Round> robot1Rounds = new ArrayList<Round>();
+		ArrayList<Round> robot2Rounds = new ArrayList<Round>();
+		//ArrayList<Round> robot3Rounds = new ArrayList<Round>();
 		
-		(new Thread (routeManager)).start();
+		for (int i = 0; i < rounds.size(); i++){
+			if (i < 53){
+				robot1Rounds.add(rounds.get(i));
+			}else{
+				robot2Rounds.add(rounds.get(i));
+			}
+		}
+		
+		//distributeRounds() <-- Some method that'll distribute jobs between the robots (In Jerry's component)
+		
+		RouteManager routeManager1 = new RouteManager(robot1Rounds, sessionManager1, planner, notifier1);
+		RouteManager routeManager2 = new RouteManager(robot2Rounds, sessionManager2, planner, notifier2);
+		//RouteManager routeManager3 = new RouteManager(robot3Rounds, sessionManager3, planner, notifier3);
+		
+		(new Thread (routeManager1)).start();
+		(new Thread (routeManager2)).start();
+		//(new Thread (routeManager3)).start();
 		
 		logger.debug("Successfully ordered jobs, and distributed them");
 	

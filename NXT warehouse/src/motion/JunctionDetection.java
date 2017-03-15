@@ -18,15 +18,17 @@ public class JunctionDetection extends AbstractBehaviour {
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
 
-	boolean isOnJunction = false;
+	boolean isOnJunction = true;
 	private ArrayList<Direction> route;
 	private int counter = -1;
 
 	private RobotLocationSessionManager locationManager;
 
-	private int threshold = 45;
+	private int calibratedValue;
+	private int error = 6;
 
-	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, ArrayList<Direction> route, RobotLocationSessionManager _locationManager) {
+	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor,
+			ArrayList<Direction> route, RobotLocationSessionManager _locationManager, int calValue) {
 		super(_config);
 
 		lhSensor = new LightSensor(_lhSensor);
@@ -34,44 +36,47 @@ public class JunctionDetection extends AbstractBehaviour {
 
 		this.route = new ArrayList<Direction>(route);
 		this.locationManager = _locationManager;
+		this.calibratedValue = calValue;
+		
 	}
 
 	@Override
 	public boolean takeControl() {
 
-		float lhValue = lhSensor.getLightValue();
-		float rhValue = rhSensor.getLightValue();
+		int valueRight = rhSensor.readValue();
+		int valueLeft = lhSensor.readValue();
 
-		if(lhValue < threshold && rhValue < threshold){
+		if ((valueRight - calibratedValue < error) && (valueLeft - calibratedValue < error )) {
 			isOnJunction = true;
 		}
+
 		return isOnJunction;
 	}
 
 	@Override
 	public void action() {
-		if (threshold != 45){
+		counter++;
+		if (counter != 0) {
 			pilot.travel(0.05);
 		}
 		pilot.stop();
 
-		counter++;
 
-		if(counter == route.size()) {
+
+		if (counter == route.size()) {
 			Direction previousMove = route.get(counter - 1);
 
-			if (previousMove == Direction.BACKWARDS){
+			if (previousMove == Direction.BACKWARDS) {
 				pilot.rotate(180);
 				pilot.stop();
-			}else if(previousMove == Direction.LEFT){
+			} else if (previousMove == Direction.LEFT) {
 				pilot.rotate(-90);
 				pilot.stop();
-			}else if(previousMove == Direction.RIGHT){
+			} else if (previousMove == Direction.RIGHT) {
 				pilot.rotate(90);
 				pilot.stop();
 			}
 		} else {
-			threshold = 35;
 			Direction currentMove = route.get(counter);
 			Direction previousMove = null;
 
@@ -79,51 +84,50 @@ public class JunctionDetection extends AbstractBehaviour {
 			locationManager.setNextMove(currentMove);
 			locationManager.setShouldSendNextMove(true);
 
-			if(counter > 0) {
+			if (counter > 0) {
 				previousMove = route.get(counter - 1);
 
-				if(currentMove != previousMove) {
-					if (previousMove == Direction.BACKWARDS){
+				if (currentMove != previousMove) {
+					if (previousMove == Direction.BACKWARDS) {
 						pilot.rotate(180);
 						pilot.stop();
-					}else if(previousMove == Direction.LEFT){
+					} else if (previousMove == Direction.LEFT) {
 						pilot.rotate(-90);
 						pilot.stop();
-					}else if(previousMove == Direction.RIGHT){
+					} else if (previousMove == Direction.RIGHT) {
 						pilot.rotate(90);
 						pilot.stop();
 					}
 				}
 			}
 
-			if(previousMove != null) {
-				if(previousMove != currentMove) {
-					if (currentMove == Direction.BACKWARDS){
+			if (previousMove != null) {
+				if (previousMove != currentMove) {
+					if (currentMove == Direction.BACKWARDS) {
 						pilot.rotate(180);
 						pilot.stop();
-					}else if(currentMove == Direction.LEFT){
+					} else if (currentMove == Direction.LEFT) {
 						pilot.rotate(90);
 						pilot.stop();
-					}else if(currentMove == Direction.RIGHT){
+					} else if (currentMove == Direction.RIGHT) {
 						pilot.rotate(-90);
 						pilot.stop();
 					}
 				}
 			} else {
-				if (currentMove == Direction.BACKWARDS){
+				if (currentMove == Direction.BACKWARDS) {
 					pilot.rotate(180);
 					pilot.stop();
-				}else if(currentMove == Direction.LEFT){
+				} else if (currentMove == Direction.LEFT) {
 					pilot.rotate(90);
 					pilot.stop();
-				}else if(currentMove == Direction.RIGHT){
+				} else if (currentMove == Direction.RIGHT) {
 					pilot.rotate(-90);
 					pilot.stop();
 				}
 			}
 		}
 
-		threshold = 35;
 		isOnJunction = false;
 	}
 

@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+import lejos.nxt.LightSensor;
+import lejos.nxt.SensorPort;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
 import lejos.nxt.comm.RConsole;
+import lejos.util.Delay;
 import utils.Direction;
 
 public class RobotControl implements Runnable {

@@ -1,5 +1,7 @@
 package system_control;
 
+import org.apache.log4j.Logger;
+
 import lejos.robotics.RangeFinder;
 import rp.robotics.MobileRobotWrapper;
 import rp.robotics.mapping.GridMap;
@@ -11,7 +13,6 @@ import rp.robotics.simulation.MovableRobot;
 import rp.robotics.simulation.SimulatedRobots;
 import utils.Location;
 import utils.LocationType;
-import utils.SuperLocation;
 import warehouse_interface.GridWalker;
 import warehouse_interface.WarehouseController;
 import warehouse_interface.WarehouseView;
@@ -19,16 +20,15 @@ import warehouse_interface.WarehouseView;
 public class GridWalkerManager {
 	
 	private GridMap mapModel;
-	private PCSessionManager sessionManager;
-	private final int ROBOT_COUNT = 1;
+	private final int ROBOT_COUNT = 3;
 	private int mapSizeX;
 	private int mapSizeY;
-	private int[] robotStartingXCoordinate = new int[]{0, 6, 11};
+	private MapBasedSimulation sim;
 	
+	private static final Logger logger = Logger.getLogger(GridWalkerManager.class);
 	
-	public GridWalkerManager (GridMap mapModel, PCSessionManager sessionManager){
+	public GridWalkerManager (GridMap mapModel){
 		this.mapModel = mapModel;
-		this.sessionManager = sessionManager;
 	}
 	
 	public void setup(){
@@ -36,21 +36,7 @@ public class GridWalkerManager {
 		mapSizeX = mapModel.getXSize();
 		mapSizeY = mapModel.getYSize();
 		
-		MapBasedSimulation sim = new MapBasedSimulation(mapModel);
-		for (int i = 0; i < ROBOT_COUNT; i++) {
-			GridPose gridStart = new GridPose(robotStartingXCoordinate[i], 0, Heading.PLUS_Y);
-			MobileRobotWrapper<MovableRobot> wrapper = sim.addRobot(
-					SimulatedRobots.makeConfiguration(false, true),
-					mapModel.toPose(gridStart));
-			RangeFinder ranger = sim.getRanger(wrapper);
-			GridWalker controller = new GridWalker(wrapper.getRobot(),
-					mapModel, gridStart, ranger, sessionManager);
-			new Thread(controller).start();
-		}
-
-		WarehouseController control = new WarehouseController(mapModel, sim);
-		WarehouseView view = new WarehouseView(ROBOT_COUNT);
-		control.registerView(view);
+		setSim(new MapBasedSimulation(mapModel));
 	}
 	
 	public Location[][] createMap() {
@@ -71,12 +57,35 @@ public class GridWalkerManager {
 		return map;
 	}
 	
+	public void startGridWalker(PCSessionManager sessionManager){
+		GridPose gridStart = new GridPose(sessionManager.getLocationAccess().getCurrentLocation().getX(),
+				sessionManager.getLocationAccess().getCurrentLocation().getY(), Heading.PLUS_Y);
+		MobileRobotWrapper<MovableRobot> wrapper = getSim().addRobot(
+				SimulatedRobots.makeConfiguration(false, true),
+				mapModel.toPose(gridStart));
+		RangeFinder ranger = getSim().getRanger(wrapper);
+		GridWalker controller = new GridWalker(wrapper.getRobot(),
+				mapModel, gridStart, ranger, sessionManager);
+		WarehouseController control = new WarehouseController(mapModel, sim);
+		WarehouseView view = new WarehouseView(ROBOT_COUNT);
+		control.registerView(view);
+		new Thread(controller).start();
+	}
+	
 	public int getMapSizeX(){
 		return this.mapSizeX;
 	}
 	
 	public int getMapSizeY(){
 		return this.mapSizeY;
+	}
+	
+	public void setSim(MapBasedSimulation sim){
+		this.sim = sim;
+	}
+	
+	public MapBasedSimulation getSim(){
+		return this.sim;
 	}
 
 }
