@@ -4,6 +4,7 @@ public class RoutePlanner {
 
   private Location[][] map;
   private int maxX, maxY;
+  private final int WINDOW = 3;
 
   public RoutePlanner(Location[][] _map, int _maxX, int _maxY) {
     map = _map;
@@ -11,7 +12,105 @@ public class RoutePlanner {
     maxY = _maxY;
   }
 
-  public ArrayList<Direction> getRoute(Location startLocation, Location endLocation) {
+  public HashMap<String, ArrayList<Location>> getMultiRobotRoute(Location robot1Start, Location robot1End, Location robot2Start, Location robot2End, Location robot3Start, Location robot3End) {
+    ArrayList<Location> route1, route2, route3;
+    HashMap<String, ArrayList<Location>> solution = new HashMap<String, ArrayList<Location>>();
+
+    // Priority 1/2/3
+    clearMap();
+    route1 = chunkToWindow(getRoute(robot1Start, robot2End));
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End));
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End));
+    clearMap();
+
+    if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
+      // Success
+      solution.put("robot1", route1);
+      solution.put("robot2", route2);
+      solution.put("robot3", route3);
+      return solution;
+    }
+
+    // Priority 1/3/2
+    clearMap();
+    route1 = chunkToWindow(getRoute(robot1Start, robot2End));
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End));
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End));
+    clearMap();
+
+    if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
+      // Success
+      solution.put("robot1", route1);
+      solution.put("robot2", route2);
+      solution.put("robot3", route3);
+      return solution;
+    }
+
+    // Priority 2/1/3
+    clearMap();
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End));
+    route1 = chunkToWindow(getRoute(robot1Start, robot2End));
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End));
+    clearMap();
+
+    if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
+      // Success
+      solution.put("robot1", route1);
+      solution.put("robot2", route2);
+      solution.put("robot3", route3);
+      return solution;
+    }
+
+    // Priority 2/3/1
+    clearMap();
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End));
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End));
+    route1 = chunkToWindow(getRoute(robot1Start, robot2End));
+    clearMap();
+
+    if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
+      // Success
+      solution.put("robot1", route1);
+      solution.put("robot2", route2);
+      solution.put("robot3", route3);
+      return solution;
+    }
+
+    // Priority 3/1/2
+    clearMap();
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End));
+    route1 = chunkToWindow(getRoute(robot1Start, robot2End));
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End));
+    clearMap();
+
+    if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
+      // Success
+      solution.put("robot1", route1);
+      solution.put("robot2", route2);
+      solution.put("robot3", route3);
+      return solution;
+    }
+
+    // Priority 3/2/1
+    clearMap();
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End));
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End));
+    route1 = chunkToWindow(getRoute(robot1Start, robot2End));
+    clearMap();
+
+    if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
+      // Success
+      solution.put("robot1", route1);
+      solution.put("robot2", route2);
+      solution.put("robot3", route3);
+      return solution;
+    }
+
+    return null;
+
+  }
+
+  public ArrayList<Location> getRoute(Location startLocation, Location endLocation) {
 
     ArrayList<LocationNode> open_list = new ArrayList<LocationNode>();
     ArrayList<LocationNode> close_list = new ArrayList<LocationNode>();
@@ -86,7 +185,7 @@ public class RoutePlanner {
 
     solution.add(0, startLocation);
 
-    return coordinatesToDirections(solution);
+    return solution;
   }
 
   private ArrayList<LocationNode> getSuccessors(LocationNode node) {
@@ -153,5 +252,24 @@ public class RoutePlanner {
 
     return directions;
 	}
+
+  private void clearMap() {
+    for(int i=0;i<maxX;i++) {
+      for(int j=0;j<maxY;j++) {
+        if(map[i][j].getType() == LocationType.TEMP) {
+          map[i][j].setType(LocationType.EMPTY);
+        }
+      }
+    }
+  }
+
+  private ArrayList<Location> chunkToWindow(ArrayList<Location> route) {
+    ArrayList<Location> solution = new ArrayList<Location>();
+
+    for(int i=0;i<=WINDOW;i++) {
+      solution.add(route.get(i));
+    }
+    return solution;
+  }
 
 }
