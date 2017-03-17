@@ -3,6 +3,7 @@ package robot_interface;
 import java.io.PrintStream;
 
 import lejos.nxt.Button;
+import lejos.nxt.LCD;
 import lejos.nxt.comm.RConsole;
 import motion.RobotMovementSessionManager;
 
@@ -23,14 +24,17 @@ public class RobotInterface implements Runnable{
 					int i = Button.waitForAnyPress(); 
 					if(i == Button.ID_ENTER){
 						if (pickedInLocation< movementManager.getNumberOfPicks()) {
+							LCD.clear();
 							System.out.println("Incorrect amount");
 							System.out.println("Picked: " + pickedInLocation);
 							System.out.println("Please pick " + (movementManager.getNumberOfPicks() - pickedInLocation) + " more items.");
 						}else if (pickedInLocation>movementManager.getNumberOfPicks()){
+							LCD.clear();
 							System.out.println("Incorrect amount");
 							System.out.println("Picked: " + pickedInLocation);
 							System.out.println("Please pick " + (pickedInLocation - movementManager.getNumberOfPicks()) + " less items.");
 						}else if (pickedInLocation == movementManager.getNumberOfPicks()){
+							LCD.clear();
 							System.out.println("Right amount picked.");
 							System.out.println("To the next pick!");
 							pickedInLocation = 0;
@@ -42,10 +46,12 @@ public class RobotInterface implements Runnable{
 						if (pickedInLocation > 0) {
 							pickedInLocation--;
 						}
+						LCD.clear();
 						System.out.println("Picking:" + pickedInLocation);
 					}
 					if (i == Button.ID_RIGHT){
 						pickedInLocation++;
+						LCD.clear();
 						System.out.println("Picking:" + pickedInLocation);
 					}
 				}

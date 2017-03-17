@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
+import lejos.nxt.Sound;
 import lejos.nxt.comm.RConsole;
-//import motion.CorrectPose;
-//import motion.Turn;
 import rp.config.WheeledRobotConfiguration;
+import rp.util.Rate;
 import utils.Direction;
 import utils.LocationType;
 import utils.SuperLocation;
@@ -26,6 +26,8 @@ public class JunctionDetection extends AbstractBehaviour {
 
 	private int calibratedValue;
 	private int error = 6;
+	
+	private Rate r = new Rate(20);
 
 	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor,
 			ArrayList<Direction> route, RobotLocationSessionManager _locationManager, int calValue) {
@@ -60,6 +62,7 @@ public class JunctionDetection extends AbstractBehaviour {
 			pilot.travel(0.05);
 		}
 		pilot.stop();
+		Sound.buzz();
 
 
 
@@ -127,7 +130,8 @@ public class JunctionDetection extends AbstractBehaviour {
 				}
 			}
 		}
-
+		
+		r.sleep(); //remove if buggy!
 		isOnJunction = false;
 	}
 

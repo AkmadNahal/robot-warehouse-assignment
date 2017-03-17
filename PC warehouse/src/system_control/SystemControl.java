@@ -27,8 +27,8 @@ public class SystemControl {
 	
 	public static void main(String[] args) {
 
-		SuperLocation locationAccess1 = new SuperLocation(new Location(6, 0, LocationType.EMPTY)); //start location, ROBOT 1
-		SuperLocation locationAccess2 = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); //start location, ROBOT 2
+		SuperLocation locationAccess1 = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); //start location, ROBOT 1
+		SuperLocation locationAccess2 = new SuperLocation(new Location(6, 0, LocationType.EMPTY)); //start location, ROBOT 2
 		//SuperLocation locationAccess3 = new SuperLocation(new Location(11, 0, LocationType.EMPTY)); //start location, ROBOT 3
 		
 		PCSessionManager sessionManager1 = new PCSessionManager(locationAccess1);
@@ -63,10 +63,10 @@ public class SystemControl {
 		
 		logger.debug("Successfully connected to Lil' Bob");
 		
-		NetworkComm robot2 = new NetworkComm(robot2Info, sessionManager2, notifier2);
-		(new Thread(robot2)).start();
+		//NetworkComm robot2 = new NetworkComm(robot2Info, sessionManager2, notifier2);
+		//(new Thread(robot2)).start();
 		
-		logger.debug("Successfully connected to Lil' Vader");
+		//logger.debug("Successfully connected to Lil' Vader");
 		
 		//NetworkComm robot3 = new NetworkComm(robot3Info, sessionManager3, notifier3);
 		//(new Thread(robot3)).start();
@@ -83,10 +83,11 @@ public class SystemControl {
 		//ArrayList<Round> robot3Rounds = new ArrayList<Round>();
 		
 		for (int i = 0; i < rounds.size(); i++){
-			if (i < 53){
+			if (i > 60){
 				robot1Rounds.add(rounds.get(i));
-			}else{
-				robot2Rounds.add(rounds.get(i));
+			//}else{
+				//robot2Rounds.add(rounds.get(i));
+			//}
 			}
 		}
 		

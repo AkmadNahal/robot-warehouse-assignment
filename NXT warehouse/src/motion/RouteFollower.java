@@ -9,6 +9,7 @@ import lejos.nxt.Sound;
 import lejos.nxt.UltrasonicSensor;
 import lejos.nxt.comm.RConsole;
 import rp.config.WheeledRobotConfiguration;
+import rp.util.Rate;
 import utils.Direction;
 
 public class RouteFollower extends AbstractBehaviour {
@@ -25,6 +26,8 @@ public class RouteFollower extends AbstractBehaviour {
 	private float valDiff;
 	
 	private float P;
+	
+	private Rate r = new Rate(20);
 
 	
 	private boolean isRouteComplete = false;
@@ -116,6 +119,7 @@ public class RouteFollower extends AbstractBehaviour {
 				float turnOut = P * turnDiff;
 				
 				pilot.steer(turnOut);
+				r.sleep();
 				
 			}
 			if(abortRoute == false){
