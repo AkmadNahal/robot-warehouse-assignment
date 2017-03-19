@@ -6,6 +6,7 @@ import lejos.robotics.RangeFinder;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
+import rp.robotics.navigation.Heading;
 import rp.robotics.simulation.MovableRobot;
 import rp.systems.StoppableRunnable;
 import system_control.PCSessionManager;
@@ -102,6 +103,12 @@ public class GridWalker implements StoppableRunnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void changePosition(){
+		GridPose pose = new GridPose(sessionManager.getLocationAccess().getCurrentLocation().getX(), 
+				sessionManager.getLocationAccess().getCurrentLocation().getY(),  Heading.PLUS_Y);
+		m_pilot.setGridPose(pose);
 	}
 
 	@Override

@@ -74,7 +74,7 @@ public class RobotInterface implements Runnable{
 			}
 			}
 		}
-	}
+
 	
 	protected static void redirectOutput(boolean _useBluetooth) {
 		if (!RConsole.isOpen()) {

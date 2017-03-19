@@ -14,10 +14,12 @@ public class WarehouseController {
 	private GridMap mapModel;
 	private WarehouseView view;
 	private MapBasedSimulation sim;
+	private WarehouseModel robotModel;
 
-	public WarehouseController(GridMap mapModel, MapBasedSimulation sim) {
+	public WarehouseController(GridMap mapModel, MapBasedSimulation sim, GridWalker gridWalker1, GridWalker gridWalker2, GridWalker gridWalker3) {
 		this.mapModel = mapModel;
 		this.sim = sim;
+		robotModel = new WarehouseModel(gridWalker1, gridWalker2, gridWalker3);
 	}
 
 	public void registerView(WarehouseView view) {
@@ -32,7 +34,7 @@ public class WarehouseController {
 		view.setRefreshCallback(new WarehouseView.RefreshButtonCallback() {
 			@Override
 			public void refresh() {
-				// TODO Auto-generated method stub
+				robotModel.refresh();
 
 			}
 		});

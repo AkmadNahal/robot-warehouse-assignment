@@ -26,6 +26,10 @@ public class Location {
   public int getDistanceFromLocation(Location l) {
     return Math.abs(x - l.getX()) + Math.abs(y - l.getY());
   }
+  
+  public void setType(LocationType value) {
+	    type = value;
+	  }
 
   public boolean equalsTo(Location location) {
     return (x == location.getX() && y == location.getY());
