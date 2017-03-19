@@ -12,7 +12,7 @@ import rp.robotics.simulation.SimulatedRobots;
 
 public class Main {
 
-	private static final int ROBOT_COUNT = 1;
+	private static final int ROBOT_COUNT = 3;
 
 	public static void main(String[] args) {
 		GridMap mapModel = MapUtils.createRealWarehouse();

@@ -12,11 +12,13 @@ import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
 
 import rp.robotics.mapping.GridMap;
 import rp.robotics.simulation.MapBasedSimulation;
@@ -34,8 +36,11 @@ public class WarehouseView {
 
 	private JMenuBar menuBar;
 	private JFrame frame;
-	private JTextArea jobsDisplay;
+	private JTextArea jobsDisplayRobot1;
+	private JTextArea jobsDisplayRobot2;
+	private JTextArea jobsDisplayRobot3;
 	private JPanel cancelationPanel;
+	private JPanel jobsPanel;
 	private JPanel vizPanel;
 	private List<JButton> cancelRobotButtons = new ArrayList<>();
 	private JButton refreshRobots;
@@ -55,14 +60,27 @@ public class WarehouseView {
 			}
 		});
 		cancelationPanel = new JPanel();
+		jobsPanel = new JPanel();
 		vizPanel = new JPanel();
 		for (int i = 0; i < robotCount; i++) {
 			cancelRobotButtons.add(createNewCancelRobotButton(i));
+			
 		}
 		refreshRobots = new JButton("Refresh");
-		jobsDisplay = createDisplayField();
+		jobsDisplayRobot1 = createDisplayField();
+		jobsDisplayRobot2 = createDisplayField();
+		jobsDisplayRobot3 = createDisplayField();
+		jobsPanelVisualisation(jobsPanel);
 		cancelationPanelVisualisation(cancelationPanel);
 		frameVisualisation(frame);
+	}
+
+	private void jobsPanelVisualisation(JPanel jobsPanel) {
+		jobsPanel.setLayout(new GridLayout(3, 1));
+		jobsPanel.setPreferredSize(new Dimension(100, 100));
+		jobsPanel.add(jobsDisplayRobot1);
+		jobsPanel.add(jobsDisplayRobot2);
+		jobsPanel.add(jobsDisplayRobot3);
 	}
 
 	private JButton createNewCancelRobotButton(final int i) {
@@ -110,14 +128,17 @@ public class WarehouseView {
 		frame.setVisible(true);
 		frame.add(vizPanel, BorderLayout.WEST);
 		frame.add(cancelationPanel, BorderLayout.SOUTH);
-		frame.add(jobsDisplay, BorderLayout.EAST);
+		frame.add(jobsPanel, BorderLayout.EAST);
 	}
 
 	private JTextArea createDisplayField() {
 		JTextArea field = new JTextArea();
-		field.setPreferredSize(new Dimension(100, 100));
+		field.setPreferredSize(new Dimension(30, 30));
 		field.setBackground(new Color(255, 255, 255));
 		field.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
+		Border border = BorderFactory.createLineBorder(Color.BLACK);
+		field.setBorder(BorderFactory.createCompoundBorder(border, 
+		            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		field.setOpaque(true);
 		field.setEditable(false);
 		field.setAlignmentX(5f);
@@ -139,11 +160,9 @@ public class WarehouseView {
 		frame.add(viz);
 	}
 
-	public void setTasks(List<String> tasks) {
+	public void setTasks(ArrayList, Robot) {
 		String tasksList = "";
-		for (String task : tasks) {
-			tasksList = tasksList + System.lineSeparator() + task;
-		}
-		jobsDisplay.setText(tasksList);
+			tasksList = tasksList + System.lineSeparator();
+		jobsDisplayRobot1.setText(tasksList);
 	}
 }
