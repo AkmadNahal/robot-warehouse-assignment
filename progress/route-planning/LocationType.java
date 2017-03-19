@@ -1,3 +1,3 @@
 public enum LocationType {
-  EMPTY,BLOCK,TEMP
+  EMPTY,BLOCK,TEMP,ROBOT
 }

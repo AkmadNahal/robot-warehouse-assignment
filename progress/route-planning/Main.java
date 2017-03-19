@@ -5,7 +5,8 @@ public class Main {
 
   private static int maxMapSizeX = 12;
   private static int maxMapSizeY = 8;
-  private static Location[][] map = new Location[maxMapSizeX + 1][maxMapSizeY + 1];
+  private static Location[][] map = new Location[maxMapSizeX][maxMapSizeY];
+  private static int WINDOW = 5;
 
 
   public static void main(String[] args) {
@@ -13,13 +14,22 @@ public class Main {
 
     RoutePlanner planner = new RoutePlanner(map,maxMapSizeX,maxMapSizeY);
 
-    HashMap<String, ArrayList<Location>> sol = planner.getMultiRobotRoute(map[0][0], map[4][6], map[4][0], map[2][7]);
+    HashMap<String, ArrayList<Location>> solution = planner.getMultiRobotRoute(map[6][1], map[7][0], map[8][0], map[8][0], map[0][4], map[0][4]);
+
+    ArrayList<Location> route1 = solution.get("robot1");
+    ArrayList<Location> route2 = solution.get("robot2");
+    ArrayList<Location> route3 = solution.get("robot3");
+
+
+    for(int i=0;i<WINDOW;i++) {
+      System.out.println(route1.get(i).getX() + " - " + route1.get(i).getY() + "  |  " + route2.get(i).getX() + " - " + route2.get(i).getY() + "  |  " + route3.get(i).getX() + " - " + route3.get(i).getY());
+    }
 
   }
 
   private static void createMap() {
-    for(int i=0;i<=maxMapSizeX;i++) {
-      for(int j=0;j<=maxMapSizeY;j++) {
+    for(int i=0;i<maxMapSizeX;i++) {
+      for(int j=0;j<maxMapSizeY;j++) {
         map[i][j] = new Location(i,j,LocationType.EMPTY);
       }
     }
