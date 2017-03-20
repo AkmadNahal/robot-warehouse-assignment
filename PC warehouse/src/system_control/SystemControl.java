@@ -47,7 +47,7 @@ public class SystemControl {
 		GridWalker gridWalker1 = gridWalkerManager.startGridWalker(sessionManager1);
 		GridWalker gridWalker2 = gridWalkerManager.startGridWalker(sessionManager2);
 		//GridWalker gridWalker3 = gridWalkerManager.startGridWalker(sessionManager3);
-		gridWalkerManager.controllerAndView(gridWalker1, gridWalker2/*, gridWalker3*/);
+		gridWalkerManager.controllerAndView(gridWalker1, gridWalker2/*, gridWalker3*/, sessionManager1, sessionManager2);
 		Location[][] map = gridWalkerManager.createMap();
 		
 		logger.debug("Successfully set up map");

@@ -50,7 +50,10 @@ public class RouteManager implements Runnable {
 	public void run() {
 		for (int n = 0/*49*/; n < sortedJobs.size(); n+=2) {
 			Round robot1CurrentRound = sortedJobs.get(n);
+			sessionManager1.setCurrentRound(robot1CurrentRound);
 			Round robot2CurrentRound = sortedJobs.get(n+1);
+			sessionManager1.setCurrentRound(robot2CurrentRound);
+			
 			sortedJobs.get(n).initialiseCounts();
 			ArrayList<Integer> counts1 = sortedJobs.get(n).getCounts();
 			sortedJobs.get(n+1).initialiseCounts();
@@ -132,7 +135,9 @@ public class RouteManager implements Runnable {
 			while(counter < robot1Picks.size() && counter < robot2Picks.size()/* || counter < robot3Picks.size()*/) {
 				logger.debug("Doing pick " + counter);
 				Location target1 = robot1Picks.get(counter).getItem().getLoc();
+				sessionManager1.setPickLocation(target1);
 				Location target2 = robot2Picks.get(counter).getItem().getLoc();
+				sessionManager2.setPickLocation(target2);
 				
 				logger.debug("Robot 1 Target: " + target1);
 				logger.debug("Robot 2 Target: " + target2);

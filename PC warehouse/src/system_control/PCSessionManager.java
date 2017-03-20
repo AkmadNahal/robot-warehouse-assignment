@@ -2,7 +2,9 @@ package system_control;
 
 import java.util.ArrayList;
 
+import job_selection.Round;
 import utils.Direction;
+import utils.Location;
 import utils.SuperLocation;
 
 public class PCSessionManager {
@@ -12,14 +14,16 @@ public class PCSessionManager {
 	private int numOfPicks;
 	private SuperLocation locationAccess;
 	private Boolean isRouteComplete;
+	private Location pickLocation;
+	private Round currentRound;
 	
 	public PCSessionManager(SuperLocation locationAccess){
 		this.should_send = false;
 		this.route = null;
 		this.numOfPicks = 0;
 		this.locationAccess = locationAccess;
-		
 		this.isRouteComplete = false;
+		this.pickLocation = null;
 	}
 	
 	public synchronized void setRoute(ArrayList<Direction> value) {
@@ -56,6 +60,22 @@ public class PCSessionManager {
 
 	public synchronized Boolean getIsRouteComplete() {
 		return isRouteComplete;
+	}
+	
+	public synchronized void setPickLocation(Location pickLocation) {
+		this.pickLocation = pickLocation;
+	}
+
+	public synchronized Location getPickLocation() {
+		return this.pickLocation;
+	}
+	
+	public synchronized void setCurrentRound(Round currentRound) {
+		this.currentRound = currentRound;
+	}
+
+	public synchronized Round getCurrentRound() {
+		return this.currentRound;
 	}
 	
 }
