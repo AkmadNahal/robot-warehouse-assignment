@@ -6,6 +6,7 @@ import lejos.robotics.RangeFinder;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
+import rp.robotics.navigation.Heading;
 import rp.robotics.simulation.MovableRobot;
 import rp.systems.StoppableRunnable;
 
@@ -16,6 +17,7 @@ public class GridWalker implements StoppableRunnable {
 	private final RangeFinder m_ranger;
 	private final MovableRobot m_robot;
 	private Scanner scanner;
+	private Heading m_heading;
 
 	public GridWalker(MovableRobot _robot, GridMap _map, GridPose _start,
 			RangeFinder _ranger) {
@@ -51,6 +53,10 @@ public class GridWalker implements StoppableRunnable {
 				m_pilot.rotatePositive();
 			} else if (choice == 2) {
 				m_pilot.rotateNegative();
+			}
+			if (choice == 4) {
+				GridPose pose = new GridPose(3,3, m_heading.PLUS_Y);
+				m_pilot.setGridPose(pose);
 			}
 			if (moveAheadClear()) {
 				m_pilot.moveForward();
