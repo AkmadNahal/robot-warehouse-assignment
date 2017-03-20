@@ -1,5 +1,5 @@
 package utils;
 
 public enum LocationType {
-  EMPTY,BLOCK
+  EMPTY,BLOCK,TEMP,ROBOT
 }

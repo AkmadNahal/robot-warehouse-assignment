@@ -52,12 +52,10 @@ public class GridWalkerManager {
 				}
 			}
 	    }
-		
-		
 		return map;
 	}
 	
-	public void startGridWalker(PCSessionManager sessionManager){
+	public GridWalker startGridWalker(PCSessionManager sessionManager){
 		GridPose gridStart = new GridPose(sessionManager.getLocationAccess().getCurrentLocation().getX(),
 				sessionManager.getLocationAccess().getCurrentLocation().getY(), Heading.PLUS_Y);
 		MobileRobotWrapper<MovableRobot> wrapper = getSim().addRobot(
@@ -66,10 +64,14 @@ public class GridWalkerManager {
 		RangeFinder ranger = getSim().getRanger(wrapper);
 		GridWalker controller = new GridWalker(wrapper.getRobot(),
 				mapModel, gridStart, ranger, sessionManager);
-		WarehouseController control = new WarehouseController(mapModel, sim);
+		new Thread(controller).start();
+		return controller;
+	}
+	
+	public void controllerAndView(GridWalker gridWalker1, GridWalker gridWalker2/*, GridWalker gridWalker3*/){
+		WarehouseController control = new WarehouseController(mapModel, sim, gridWalker1, gridWalker2/*, gridWalker3*/);
 		WarehouseView view = new WarehouseView(ROBOT_COUNT);
 		control.registerView(view);
-		new Thread(controller).start();
 	}
 	
 	public int getMapSizeX(){

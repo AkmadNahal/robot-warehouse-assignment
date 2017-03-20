@@ -57,8 +57,9 @@ public class RobotInterface implements Runnable{
 							System.out.println("Picking:" + pickedInLocation);
 						}
 					}
-				} else if (movementManager.getNumberOfPicks() == 0) {
-					System.out.println("Robot arrived to drop off location, please press ENTER to unload your items");	 
+				} else if (movementManager.getNumberOfPicks() == -1) {
+					System.out.println("Robot arrived to drop off location");
+					System.out.println("Please press ENTER to unload your items");
 					while(!movementManager.getIsRouteComplete()) {
 						int i = Button.waitForAnyPress();
 						if(i == Button.ID_ENTER){
@@ -71,10 +72,13 @@ public class RobotInterface implements Runnable{
 						}
 					}
 				}
+				else if (movementManager.getNumberOfPicks() == 0) {
+					movementManager.setIsRouteComplete(true);
+				}
 			}
 			}
 		}
-	}
+
 	
 	protected static void redirectOutput(boolean _useBluetooth) {
 		if (!RConsole.isOpen()) {
