@@ -6,10 +6,16 @@ public class Job implements Comparable<Job>{
 	private String jobID;
 	private HashMap<String, Integer> picks = new HashMap<String, Integer>();
 	private HashMap<String, Item> itemList;
+	private boolean cancelled;
 	
-	public Job(String id, HashMap<String, Item> il) {
+	public Job(String id, HashMap<String, Item> il, int cancelled) {
 		this.jobID = id;
 		this.itemList = il;
+		if (cancelled == 1) {
+			this.cancelled = true;
+		} else {
+			this.cancelled = false;
+		}
 	}
 	
 	public void addPick(String item, int count) {
@@ -60,6 +66,16 @@ public class Job implements Comparable<Job>{
 		}
 		return output;
 	}
+
+	public String getID() {
+		return jobID;
+	}
 	
+	public void setCancelled(boolean c) {
+		this.cancelled = c;
+	}
 	
+	public boolean isCancelled() {
+		return this.cancelled;
+	}
 }
