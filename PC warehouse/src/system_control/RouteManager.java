@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
+import job_selection.Item;
 import job_selection.Pick;
 import job_selection.Round;
 import route_planning.RoutePlanner;
@@ -91,18 +92,16 @@ public class RouteManager implements Runnable {
 			robot2Picks = Round.reorderAccordingTSP(locationsInJob2, robot2Picks);
 			logger.debug("Re-ordered picks, according to TSP");
 			
-			
+			Item lastActualItem1 = robot1Picks.get(robot1Picks.size()-1).getItem();
+			Item lastActualItem2 = robot2Picks.get(robot2Picks.size()-1).getItem();
 			while (robot1Picks.size() != robot2Picks.size()){
 				if (robot1Picks.size() < locationsInJob2.size()){
-					robot1Picks.add(robot1Picks.get(robot1Picks.size()-1));
-					robot1Picks.get(robot1Picks.size() - 1).setCount(0);
+					Pick pickToAdd = new Pick(lastActualItem1, 0);
+					robot1Picks.add(pickToAdd);
 				}
 				if (robot2Picks.size() < robot1Picks.size()){
-					System.out.println(robot2Picks.get(0).getCount());
-					Pick pickToAdd = robot2Picks.get(robot2Picks.size()-1);
+					Pick pickToAdd = new Pick(lastActualItem2, 0);
 					robot2Picks.add(pickToAdd);
-					System.out.println(robot2Picks.get(0).getCount());
-					robot2Picks.get(robot2Picks.size()-1).setCount(0);
 				}
 			}
 			
