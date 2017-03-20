@@ -160,9 +160,9 @@ public class WarehouseView {
 		frame.add(viz);
 	}
 
-	public void setTasks(ArrayList, Robot) {
+	/*public void setTasks(ArrayList, Robot) {
 		String tasksList = "";
 			tasksList = tasksList + System.lineSeparator();
 		jobsDisplayRobot1.setText(tasksList);
-	}
+	}*/
 }

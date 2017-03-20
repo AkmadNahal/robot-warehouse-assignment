@@ -42,7 +42,7 @@ public class WarehouseController {
 		//setTasks();
 	}
 
-	private void setTasks(ArrayList<Object> a, Robot) {
+	/*private void setTasks(ArrayList<Object> a, Robot) {
 		view.setTasks(Object, robot);
 	}
 
@@ -56,5 +56,5 @@ public class WarehouseController {
 		} catch (IOException e1) {
 		}
 		return tasks;
-	}
+	}*/
 }
