@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import route_planning.RoutePlanner;
+
 public class RoutePlanningTest {
 
   @Test

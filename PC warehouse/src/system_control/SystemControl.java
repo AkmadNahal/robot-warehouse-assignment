@@ -15,6 +15,7 @@ import job_selection.RoundCreator;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 import route_planning.RoutePlanner;
+import route_planning.TSP;
 import rp.robotics.mapping.MapUtils;
 import utils.Location;
 import utils.LocationType;
@@ -97,7 +98,7 @@ public class SystemControl {
 		//distributeRounds() <-- Some method that'll distribute jobs between the robots (In Jerry's component)
 		
 		RouteManager routeManager = new RouteManager(rounds, sessionManager1, sessionManager2,/* sessionManager3,*/ planner,
-				notifier1, notifier2/*, notifier3*/, robot1, robot2);
+				notifier1, notifier2/*, notifier3*/, robot1, robot2, new TSP(map, gridWalkerManager.getMapSizeX(), gridWalkerManager.getMapSizeY()));
 		
 		(new Thread (routeManager)).start();
 		

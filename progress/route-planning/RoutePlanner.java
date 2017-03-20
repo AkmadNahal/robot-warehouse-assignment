@@ -1,5 +1,10 @@
 import java.util.*;
 
+import Direction;
+import Location;
+import LocationNode;
+import LocationType;
+
 public class RoutePlanner {
 
   private Location[][] map;

@@ -5,8 +5,10 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
+import job_selection.Pick;
 import job_selection.Round;
 import route_planning.RoutePlanner;
+import route_planning.TSP;
 import utils.Direction;
 import utils.Location;
 import utils.LocationType;
@@ -23,12 +25,17 @@ public class RouteManager implements Runnable {
 	private ArrayList<Round> sortedJobs;
 	private NetworkComm networkComm2;
 	private NetworkComm networkComm1;
+	private TSP tsp;
+	
+	private final double TEMPERATURE = 0.7;
+	private final int NUMBER_OF_ITERATIONS = 200;
+	private final double COOLING_RATE = 2.5;
 	
 	private static final Logger logger = Logger.getLogger(RouteManager.class);
 	
 	public RouteManager(ArrayList<Round> sortedJobs, PCSessionManager sessionManager1, PCSessionManager sessionManager2,
 			/*PCSessionManager sessionManager3,*/ RoutePlanner planner, ChangeNotifier _notifier1, ChangeNotifier _notifier2/*, ChangeNotifier _notifier3*/,
-			NetworkComm networkComm1, NetworkComm networkComm2){
+			NetworkComm networkComm1, NetworkComm networkComm2, TSP tsp){
 		this.sortedJobs = sortedJobs;
 		this.sessionManager1 = sessionManager1;
 		this.sessionManager2 = sessionManager2;
@@ -39,19 +46,71 @@ public class RouteManager implements Runnable {
 		//this.notifier3 = _notifier3;
 		this.networkComm1 = networkComm1;
 		this.networkComm2 = networkComm2;
+		this.tsp = tsp;
 	}
 	
 	@Override
 	public void run() {
-		for (int n = 49; n < sortedJobs.size(); n+=2) {
+		for (int n = 0/*49*/; n < sortedJobs.size(); n+=2) {
 			Round robot1CurrentRound = sortedJobs.get(n);
 			Round robot2CurrentRound = sortedJobs.get(n+1);
+			sortedJobs.get(n).initialiseCounts();
+			ArrayList<Integer> counts1 = sortedJobs.get(n).getCounts();
+			sortedJobs.get(n+1).initialiseCounts();
+			ArrayList<Integer> counts2 = sortedJobs.get(n+1).getCounts();
 			//Round robot3CurrentRound = sortedJobs.get(n+2);
+			
+			ArrayList<Pick> robot1Picks = robot1CurrentRound.getRound();
+			ArrayList<Pick> robot2Picks = robot2CurrentRound.getRound();
+			//ArrayList<Pick> robot3Picks = robot3CurrentRound.getRound();
+			
+			for (int i = 0; i < robot1Picks.size(); i++){
+				robot1Picks.get(i).setCount(counts1.get(i));
+			}
+			for (int i = 0; i < robot2Picks.size(); i++){
+				robot2Picks.get(i).setCount(counts2.get(i));
+			}
+			
 			
 			ArrayList<Location> locationsInJob1 = robot1CurrentRound.getRoute();
 			logger.debug(locationsInJob1.size() + ": Size r1");
 			ArrayList<Location> locationsInJob2 = robot2CurrentRound.getRoute();
 			logger.debug(locationsInJob2.size() + ": Size r2");
+			
+			locationsInJob1.add(0, sessionManager1.getLocationAccess().getCurrentLocation());
+			locationsInJob2.add(0, sessionManager2.getLocationAccess().getCurrentLocation());
+
+			// TSP
+			tsp.simulateAnnealing(TEMPERATURE, NUMBER_OF_ITERATIONS, COOLING_RATE, locationsInJob1);
+			tsp.simulateAnnealing(TEMPERATURE, NUMBER_OF_ITERATIONS, COOLING_RATE, locationsInJob2);
+			//ArrayList<Location> robot3TSP = tsp.simulateAnnealing(TEMPERATURE, NUMBER_OF_ITERATIONS, COOLING_RATE, locationsInJob3);
+			logger.debug("Finished TSP setup");
+			
+			// Fix collision issues in pickup
+			Location.jamFixer(locationsInJob1, locationsInJob2);
+			logger.debug("Fixed jams");
+			
+			// Reorder pick arrays according TSP location array
+			robot1Picks = Round.reorderAccordingTSP(locationsInJob1, robot1Picks);
+			robot2Picks = Round.reorderAccordingTSP(locationsInJob2, robot2Picks);
+			logger.debug("Re-ordered picks, according to TSP");
+			
+			
+			while (robot1Picks.size() != robot2Picks.size()){
+				if (robot1Picks.size() < locationsInJob2.size()){
+					robot1Picks.add(robot1Picks.get(robot1Picks.size()-1));
+					robot1Picks.get(robot1Picks.size() - 1).setCount(0);
+				}
+				if (robot2Picks.size() < robot1Picks.size()){
+					System.out.println(robot2Picks.get(0).getCount());
+					Pick pickToAdd = robot2Picks.get(robot2Picks.size()-1);
+					robot2Picks.add(pickToAdd);
+					System.out.println(robot2Picks.get(0).getCount());
+					robot2Picks.get(robot2Picks.size()-1).setCount(0);
+				}
+			}
+			
+			logger.debug("Normalises size of picks list");
 			
 			//ArrayList<Location> locationsInJob3 = robot3CurrentRound.getRoute();
 			
@@ -61,21 +120,35 @@ public class RouteManager implements Runnable {
 			
 			int counter = 0;
 			
+			for (int i = 0; i < robot1Picks.size(); i++){
+				System.out.print(robot1Picks.get(i).getCount());
+			}
+			System.out.println("");
+			for (int i = 0; i < robot2Picks.size(); i++){
+				System.out.print(robot2Picks.get(i).getCount());
+			}
+			System.out.println("");
+			
+			logger.debug(locationsInJob1.size());
+			logger.debug(locationsInJob2.size());
+
 			logger.debug("Started next job");
 			
-			while(counter < locationsInJob1.size() && counter < locationsInJob2.size()/* || counter < locationsInJob3.size()*/) {
+			while(counter < robot1Picks.size() && counter < robot2Picks.size()/* || counter < robot3Picks.size()*/) {
 				logger.debug("Doing pick " + counter);
-				Location target1 = locationsInJob1.get(counter);
-				Location target2 = locationsInJob2.get(counter);
+				Location target1 = robot1Picks.get(counter).getItem().getLoc();
+				Location target2 = robot2Picks.get(counter).getItem().getLoc();
 				
 				logger.debug("Robot 1 Target: " + target1);
 				logger.debug("Robot 2 Target: " + target2);
 
 				//Location target3 = locationsInJob3.get(counter);
 				
-				int numOfPick1 = sortedJobs.get(n).getCounts().get(counter);
-				int numOfPick2 = sortedJobs.get(n).getCounts().get(counter);
-				//int numOfPick3 = sortedJobs.get(n).getCounts().get(counter);
+				int numOfPick1 = robot1Picks.get(counter).getCount();
+				int numOfPick2 = robot2Picks.get(counter).getCount();
+				
+				System.out.println(numOfPick1);
+				System.out.println(numOfPick2);
 				
 				while(!currentLocation1.equalsTo(target1) || !currentLocation2.equalsTo(target2) /*&& !currentLocation3.equalsTo(target3)*/){
 					HashMap<String, ArrayList<Location>> route = planner.getMultiRobotRoute(currentLocation1, target1, currentLocation2, target2, new Location(11,7, LocationType.EMPTY), new Location(11,7, LocationType.EMPTY));

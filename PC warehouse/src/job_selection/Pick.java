@@ -1,6 +1,6 @@
 package job_selection;
 
-import helper_classes.Location;
+import utils.Location;
 
 public class Pick {
 	private Item item;

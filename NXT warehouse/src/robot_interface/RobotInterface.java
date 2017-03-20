@@ -57,7 +57,7 @@ public class RobotInterface implements Runnable{
 							System.out.println("Picking:" + pickedInLocation);
 						}
 					}
-				} else if (movementManager.getNumberOfPicks() == 0) {
+				} else if (movementManager.getNumberOfPicks() == -1) {
 					System.out.println("Robot arrived to drop off location");
 					System.out.println("Please press ENTER to unload your items");
 					while(!movementManager.getIsRouteComplete()) {
@@ -71,6 +71,9 @@ public class RobotInterface implements Runnable{
 							movementManager.setIsRouteComplete(true);
 						}
 					}
+				}
+				else if (movementManager.getNumberOfPicks() == 0) {
+					movementManager.setIsRouteComplete(true);
 				}
 			}
 			}
