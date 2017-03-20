@@ -20,14 +20,13 @@ public class JunctionDetection extends AbstractBehaviour {
 
 	boolean isOnJunction = true;
 	private ArrayList<Direction> route;
-	private int counter = -1;
 
 	private RobotLocationSessionManager locationManager;
-
-	private int calibratedValue;
-	private int error = 6;
 	
-	private Rate r = new Rate(20);
+	private int calibratedValue;
+	private int error = 8;
+	
+	private Rate r = new Rate(10);
 
 	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor,
 			ArrayList<Direction> route, RobotLocationSessionManager _locationManager, int calValue) {
@@ -44,11 +43,21 @@ public class JunctionDetection extends AbstractBehaviour {
 
 	@Override
 	public boolean takeControl() {
+		
+		int rightAvg = 0;
+		int leftAvg = 0;
+		
+		for (int i = 0; i < 10; i++){
+			int valueRight = rhSensor.readValue();
+			int valueLeft = lhSensor.readValue();
+			rightAvg += valueRight;
+			leftAvg += valueLeft;
+		}
+		
+		rightAvg = rightAvg/10;
+		leftAvg = leftAvg/10;
 
-		int valueRight = rhSensor.readValue();
-		int valueLeft = lhSensor.readValue();
-
-		if ((valueRight - calibratedValue < error) && (valueLeft - calibratedValue < error )) {
+		if ((rightAvg - calibratedValue < error) && (leftAvg - calibratedValue < error )) {
 			isOnJunction = true;
 		}
 
@@ -57,17 +66,41 @@ public class JunctionDetection extends AbstractBehaviour {
 
 	@Override
 	public void action() {
-		counter++;
-		if (counter != 0) {
-			pilot.travel(0.05);
+		pilot.stop();
+		locationManager.setCounter(locationManager.getCounter()+1);
+		if (locationManager.getCounter() != 0) {
+			
+			int rightAvg = 0;
+			int leftAvg = 0;
+			
+			for (int i = 0; i < 10; i++){
+				int valueRight = rhSensor.readValue();
+				int valueLeft = lhSensor.readValue();
+				rightAvg += valueRight;
+				leftAvg += valueLeft;
+			}
+			
+			rightAvg = rightAvg/10;
+			leftAvg = leftAvg/10;
+			
+			if((rightAvg - calibratedValue < error) && (leftAvg - calibratedValue < error )){
+				System.out.println("TRUE");
+				pilot.travel(0.05);
+			}
+			else{
+				System.out.println("FALSE");
+				locationManager.setCounter(locationManager.getCounter()-1);
+				isOnJunction = false;
+				return;
+			}
 		}
 		pilot.stop();
 		Sound.buzz();
 
 
 
-		if (counter == route.size()) {
-			Direction previousMove = route.get(counter - 1);
+		if (locationManager.getCounter() == route.size()) {
+			Direction previousMove = route.get(locationManager.getCounter() - 1);
 
 			if (previousMove == Direction.BACKWARDS) {
 				pilot.rotate(180);
@@ -80,15 +113,15 @@ public class JunctionDetection extends AbstractBehaviour {
 				pilot.stop();
 			}
 		} else {
-			Direction currentMove = route.get(counter);
+			Direction currentMove = route.get(locationManager.getCounter());
 			Direction previousMove = null;
 
 			// Send next move to the PC
 			locationManager.setNextMove(currentMove);
 			locationManager.setShouldSendNextMove(true);
 
-			if (counter > 0) {
-				previousMove = route.get(counter - 1);
+			if (locationManager.getCounter() > 0) {
+				previousMove = route.get(locationManager.getCounter() - 1);
 
 				if (currentMove != previousMove) {
 					if (previousMove == Direction.BACKWARDS) {
@@ -115,6 +148,9 @@ public class JunctionDetection extends AbstractBehaviour {
 					} else if (currentMove == Direction.RIGHT) {
 						pilot.rotate(-90);
 						pilot.stop();
+					} else if (currentMove == Direction.STOP){
+						pilot.stop();
+						locationManager.setCounter(route.size());
 					}
 				}
 			} else {
@@ -127,6 +163,9 @@ public class JunctionDetection extends AbstractBehaviour {
 				} else if (currentMove == Direction.RIGHT) {
 					pilot.rotate(-90);
 					pilot.stop();
+				} else if (currentMove == Direction.STOP){
+					pilot.stop();
+					locationManager.setCounter(route.size());
 				}
 			}
 		}

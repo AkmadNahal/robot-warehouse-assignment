@@ -30,8 +30,9 @@ public class RouteExecutor implements Runnable {
 	public void run() {
 		while (true) {
 			if(movementManager.getShouldExecuteRoute()) {
+				locationManager.setCounter(-1);
 				Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(),
-						config.getRightSensorPort(), config.getDsSensorPort(), movementManager.getRoute(), movementManager.getRoute().size());
+						config.getRightSensorPort(), config.getDsSensorPort(), movementManager.getRoute(), locationManager);
 				Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(),
 						config.getRightSensorPort(), movementManager.getRoute(), locationManager, calibratedValue);
 				Arbitrator arby = new Arbitrator(new Behavior[] { movement, junction }, true);
@@ -39,8 +40,8 @@ public class RouteExecutor implements Runnable {
 				Sound.beepSequence();
 				movementManager.setRoute(null);
 				movementManager.setShouldExecuteRoute(false);
-				System.out.println("Please pick " + movementManager.getNumberOfPicks());
-				movementManager.setIsAtPickupLocation(true);
+				movementManager.setIsRouteComplete(true);
+				//movementManager.setIsAtPickupLocation(true);
 			}
 		}
 

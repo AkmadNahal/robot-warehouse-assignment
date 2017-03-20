@@ -1,6 +1,7 @@
 package motion;
 
 import lejos.nxt.Button;
+import lejos.nxt.LCD;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
 import lejos.util.Delay;
@@ -14,6 +15,7 @@ public class RSystemControl {
 	System.out.println("Hover over a junction, and hit the middle button to calibrate");
 	
 	Button.waitForAnyPress();
+	LCD.clear();
 
     Config config = new Config();
     RobotLocationSessionManager locationManager = new RobotLocationSessionManager();
@@ -24,6 +26,7 @@ public class RSystemControl {
 	System.out.println("Calibrated, press middle button to start");
 	
 	Button.waitForAnyPress();
+	LCD.clear();
     
     RouteExecutor routeExecutor = new RouteExecutor(config, movementManager, locationManager, calibratedValue);
     RobotControl robotControl = new RobotControl(movementManager, locationManager);

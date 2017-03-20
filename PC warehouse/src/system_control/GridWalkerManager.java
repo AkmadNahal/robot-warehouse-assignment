@@ -52,8 +52,6 @@ public class GridWalkerManager {
 				}
 			}
 	    }
-		
-		
 		return map;
 	}
 	
@@ -70,8 +68,8 @@ public class GridWalkerManager {
 		return controller;
 	}
 	
-	public void controllerAndView(GridWalker gridWalker1, GridWalker gridWalker2, GridWalker gridWalker3){
-		WarehouseController control = new WarehouseController(mapModel, sim, gridWalker1, gridWalker2, gridWalker3);
+	public void controllerAndView(GridWalker gridWalker1, GridWalker gridWalker2/*, GridWalker gridWalker3*/){
+		WarehouseController control = new WarehouseController(mapModel, sim, gridWalker1, gridWalker2/*, gridWalker3*/);
 		WarehouseView view = new WarehouseView(ROBOT_COUNT);
 		control.registerView(view);
 	}

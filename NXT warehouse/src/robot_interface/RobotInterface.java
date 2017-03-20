@@ -58,7 +58,8 @@ public class RobotInterface implements Runnable{
 						}
 					}
 				} else if (movementManager.getNumberOfPicks() == 0) {
-					System.out.println("Robot arrived to drop off location, please press ENTER to unload your items");	 
+					System.out.println("Robot arrived to drop off location");
+					System.out.println("Please press ENTER to unload your items");
 					while(!movementManager.getIsRouteComplete()) {
 						int i = Button.waitForAnyPress();
 						if(i == Button.ID_ENTER){

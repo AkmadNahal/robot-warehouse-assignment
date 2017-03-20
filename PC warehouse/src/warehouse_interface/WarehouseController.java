@@ -16,10 +16,10 @@ public class WarehouseController {
 	private MapBasedSimulation sim;
 	private WarehouseModel robotModel;
 
-	public WarehouseController(GridMap mapModel, MapBasedSimulation sim, GridWalker gridWalker1, GridWalker gridWalker2, GridWalker gridWalker3) {
+	public WarehouseController(GridMap mapModel, MapBasedSimulation sim, GridWalker gridWalker1, GridWalker gridWalker2/*, GridWalker gridWalker3*/) {
 		this.mapModel = mapModel;
 		this.sim = sim;
-		robotModel = new WarehouseModel(gridWalker1, gridWalker2, gridWalker3);
+		robotModel = new WarehouseModel(gridWalker1, gridWalker2/*, gridWalker3*/);
 	}
 
 	public void registerView(WarehouseView view) {

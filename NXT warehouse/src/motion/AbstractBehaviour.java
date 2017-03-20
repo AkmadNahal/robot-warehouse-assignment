@@ -14,7 +14,7 @@ public abstract class AbstractBehaviour implements Behavior{
 	public AbstractBehaviour(WheeledRobotConfiguration _config) {
 		config = _config;
 		pilot = new WheeledRobotSystem(_config).getPilot();
-		pilot.setTravelSpeed(0.2);
+		pilot.setTravelSpeed(0.1);
 		
 	}
 	
