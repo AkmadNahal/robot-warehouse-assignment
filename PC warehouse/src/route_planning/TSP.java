@@ -2,6 +2,7 @@ package route_planning;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import utils.Location;
 
@@ -11,6 +12,10 @@ public class TSP {
   private int mapSizeX, mapSizeY;
   private RoutePlanner planner;
   private Travel travel;
+  
+  private final double startingTemperature = 0.7;
+  private final int numberOfIterations = 200;
+  private final double coolingRate = 2.5;
 
   public TSP(Location[][] _map, int _mapSizeX, int _mapSizeY) {
     map = _map;
@@ -19,7 +24,7 @@ public class TSP {
     planner = new RoutePlanner(map, mapSizeX, mapSizeY);
   }
 
-  public void simulateAnnealing(double startingTemperature, int numberOfIterations, double coolingRate, ArrayList<Location> locations) {
+  public void simulateAnnealing(ArrayList<Location> locations) {
     
 	if (locations.size() <= 1){
 		return;
@@ -61,6 +66,23 @@ public class TSP {
 
     locations.clear();
     locations.addAll(bestSolution.getTravel());
+  }
+  
+  public HashMap<String, ArrayList<Location>> smartAssignment(Location r1S, Location r2S, Location r3S, ArrayList<Location> route1, ArrayList<Location> route2, ArrayList<Location> route3) {
+	  ArrayList<Location> sol1 = new ArrayList<Location>();
+	  ArrayList<Location> sol2 = new ArrayList<Location>();
+	  ArrayList<Location> sol3 = new ArrayList<Location>();
+	  ArrayList<Location> temp1, temp2, temp3;
+	  
+	  // 1/2/3
+	  temp1 = new ArrayList<>(); temp1.add(r1S); temp1.addAll(route1); simulateAnnealing(temp1);
+	  temp2 = new ArrayList<>(); temp2.add(r2S); temp1.addAll(route2); simulateAnnealing(temp2);
+	  temp3 = new ArrayList<>(); temp3.add(r3S); temp1.addAll(route3); simulateAnnealing(temp3);
+	  
+	  // To be continued
+	  
+	  HashMap<String, ArrayList<Location>> result = new HashMap<String, ArrayList<Location>>();
+	  return result;
   }
 
 }

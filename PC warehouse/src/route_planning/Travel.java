@@ -63,6 +63,24 @@ public class Travel {
 
       return distance;
     }
+    
+    public int getDistance(ArrayList<Location> l) {
+
+        int distance = 0;
+
+        for(int i=1;i<l.size();i++) {
+          Location start = l.get(i-1);
+          Location end = l.get(i);
+
+          int a = planner.getAStarDistance(start, end);
+          // int a = start.getDistanceFromLocation(end);
+          distance += a;
+
+          // distance += start.getDistanceFromLocation(end);
+        }
+
+        return distance;
+      }
 
     public ArrayList<Location> getTravel() {
       return travel;

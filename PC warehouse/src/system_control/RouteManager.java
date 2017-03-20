@@ -27,10 +27,6 @@ public class RouteManager implements Runnable {
 	private NetworkComm networkComm1;
 	private TSP tsp;
 	
-	private final double TEMPERATURE = 0.7;
-	private final int NUMBER_OF_ITERATIONS = 200;
-	private final double COOLING_RATE = 2.5;
-	
 	private static final Logger logger = Logger.getLogger(RouteManager.class);
 	
 	public RouteManager(ArrayList<Round> sortedJobs, PCSessionManager sessionManager1, PCSessionManager sessionManager2,
@@ -81,8 +77,8 @@ public class RouteManager implements Runnable {
 			locationsInJob2.add(0, sessionManager2.getLocationAccess().getCurrentLocation());
 
 			// TSP
-			tsp.simulateAnnealing(TEMPERATURE, NUMBER_OF_ITERATIONS, COOLING_RATE, locationsInJob1);
-			tsp.simulateAnnealing(TEMPERATURE, NUMBER_OF_ITERATIONS, COOLING_RATE, locationsInJob2);
+			tsp.simulateAnnealing(locationsInJob1);
+			tsp.simulateAnnealing(locationsInJob2);
 			//ArrayList<Location> robot3TSP = tsp.simulateAnnealing(TEMPERATURE, NUMBER_OF_ITERATIONS, COOLING_RATE, locationsInJob3);
 			logger.debug("Finished TSP setup");
 			
