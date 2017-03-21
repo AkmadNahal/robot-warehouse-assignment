@@ -54,8 +54,11 @@ public class JobSelector {
 		
 		log.debug("Job selection finished.");
 		
+		log.debug("Creating WEKA training set ARFF.");
 		JobTraining.makeARFF(trainfile, cfile, itemMap, "files/training.arff");
+		log.debug("Creating WEKA test set ARFF.");
 		JobTraining.makeARFF(jfile, itemMap, "files/jobs.arff");
+		log.debug("WEKA files succsessfully created.");
 		
 		try {
 			DataSource tsource = new DataSource("files/training.arff");
@@ -63,12 +66,12 @@ public class JobSelector {
 			
 			Discretize d = new Discretize();
 			d.setInputFormat(tdata);
-			String[] options = {"-B", "100", "-R", "31-32"};
+			String[] options = {"-B", "10", "-R", "31-32"};
 			d.setOptions(options);
 			
 			Instances newData = Filter.useFilter(tdata, d);
 			
-			System.out.println(newData.toSummaryString());
+			
 			
 			ArffSaver s = new ArffSaver();
 			s.setFile(new File("files/newTraining.arff"));

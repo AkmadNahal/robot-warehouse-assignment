@@ -6,9 +6,11 @@ import helper_classes.*;
 public class Round {
 	private ArrayList<Pick> round = new ArrayList<Pick>();
 	private final float MAX_WEIGHT;
+	private String jobID;
 
-	public Round(float mw) {
+	public Round(float mw, String jobID) {
 		MAX_WEIGHT = mw;
+		this.jobID = jobID;
 	}
 
 	public ArrayList<Pick> getRound() {
@@ -53,5 +55,9 @@ public class Round {
 			total += (p.getItem().getWeight() * p.getCount());
 		}
 		return total;
+	}
+	
+	public String getJob() {
+		return jobID;
 	}
 }
