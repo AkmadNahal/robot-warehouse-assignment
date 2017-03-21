@@ -7,6 +7,8 @@ public class Job implements Comparable<Job>{
 	private HashMap<String, Integer> picks = new HashMap<String, Integer>();
 	private HashMap<String, Item> itemList;
 	private boolean cancelled;
+	private boolean predictedCancel;
+	private float value;
 	
 	public Job(String id, HashMap<String, Item> il, int cancelled) {
 		this.jobID = id;
@@ -16,6 +18,10 @@ public class Job implements Comparable<Job>{
 		} else {
 			this.cancelled = false;
 		}
+	}
+	
+	public void setPrediction(boolean prediction) {
+		this.predictedCancel = prediction;
 	}
 	
 	public void addPick(String item, int count) {
@@ -46,16 +52,35 @@ public class Job implements Comparable<Job>{
 		}
 		return total;
 	}
+	
+	public int totalItems() {
+		int total = 0;
+		for (Integer i : picks.values()) {
+			total += i;
+		}
+		return total;
+	}
 
 	@Override
 	public int compareTo(Job j) {
-		if (this.totalReward() > j.totalReward()) {
+		if (this.getValue() > j.getValue()) {
 			return -1;
-		} else if (this.totalReward() < j.totalReward()) {
+		} else if (this.getValue() < j.getValue()) {
 			return 1;
 		} else {
 			return 0;
 		}
+	}
+	
+	public float getValue() {
+		return this.value;
+	}
+	
+	public void calcValue() {
+		float value = 0;
+		value = this.totalReward();
+		
+		this.value = value;
 	}
 	
 	@Override

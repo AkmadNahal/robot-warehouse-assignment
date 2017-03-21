@@ -24,6 +24,7 @@ public class JobTraining {
 			
 			wr.write("@ATTRIBUTE weight NUMERIC\n");
 			wr.write("@ATTRIBUTE reward NUMERIC\n");
+			wr.write("@ATTRIBUTE itemCount NUMERIC\n");
 			wr.write("@ATTRIBUTE cancelled {0, 1}\n");
 			wr.newLine();
 			
@@ -37,7 +38,7 @@ public class JobTraining {
 						dataLine += "0,";
 					}
 				}
-				dataLine += j.totalWeight() + "," + j.totalReward();
+				dataLine += j.totalWeight() + "," + j.totalReward() + "," + j.totalItems();
 				if (j.isCancelled()) {
 					dataLine += ",1";
 				} else {
