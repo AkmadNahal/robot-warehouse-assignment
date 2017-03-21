@@ -68,6 +68,7 @@ public class JunctionDetection extends AbstractBehaviour {
 	public void action() {
 		pilot.stop();
 		locationManager.setCounter(locationManager.getCounter()+1);
+		System.out.println(locationManager.getCounter() + ": COUNTER");
 		if (locationManager.getCounter() != 0) {
 			
 			int rightAvg = 0;

@@ -48,7 +48,7 @@ public class RouteManager implements Runnable {
 	
 	@Override
 	public void run() {
-		for (int n = 0/*49*/; n < sortedJobs.size(); n+=2) {
+		for (int n = 12/*49*/; n < sortedJobs.size(); n+=2) {
 			Round robot1CurrentRound = sortedJobs.get(n);
 			sessionManager1.setCurrentRound(robot1CurrentRound);
 			Round robot2CurrentRound = sortedJobs.get(n+1);
@@ -107,6 +107,11 @@ public class RouteManager implements Runnable {
 					robot2Picks.add(pickToAdd);
 				}
 			}
+			Item dropOff1 = new Item("", 0f, 0f, new Location(4,7, LocationType.EMPTY));
+			robot1Picks.add(new Pick(dropOff1, -1));
+			
+			Item dropOff2 = new Item("", 0f, 0f, new Location(7,7, LocationType.EMPTY));
+			robot2Picks.add(new Pick(dropOff2, -1));
 			
 			logger.debug("Normalises size of picks list");
 			
@@ -151,6 +156,10 @@ public class RouteManager implements Runnable {
 				System.out.println(numOfPick2);
 				
 				while(!currentLocation1.equalsTo(target1) || !currentLocation2.equalsTo(target2) /*&& !currentLocation3.equalsTo(target3)*/){
+					sessionManager1.setIsRouteComplete(false);
+					sessionManager2.setIsRouteComplete(false);
+					//sessionManager3.setIsRouteComplete(false);
+					
 					HashMap<String, ArrayList<Location>> route = planner.getMultiRobotRoute(currentLocation1, target1, currentLocation2, target2, new Location(11,7, LocationType.EMPTY), new Location(11,7, LocationType.EMPTY));
 					ArrayList<Direction> route1 = planner.coordinatesToDirections(route.get("robot1"));
 					ArrayList<Direction> route2 = planner.coordinatesToDirections(route.get("robot2"));
@@ -167,14 +176,7 @@ public class RouteManager implements Runnable {
 					sessionManager1.setShouldSend(true);
 					sessionManager2.setShouldSend(true);
 					//sessionManager3.setShouldSend(true);
-					
-					sessionManager1.setIsRouteComplete(false);
-					sessionManager2.setIsRouteComplete(false);
-					//sessionManager3.setIsRouteComplete(false);
-					
-					//notifier3.setChanged(false);
-					
-					
+										
 					logger.debug(route1 + ": Route 1");
 					logger.debug(route2 + ": Route 2");
 					
@@ -182,7 +184,7 @@ public class RouteManager implements Runnable {
 					while(!sessionManager1.getIsRouteComplete() || !sessionManager2.getIsRouteComplete()/* && !sessionManager3.getIsRouteComplete()*/) {
 						if(notifier1.getChanged()) {
 							logger.debug("Notifier 1 changed");
-							sessionManager1.getLocationAccess().setCurrentLocation(route.get("robot1").get(route.get("robot1").size() - 1));
+							//sessionManager1.getLocationAccess().setCurrentLocation(route.get("robot1").get(route.get("robot1").size() - 1));
 							currentLocation1 = sessionManager1.getLocationAccess().getCurrentLocation();
 							logger.debug(currentLocation1 + ": Current Location - Robot 1");
 							sessionManager1.setIsRouteComplete(true);
@@ -190,7 +192,7 @@ public class RouteManager implements Runnable {
 						}
 						if(notifier2.getChanged()) {
 							logger.debug("Notifier 2 changed");
-							sessionManager2.getLocationAccess().setCurrentLocation(route.get("robot2").get(route.get("robot2").size() - 1));
+							//sessionManager2.getLocationAccess().setCurrentLocation(route.get("robot2").get(route.get("robot2").size() - 1));
 							currentLocation2 = sessionManager2.getLocationAccess().getCurrentLocation();
 							logger.debug(currentLocation2 + ": Current Location - Robot 2");
 							sessionManager2.setIsRouteComplete(true);
@@ -216,6 +218,9 @@ public class RouteManager implements Runnable {
 				
 				counter++;
 				
+				sessionManager1.setIsRouteComplete(false);
+				sessionManager1.setIsRouteComplete(false);
+				
 				notifier1.setChanged(false);
 				notifier2.setChanged(false);
 				
@@ -225,10 +230,6 @@ public class RouteManager implements Runnable {
 				//notifier1.setAtPickup(true);
 				//notifier2.setAtPickup(true);
 				//sessionManager3.setIsRouteComplete(true);
-				
-				sessionManager1.getLocationAccess().setCurrentLocation(target1);
-				sessionManager2.getLocationAccess().setCurrentLocation(target2);
-				//sessionManager3.getLocationAccess().setCurrentLocation(target3);
 				
 				while (!sessionManager1.getIsRouteComplete() || !sessionManager2.getIsRouteComplete()){
 					if (notifier1.getChanged()){
@@ -244,6 +245,10 @@ public class RouteManager implements Runnable {
 				}
 				
 				logger.debug("Finished executing route, onto next one!");
+				
+				//sessionManager1.getLocationAccess().setCurrentLocation(target1);
+				//sessionManager2.getLocationAccess().setCurrentLocation(target2);
+				//sessionManager3.getLocationAccess().setCurrentLocation(target3);
 				
 			}
 				/*int numOfPicks = r.getCounts().get(i);

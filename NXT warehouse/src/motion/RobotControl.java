@@ -64,7 +64,6 @@ public class RobotControl implements Runnable {
 					isExecutingRoute = false;
 					outputStream.writeInt(COMPLETE_ROUTE_FLAG);
 					outputStream.flush();
-					System.out.println("Sent end of route");
 					movementManager.setIsRouteComplete(false);
 				}else{
 					if (!isExecutingRoute){
@@ -86,7 +85,6 @@ public class RobotControl implements Runnable {
 						} else if(is_route_income) {
 							route.add(Direction.fromInteger(input));
 						} else if (input == AT_PICKUP_FLAG){
-							System.out.println("Reeeeeeeeeee");
 							isExecutingRoute = true;
 							movementManager.setIsAtPickupLocation(true);
 						}

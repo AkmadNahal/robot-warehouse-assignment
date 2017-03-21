@@ -90,6 +90,7 @@ public class NetworkComm implements Runnable {
 							input = m_dis.readInt();
 							Direction nextMove = Direction.fromInteger(input);
 							sessionManager.getLocationAccess().updateCurrentLocation(nextMove);
+							System.out.println("NEXT MOVE RECEIVED FROM ROBOT: " + sessionManager.getLocationAccess().getCurrentLocation());
 						}
 
 					}

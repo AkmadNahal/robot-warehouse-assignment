@@ -78,7 +78,7 @@ public class WarehouseView {
 
 	private void jobsPanelVisualisation(JPanel jobsPanel) {
 		jobsPanel.setLayout(new GridLayout(3, 1));
-		jobsPanel.setPreferredSize(new Dimension(100, 100));
+		jobsPanel.setPreferredSize(new Dimension(250, 100));
 		jobsPanel.add(jobsDisplayRobot1);
 		jobsPanel.add(jobsDisplayRobot2);
 		jobsPanel.add(jobsDisplayRobot3);
@@ -95,7 +95,7 @@ public class WarehouseView {
 	}
 
 	private void cancelationPanelVisualisation(JPanel cancelationPanel) {
-		cancelationPanel.setLayout(new GridLayout(2, 2));
+		cancelationPanel.setLayout(new GridLayout(4, 1));
 		cancelationPanel.setPreferredSize(new Dimension(100, 100));
 
 		refreshRobots.addActionListener(new ActionListener() {
@@ -123,18 +123,17 @@ public class WarehouseView {
 
 	private void frameVisualisation(JFrame frame) {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(550, 450));
+		frame.setPreferredSize(new Dimension(700, 700));
 		frame.setJMenuBar(menuBar);
 		frame.pack();
 		frame.setVisible(true);
-		frame.add(vizPanel, BorderLayout.WEST);
 		frame.add(cancelationPanel, BorderLayout.SOUTH);
 		frame.add(jobsPanel, BorderLayout.EAST);
 	}
 
 	private JTextArea createDisplayField() {
 		JTextArea field = new JTextArea();
-		field.setPreferredSize(new Dimension(30, 30));
+		field.setPreferredSize(new Dimension(70, 70));
 		field.setBackground(new Color(255, 255, 255));
 		field.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
 		Border border = BorderFactory.createLineBorder(Color.BLACK);

@@ -42,10 +42,25 @@ public class RSystemControl {
 
 		LightSensor leftSensor = new LightSensor(_lh, true);
 		LightSensor rightSensor = new LightSensor(_rh, true);
+		
+		int rightAvg = 0;
+		int leftAvg = 0;
+		
+		Delay.msDelay(100);
+		
+		for (int i = 0; i < 10; i++){
+			int valueRight = rightSensor.readValue();
+			int valueLeft = leftSensor.readValue();
+			rightAvg += valueRight;
+			leftAvg += valueLeft;
+		}
+		
+		rightAvg = rightAvg/10;
+		leftAvg = leftAvg/10;
 
 		Delay.msDelay(100);
 
-		return (leftSensor.readValue() + rightSensor.readValue()) / 2;
+		return (leftAvg + rightAvg) / 2;
 	}
 
 }

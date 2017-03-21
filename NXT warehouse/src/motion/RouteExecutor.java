@@ -38,6 +38,7 @@ public class RouteExecutor implements Runnable {
 				Arbitrator arby = new Arbitrator(new Behavior[] { movement, junction }, true);
 				arby.start(); //START THE ARBITRATOR
 				Sound.beepSequence();
+				locationManager.setCounter(-1);
 				movementManager.setRoute(null);
 				movementManager.setShouldExecuteRoute(false);
 				movementManager.setIsRouteComplete(true);

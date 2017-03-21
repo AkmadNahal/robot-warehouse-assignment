@@ -46,23 +46,11 @@ public class WarehouseController {
 			}
 		});
 		view.setMap(mapModel, sim);
-		setTasks(sessionManager1, "Lil' Bob");
+		//setTasks(sessionManager1, "Lil' Bob");
 	}
 
 
 	private void setTasks(PCSessionManager sessionManager, String robotName) {
 		view.setTasks(sessionManager, robotName);
-	}
-
-	private List<String> readTasks() {
-		List<String> tasks = new ArrayList<>();
-		try (BufferedReader in = new BufferedReader(new FileReader("Info.txt"))) {
-			String line;
-			while ((line = in.readLine()) != null) {
-				tasks.add(line);
-			}
-		} catch (IOException e1) {
-		}
-		return tasks;
 	}
 }
