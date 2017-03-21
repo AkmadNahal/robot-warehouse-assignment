@@ -74,8 +74,10 @@ public class RouteManager implements Runnable {
 			
 			ArrayList<Location> locationsInJob1 = robot1CurrentRound.getRoute();
 			logger.debug(locationsInJob1.size() + ": Size r1");
+			System.out.println(robot1CurrentRound.getRoute());
 			ArrayList<Location> locationsInJob2 = robot2CurrentRound.getRoute();
 			logger.debug(locationsInJob2.size() + ": Size r2");
+			System.out.println(robot2CurrentRound.getRoute());
 			
 			locationsInJob1.add(0, sessionManager1.getLocationAccess().getCurrentLocation());
 			locationsInJob2.add(0, sessionManager2.getLocationAccess().getCurrentLocation());
