@@ -1,5 +1,10 @@
 import java.util.*;
 
+import Direction;
+import Location;
+import LocationNode;
+import LocationType;
+
 public class RoutePlanner {
 
   private Location[][] map;
@@ -22,9 +27,9 @@ public class RoutePlanner {
     map[robot3Start.getX()][robot3Start.getY()].setType(LocationType.ROBOT);
 
     // Priority 1/2/3
-    route1 = getRoute(robot1Start, robot1End); reservePlace(route1);
-    route2 = getRoute(robot2Start, robot2End); reservePlace(route2);
-    route3 = getRoute(robot3Start, robot3End); reservePlace(route3);
+    route1 = chunkToWindow(getRoute(robot1Start, robot1End)); reservePlace(route1);
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End)); reservePlace(route2);
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End)); reservePlace(route3);
 
     if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
       // Success
@@ -34,9 +39,9 @@ public class RoutePlanner {
 
     // Priority 1/3/2
     clearMap();
-    route1 = getRoute(robot1Start, robot1End); reservePlace(route1);
-    route3 = getRoute(robot3Start, robot3End); reservePlace(route3);
-    route2 = getRoute(robot2Start, robot2End); reservePlace(route2);
+    route1 = chunkToWindow(getRoute(robot1Start, robot1End)); reservePlace(route1);
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End)); reservePlace(route3);
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End)); reservePlace(route2);
 
     if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
       // Success
@@ -46,9 +51,9 @@ public class RoutePlanner {
 
     // Priority 2/1/3
     clearMap();
-    route2 = getRoute(robot2Start, robot2End); reservePlace(route2);
-    route1 = getRoute(robot1Start, robot1End); reservePlace(route1);
-    route3 = getRoute(robot3Start, robot3End); reservePlace(route3);
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End)); reservePlace(route2);
+    route1 = chunkToWindow(getRoute(robot1Start, robot1End)); reservePlace(route1);
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End)); reservePlace(route3);
 
     if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
       // Success
@@ -58,9 +63,9 @@ public class RoutePlanner {
 
     // Priority 2/3/1
     clearMap();
-    route2 = getRoute(robot2Start, robot2End); reservePlace(route2);
-    route3 = getRoute(robot3Start, robot3End); reservePlace(route3);
-    route1 = getRoute(robot1Start, robot1End); reservePlace(route1);
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End)); reservePlace(route2);
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End)); reservePlace(route3);
+    route1 = chunkToWindow(getRoute(robot1Start, robot1End)); reservePlace(route1);
 
     if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
       // Success
@@ -70,9 +75,9 @@ public class RoutePlanner {
 
     // Priority 3/1/2
     clearMap();
-    route3 = getRoute(robot3Start, robot3End); reservePlace(route3);
-    route1 = getRoute(robot1Start, robot1End); reservePlace(route1);
-    route2 = getRoute(robot2Start, robot2End); reservePlace(route2);
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End)); reservePlace(route3);
+    route1 = chunkToWindow(getRoute(robot1Start, robot1End)); reservePlace(route1);
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End)); reservePlace(route2);
 
     if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
       // Success
@@ -82,9 +87,9 @@ public class RoutePlanner {
 
     // Priority 3/2/1
     clearMap();
-    route3 = getRoute(robot3Start, robot3End); reservePlace(route3);
-    route2 = getRoute(robot2Start, robot2End); reservePlace(route2);
-    route1 = getRoute(robot1Start, robot1End); reservePlace(route1);
+    route3 = chunkToWindow(getRoute(robot3Start, robot3End)); reservePlace(route3);
+    route2 = chunkToWindow(getRoute(robot2Start, robot2End)); reservePlace(route2);
+    route1 = chunkToWindow(getRoute(robot1Start, robot1End)); reservePlace(route1);
 
     if(route1.size() == WINDOW && route2.size() == WINDOW && route3.size() == WINDOW) {
       // Success
@@ -118,20 +123,8 @@ public class RoutePlanner {
     return createSolution(route1, route2, route3);
   }
 
-  private HashMap<String, ArrayList<Location>> createSolution(ArrayList<Location> route1, ArrayList<Location> route2, ArrayList<Location> route3) {
-    HashMap<String, ArrayList<Location>> solution = new HashMap<String, ArrayList<Location>>();
-    solution.put("robot1", chunkToWindow(route1));
-    solution.put("robot2", chunkToWindow(route2));
-    solution.put("robot3", chunkToWindow(route3));
-    return solution;
-  }
-
-  private void reservePlace(ArrayList<Location> route) {
-    for(Location l : route) {
-      if(map[l.getX()][l.getY()].getType() == LocationType.EMPTY) {
-        map[l.getX()][l.getY()].setType(LocationType.TEMP);
-      }
-    }
+  public int getAStarDistance(Location startLocation, Location endLocation) {
+    return getRoute(startLocation, endLocation).size();
   }
 
   public ArrayList<Location> getRoute(Location startLocation, Location endLocation) {
@@ -211,8 +204,6 @@ public class RoutePlanner {
         chosenNode = chosenNode.getParent();
       }
       solution.add(0, startLocation);
-
-      solution = chunkToWindow(solution);
     }
 
     return solution;
@@ -306,20 +297,38 @@ public class RoutePlanner {
 
   private ArrayList<Location> chunkToWindow(ArrayList<Location> route) {
     ArrayList<Location> solution = new ArrayList<Location>();
+    if(route.size() != 0) {
 
-    if(route.size() > WINDOW) {
-      for(int i=0;i<WINDOW;i++) {
-        solution.add(route.get(i));
-      }
-    } else {
-      solution.addAll(route);
+      if(route.size() > WINDOW) {
+        for(int i=0;i<WINDOW;i++) {
+          solution.add(route.get(i));
+        }
+      } else {
+        solution.addAll(route);
 
-      while(solution.size() < WINDOW) {
-        solution.add(route.get(route.size() - 1));
+        while(solution.size() < WINDOW) {
+          solution.add(route.get(route.size() - 1));
+        }
       }
     }
 
     return solution;
+  }
+
+  private HashMap<String, ArrayList<Location>> createSolution(ArrayList<Location> route1, ArrayList<Location> route2, ArrayList<Location> route3) {
+    HashMap<String, ArrayList<Location>> solution = new HashMap<String, ArrayList<Location>>();
+    solution.put("robot1", chunkToWindow(route1));
+    solution.put("robot2", chunkToWindow(route2));
+    solution.put("robot3", chunkToWindow(route3));
+    return solution;
+  }
+
+  private void reservePlace(ArrayList<Location> route) {
+    for(Location l : route) {
+      if(map[l.getX()][l.getY()].getType() == LocationType.EMPTY) {
+        map[l.getX()][l.getY()].setType(LocationType.TEMP);
+      }
+    }
   }
 
 }

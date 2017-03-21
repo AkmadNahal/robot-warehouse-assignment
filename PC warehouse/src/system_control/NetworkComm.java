@@ -28,6 +28,7 @@ public class NetworkComm implements Runnable {
 	private final int COMPLETE_ROUTE_FLAG = 50; //matches with COMPLETE_ROUTE_FLAG in RobotControl.java
 	private final int SENDING_FLAG = 75; //matches with RECEIVING_FLAG in RobotControl.java
 	private final int SENDING_PICK_NUM_FLAG = 100; //matches with SENDING_PICK_NUM_FLAG in RobotControl.java
+	private final int AT_PICKUP_FLAG = 33; //matches with AT_PICKUP_FLAG in RobotControl.java
 
 	public NetworkComm(NXTInfo _nxt, PCSessionManager sessionManager, ChangeNotifier _notifier) {
 		m_nxt = _nxt;
@@ -54,6 +55,17 @@ public class NetworkComm implements Runnable {
 			NXTComm nxtComm = NXTCommFactory.createNXTComm(NXTCommFactory.BLUETOOTH);
 			this.connect(nxtComm);
 			while (true) {
+				try{
+					if (notifier.getAtPickup()){
+						logger.debug("Sending pickup flag");
+						int input = m_dis.readInt();
+						logger.debug("Finished picking, changing notifier");
+						notifier.setChanged(true);
+						notifier.setAtPickup(false);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				if(sessionManager.getShouldSend()) {
 					// Notify starting of route sending
 					logger.debug("Started sending route");
@@ -77,15 +89,15 @@ public class NetworkComm implements Runnable {
 						if(input == RECEIVE_MOVE_FLAG) {
 							input = m_dis.readInt();
 							Direction nextMove = Direction.fromInteger(input);
-							logger.debug(nextMove);
 							sessionManager.getLocationAccess().updateCurrentLocation(nextMove);
+							System.out.println("NEXT MOVE RECEIVED FROM ROBOT: " + sessionManager.getLocationAccess().getCurrentLocation());
 						}
 
 					}
 					
 					// Route completed
-					logger.debug("Received completion flag");
-					while(!notifier.getChanged()){
+					logger.debug("Route execution completed");
+					if(!notifier.getChanged()){
 						notifier.setChanged(true);
 					}
 
@@ -104,6 +116,17 @@ public class NetworkComm implements Runnable {
 		sessionManager.setRoute(directions);
 		sessionManager.setNumOfPicks(nrOfPicks);
 		sessionManager.setShouldSend(true);
+	}
+	
+	public void sendAtPickup(){
+		try {
+			logger.debug("Sending pickup flag");
+			m_dos.writeInt(AT_PICKUP_FLAG);
+			m_dos.flush();
+			notifier.setAtPickup(true);
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 
 

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rp.robotics.mapping.GridMap;
+import rp.robotics.navigation.GridPose;
 import rp.robotics.simulation.MapBasedSimulation;
 
 public class WarehouseController {
@@ -14,10 +15,12 @@ public class WarehouseController {
 	private GridMap mapModel;
 	private WarehouseView view;
 	private MapBasedSimulation sim;
+	private WarehouseModel model;
 
 	public WarehouseController(GridMap mapModel, MapBasedSimulation sim) {
 		this.mapModel = mapModel;
 		this.sim = sim;
+		model = new WarehouseModel();
 	}
 
 	public void registerView(WarehouseView view) {
@@ -32,16 +35,15 @@ public class WarehouseController {
 		view.setRefreshCallback(new WarehouseView.RefreshButtonCalback() {
 			@Override
 			public void refresh() {
-				// TODO Auto-generated method stub
-
+				model.refresh();
 			}
 		});
 		view.setMap(mapModel, sim);
-		setTasks();
+		//setTasks();
 	}
 
-	private void setTasks() {
-		view.setTasks(readTasks());
+	/*private void setTasks(ArrayList<Object> a, Robot) {
+		view.setTasks(Object, robot);
 	}
 
 	private List<String> readTasks() {
@@ -54,5 +56,5 @@ public class WarehouseController {
 		} catch (IOException e1) {
 		}
 		return tasks;
-	}
+	}*/
 }

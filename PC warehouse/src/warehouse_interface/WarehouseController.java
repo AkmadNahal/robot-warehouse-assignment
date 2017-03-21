@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import job_selection.Round;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.simulation.MapBasedSimulation;
+import system_control.PCSessionManager;
 
 public class WarehouseController {
 
@@ -15,11 +17,16 @@ public class WarehouseController {
 	private WarehouseView view;
 	private MapBasedSimulation sim;
 	private WarehouseModel robotModel;
+	private PCSessionManager sessionManager1;
+	private PCSessionManager sessionManager2;
 
-	public WarehouseController(GridMap mapModel, MapBasedSimulation sim, GridWalker gridWalker1, GridWalker gridWalker2, GridWalker gridWalker3) {
+	public WarehouseController(GridMap mapModel, MapBasedSimulation sim, GridWalker gridWalker1, GridWalker gridWalker2/*, GridWalker gridWalker3*/,
+			PCSessionManager sessionManager1, PCSessionManager sessionManager2) {
 		this.mapModel = mapModel;
 		this.sim = sim;
-		robotModel = new WarehouseModel(gridWalker1, gridWalker2, gridWalker3);
+		robotModel = new WarehouseModel(gridWalker1, gridWalker2/*, gridWalker3*/);
+		this.sessionManager1 = sessionManager1;
+		this.sessionManager2 = sessionManager2;		
 	}
 
 	public void registerView(WarehouseView view) {
@@ -39,22 +46,11 @@ public class WarehouseController {
 			}
 		});
 		view.setMap(mapModel, sim);
-		setTasks();
+		//setTasks(sessionManager1, "Lil' Bob");
 	}
 
-	private void setTasks() {
-		view.setTasks(readTasks());
-	}
 
-	private List<String> readTasks() {
-		List<String> tasks = new ArrayList<>();
-		try (BufferedReader in = new BufferedReader(new FileReader("Info.txt"))) {
-			String line;
-			while ((line = in.readLine()) != null) {
-				tasks.add(line);
-			}
-		} catch (IOException e1) {
-		}
-		return tasks;
+	private void setTasks(PCSessionManager sessionManager, String robotName) {
+		view.setTasks(sessionManager, robotName);
 	}
 }

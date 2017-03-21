@@ -1,9 +1,0 @@
-system_control.SystemControl.main(SystemControl.java:52) 0    [main] DEBUG system_control.SystemControl  - Successfully set up map
-system_control.SystemControl.main(SystemControl.java:66) 4    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Bob
-system_control.SystemControl.main(SystemControl.java:71) 4    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Vader
-system_control.SystemControl.main(SystemControl.java:76) 5    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Yoda
-system_control.SystemControl.main(SystemControl.java:104) 14   [main] DEBUG system_control.SystemControl  - Successfully ordered jobs, and distributed them
-system_control.NetworkComm.run(NetworkComm.java:97) 5256 [Thread-7] FATAL system_control.NetworkComm  - ERROR - Failed to connect to robot
-system_control.NetworkComm.run(NetworkComm.java:98) 5256 [Thread-7] FATAL system_control.NetworkComm  - lejos.pc.comm.NXTCommException: Open of Lil' Vader failed.
-system_control.NetworkComm.run(NetworkComm.java:97) 10380 [Thread-6] FATAL system_control.NetworkComm  - ERROR - Failed to connect to robot
-system_control.NetworkComm.run(NetworkComm.java:98) 10381 [Thread-6] FATAL system_control.NetworkComm  - lejos.pc.comm.NXTCommException: Open of Lil' Bob failed.

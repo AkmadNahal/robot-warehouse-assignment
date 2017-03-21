@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+import lejos.nxt.LCD;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.comm.BTConnection;
@@ -26,6 +27,7 @@ public class RobotControl implements Runnable {
 	private final int SEND_MOVE_FLAG = 99; //matches with RECEIVE_MOVE_FLAG in NetworkComm.java
 	private final int COMPLETE_ROUTE_FLAG = 50; //matches with COMPLETE_ROUTE_FLAG in NetworkComm.java
 	private final int RECEIVING_FLAG = 75; //matches with SENDING_FLAG in NetworkComm.java
+	private final int AT_PICKUP_FLAG = 33; //matches with AT_PICKUP_FLAG in NetworkComm.java
 
 	public RobotControl(RobotMovementSessionManager _movementManager, RobotLocationSessionManager _locationManager) {
 		movementManager = _movementManager;
@@ -37,8 +39,10 @@ public class RobotControl implements Runnable {
 	@Override
 	public void run() {
 
+		LCD.clear();
 		System.out.println("Waiting for Bluetooth connection...");
 		BTConnection connection = Bluetooth.waitForConnection();
+		LCD.clear();
 		System.out.println("Success!\n\n");
 
 		DataInputStream inputStream = connection.openDataInputStream();
@@ -80,6 +84,9 @@ public class RobotControl implements Runnable {
 							isExecutingRoute = true;
 						} else if(is_route_income) {
 							route.add(Direction.fromInteger(input));
+						} else if (input == AT_PICKUP_FLAG){
+							isExecutingRoute = true;
+							movementManager.setIsAtPickupLocation(true);
 						}
 					}
 				}
