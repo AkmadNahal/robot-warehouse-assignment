@@ -11,17 +11,17 @@ public class RoundCreator {
 
 		
 		ArrayList<Round> rounds = new ArrayList<Round>();
-		Round currentRound = new Round(W_LIMIT);
-		for (Job j : jobs) {	
+		
+		for (Job j : jobs) {
+			Round currentRound = new Round(W_LIMIT, j.getID());
 			for (String s : j.getPicks().keySet()) {
 				if (!currentRound.addStop(itemMap.get(s), j.getPicks().get(s))) {
 					rounds.add(currentRound);
-					currentRound = new Round(W_LIMIT);
+					currentRound = new Round(W_LIMIT, j.getID());
 					currentRound.addStop(itemMap.get(s), j.getPicks().get(s));
 				}
 			}
 			rounds.add(currentRound);
-			currentRound = new Round(W_LIMIT);
 		}
 		
 		return rounds;

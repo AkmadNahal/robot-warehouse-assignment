@@ -8,7 +8,6 @@ import weka.core.converters.ConverterUtils.DataSource;
 public class JobTraining {
 	public static void makeARFF(String jfile, String cfile, HashMap<String, Item> il, String arffFile) {
 		try {
-			System.out.println("Creating training set");
 			HashMap<String, Job> training = JobReader.parseJobs(jfile, cfile, il);
 			ArrayList<String> itemNames = new ArrayList<String>(il.keySet());
 			
@@ -47,14 +46,9 @@ public class JobTraining {
 				wr.write(dataLine);
 				wr.newLine();
 			}
+			
 			wr.close();
 			
-			DataSource source = new DataSource("files/jobs.arff");
-			Instances instances = source.getDataSet();
-			
-			
-			
-			System.out.println("Training set created");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -62,7 +56,6 @@ public class JobTraining {
 	
 	public static void makeARFF(String jfile, HashMap<String, Item> il, String arffFile) {
 		try {
-			System.out.println("Creating test set");
 			HashMap<String, Job> training = JobReader.parseJobs(jfile, il);
 			ArrayList<String> itemNames = new ArrayList<String>(il.keySet());
 			
@@ -101,9 +94,9 @@ public class JobTraining {
 				wr.write(dataLine);
 				wr.newLine();
 			}
+			
 			wr.close();
 			
-			System.out.println("Test set created.");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
