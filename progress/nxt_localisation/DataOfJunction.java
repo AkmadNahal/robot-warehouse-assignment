@@ -6,8 +6,7 @@ public class DataOfJunction {
 	private int yPlus;
 	private int yMinus;
 
-
-	public float getxPlus() {
+	public int getxPlus() {
 		return xPlus;
 	}
 
@@ -15,7 +14,7 @@ public class DataOfJunction {
 		this.xPlus = xPlus;
 	}
 
-	public float getxMinus() {
+	public int getxMinus() {
 		return xMinus;
 	}
 
@@ -23,7 +22,7 @@ public class DataOfJunction {
 		this.xMinus = xMinus;
 	}
 
-	public float getyPlus() {
+	public int getyPlus() {
 		return yPlus;
 	}
 
@@ -31,7 +30,7 @@ public class DataOfJunction {
 		this.yPlus = yPlus;
 	}
 
-	public float getyMinus() {
+	public int getyMinus() {
 		return yMinus;
 	}
 
