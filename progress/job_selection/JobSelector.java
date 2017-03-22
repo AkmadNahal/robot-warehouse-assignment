@@ -12,7 +12,7 @@ import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Discretize;
+import weka.filters.supervised.attribute.Discretize;
 
 public class JobSelector {
 	public static void main(String[] args) {
@@ -61,21 +61,24 @@ public class JobSelector {
 		log.debug("WEKA files succsessfully created.");
 		
 		try {
+			log.debug("Reading ARFF file to training set.");
 			DataSource tsource = new DataSource("files/training.arff");
 			Instances tdata = tsource.getDataSet();
+			log.debug("Successfully created training set.");
 			
-			Discretize d = new Discretize();
-			d.setInputFormat(tdata);
-			String[] options = {"-B", "10", "-R", "31-32"};
-			d.setOptions(options);
-			
-			Instances newData = Filter.useFilter(tdata, d);
+//			log.debug("Discretizing Reward and Weight attributes.");
+//			Discretize d = new Discretize();
+//			d.setInputFormat(tdata);
+//			String[] options = {"-B", "20", "-R", "31-32"};
+//			d.setOptions(options);
+//			
+//			Instances newData = Filter.useFilter(tdata, d);
 			
 			
 			
 			ArffSaver s = new ArffSaver();
 			s.setFile(new File("files/newTraining.arff"));
-			s.setInstances(newData);
+			s.setInstances(tdata);
 			s.writeBatch();
 			
 			
