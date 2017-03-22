@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.UltrasonicSensor;
+import lejos.nxt.addon.OpticalDistanceSensor;
 import lejos.nxt.comm.RConsole;
 import rp.config.WheeledRobotConfiguration;
 import rp.util.Rate;
@@ -14,6 +15,7 @@ public class RouteFollower extends AbstractBehaviour {
 
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
+	private final OpticalDistanceSensor irSensor;
 
 	private float minRange;
 	private float maxRange;
@@ -28,21 +30,19 @@ public class RouteFollower extends AbstractBehaviour {
 	private Rate r = new Rate(20);
 
 	private boolean isRouteComplete = false;
-	private UltrasonicSensor dsSensor;
-	private ArrayList<Direction> route;
-	private boolean abortRoute = false;
+	private Direction move;
 	
-	private RobotLocationSessionManager locationManager;
+	private LocalisationManager locationManager;
 
 	public RouteFollower(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor,
-			SensorPort _dsSensor, ArrayList<Direction> route, RobotLocationSessionManager locationManager) {
+			SensorPort _irSensor, Direction move, LocalisationManager locationManager) {
 		super(_config);
 
 		this.lhSensor = new LightSensor(_lhSensor);
 		this.rhSensor = new LightSensor(_rhSensor);
-		this.dsSensor = new UltrasonicSensor(_dsSensor);
+		this.irSensor = new OpticalDistanceSensor(_irSensor);
 
-		this.route = route;
+		this.move = move;
 
 		minRange = 0;
 		maxRange = 100;
@@ -66,66 +66,38 @@ public class RouteFollower extends AbstractBehaviour {
 	@Override
 	public void action() {
 
-		if (!(locationManager.getCounter() == (route.size()))) {
 			while (!isSuppressed) {
+				pilot.stop();
+				
+				if(irSensor.getDistance() > 20){
 
-				// Ensures the robot will not collide into walls/ other robots
-				// If the safe distance is breached, route following will stop
-				float distance = dsSensor.getRange();
 
-				/*if (distance < 4) {
-					System.out.println(pilot.getMovementIncrement());
-					float reverse = pilot.getMovementIncrement();
-					pilot.stop();
-					pilot.travel(-reverse);
-					pilot.stop();
 
-					Direction move = route.get(counter);
+					float rHValue = rhSensor.getLightValue();
+					float lHValue = lhSensor.getLightValue();
 
-					if (move == Direction.BACKWARDS) {
-						pilot.rotate(180);
-						pilot.stop();
-					} else if (move == Direction.LEFT) {
-						pilot.rotate(-90);
-						pilot.stop();
-					} else if (move == Direction.RIGHT) {
-						pilot.rotate(90);
-						pilot.stop();
-					}
+					float rHRatio = (rHValue - minRange) / rangeDiff;
+					float lHRatio = (lHValue - minRange) / rangeDiff;
 
-					Sound.buzz();
-					System.out.println("abort");
-					//counter = routeLength;
-					abortRoute = true;
-					break;
-				}*/
+					float rHOutput = minValue + (valDiff * rHRatio);
+					float lHOutput = minValue + (valDiff * lHRatio);
 
-				float rHValue = rhSensor.getLightValue();
-				float lHValue = lhSensor.getLightValue();
+					float turnDiff = (rHOutput - lHOutput) + 8;
 
-				float rHRatio = (rHValue - minRange) / rangeDiff;
-				float lHRatio = (lHValue - minRange) / rangeDiff;
+					float turnOut = P * turnDiff;
 
-				float rHOutput = minValue + (valDiff * rHRatio);
-				float lHOutput = minValue + (valDiff * lHRatio);
+					pilot.steer(turnOut);
+					r.sleep();
+					locationManager.setCorrectlyExecuted(true);
 
-				float turnDiff = (rHOutput - lHOutput) + 8;
-
-				float turnOut = P * turnDiff;
-
-				pilot.steer(turnOut);
-				r.sleep();
-
+				}
+				else{
+					locationManager.setCorrectlyExecuted(false);
+					isRouteComplete = true;
+				}
 			}
-			if(locationManager.getCounter() == route.size()){
-				isRouteComplete = true;
-			}
-			else{
 				isSuppressed = false;
-			}
-		} else {
-			isRouteComplete = true;
-		}
+				isRouteComplete = true;
 	}
 
 	protected static void redirectOutput(boolean _useBluetooth) {
