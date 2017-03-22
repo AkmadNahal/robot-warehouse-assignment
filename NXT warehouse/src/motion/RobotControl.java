@@ -86,6 +86,8 @@ public class RobotControl implements Runnable {
 							route.add(Direction.fromInteger(input));
 						} else if (input == AT_PICKUP_FLAG){
 							isExecutingRoute = true;
+							input = inputStream.readInt();
+							movementManager.setNumberOfPicks(input);
 							movementManager.setIsAtPickupLocation(true);
 						}
 					}

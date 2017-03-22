@@ -42,7 +42,7 @@ public class SystemControl {
 		PCSessionManager sessionManager3 = new PCSessionManager(locationAccess3);
 		ChangeNotifier notifier3 = new ChangeNotifier();
 		
-		ArrayList<Round> rounds = orderJobs();
+		ArrayList<Round> rounds = orderJobs(sessionManager1);
 		
 		GridWalkerManager gridWalkerManager = new GridWalkerManager(MapUtils.createRealWarehouse());
 		gridWalkerManager.setup();
@@ -96,7 +96,7 @@ public class SystemControl {
 	
 	}
 	
-	public static ArrayList<Round> orderJobs(){
+	public static ArrayList<Round> orderJobs(PCSessionManager sessionManager){
 		// Read job files
 		String jfile = "src/job_selection/jobs.csv";
 		String wrfile = "src/job_selection/items.csv";
@@ -107,6 +107,7 @@ public class SystemControl {
 		// Sort jobs into highest reward based array
 		ArrayList<Job> jobs = new ArrayList<Job>(jobMap.values());
 		Collections.sort(jobs);
+		sessionManager.setJobs(jobs);
 
 		// Splits the jobs by weights - no job over 50
 		return RoundCreator.createRounds(50f, itemMap, jobs);

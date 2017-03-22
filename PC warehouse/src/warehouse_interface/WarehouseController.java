@@ -47,11 +47,14 @@ public class WarehouseController {
 			}
 		});
 		view.setMap(mapModel, sim);
-		//setTasks(sessionManager1);
 	}
 
 
 	public void setTasks(PCSessionManager sessionManager) {
 		view.setTasks(sessionManager);
+	}
+	
+	public void setTotalReward(PCSessionManager sessionManager) {
+		view.setReward(sessionManager);
 	}
 }

@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,8 +46,11 @@ public class WarehouseView {
 	private JTextArea jobsDisplayRobot1;
 	private JTextArea jobsDisplayRobot2;
 	private JTextArea jobsDisplayRobot3;
+	private JTextArea completedJobsDisplay;
+	private JTextArea totalRewardDisplay;
 	private JPanel cancelationPanel;
 	private JPanel jobsPanel;
+	private JPanel completedJobsAndRewardPanel;
 	private JPanel vizPanel;
 	private List<JButton> cancelRobotButtons = new ArrayList<>();
 	private JButton refreshRobots;
@@ -65,26 +70,37 @@ public class WarehouseView {
 			}
 		});
 		cancelationPanel = new JPanel();
+		completedJobsAndRewardPanel = new JPanel();
 		jobsPanel = new JPanel();
 		vizPanel = new JPanel();
 		for (int i = 1; i <= robotCount; i++) {
 			cancelRobotButtons.add(createNewCancelRobotButton(i));
 		}
 		refreshRobots = new JButton("Refresh");
+		completedJobsDisplay = createOtherDisplayField();
+		totalRewardDisplay = createAnotherDisplayField();
 		jobsDisplayRobot1 = createDisplayField();
 		jobsDisplayRobot2 = createDisplayField();
 		jobsDisplayRobot3 = createDisplayField();
 		jobsPanelVisualisation(jobsPanel);
+		completedJobsVisualisationPanel(completedJobsAndRewardPanel);
 		cancelationPanelVisualisation(cancelationPanel);
 		frameVisualisation(frame);
 	}
 
+	private void completedJobsVisualisationPanel(JPanel completedJobsAndRewardPanel){
+		completedJobsAndRewardPanel.setLayout(new GridLayout(1,1));
+		completedJobsAndRewardPanel.setPreferredSize(new Dimension(200,200));
+		completedJobsAndRewardPanel.add(completedJobsDisplay);
+	}
+	
 	private void jobsPanelVisualisation(JPanel jobsPanel) {
-		jobsPanel.setLayout(new GridLayout(3, 1));
+		jobsPanel.setLayout(new GridLayout(4, 1));
 		jobsPanel.setPreferredSize(new Dimension(120, 100));
 		jobsPanel.add(jobsDisplayRobot1);
 		jobsPanel.add(jobsDisplayRobot2);
 		jobsPanel.add(jobsDisplayRobot3);
+		jobsPanel.add(totalRewardDisplay);
 	}
 
 	private JButton createNewCancelRobotButton(final int i) {
@@ -134,15 +150,42 @@ public class WarehouseView {
 
 	private void frameVisualisation(JFrame frame) {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(550, 450));
+		frame.setPreferredSize(new Dimension(750, 600));
 		frame.setBackground(new Color(255, 255, 255));
 		frame.setJMenuBar(menuBar);
 		frame.pack();
 		frame.setVisible(true);
 		frame.add(cancelationPanel, BorderLayout.SOUTH);
 		frame.add(jobsPanel, BorderLayout.EAST);
+		frame.add(completedJobsAndRewardPanel, BorderLayout.WEST);
 	}
 
+	private JTextArea createOtherDisplayField(){
+		JTextArea field = new JTextArea();
+		field.setPreferredSize(new Dimension(70, 80));
+		field.setBackground(new Color(255, 255, 255));
+		field.setFont(new Font(Font.DIALOG, Font.PLAIN, 13));
+		Border border = BorderFactory.createLineBorder(Color.BLACK);
+		field.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+		field.setOpaque(true);
+		field.setEditable(false);
+		field.setAlignmentX(5f);
+		return field;
+	}
+	
+	private JTextArea createAnotherDisplayField(){
+		JTextArea field = new JTextArea();
+		field.setPreferredSize(new Dimension(70, 10));
+		field.setBackground(new Color(255, 255, 255));
+		field.setFont(new Font(Font.DIALOG, Font.PLAIN, 13));
+		Border border = BorderFactory.createLineBorder(Color.BLACK);
+		field.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+		field.setOpaque(true);
+		field.setEditable(false);
+		field.setAlignmentX(5f);
+		return field;
+	}
+	
 	private JTextArea createDisplayField() {
 		JTextArea field = new JTextArea();
 		field.setPreferredSize(new Dimension(35, 35));
@@ -170,6 +213,19 @@ public class WarehouseView {
 		frame.add(viz);
 	}
 	
+	public void setReward(PCSessionManager sessionManager){
+		float totalReward = sessionManager.getTotalReward();
+		String tasksList = "Total Reward:";
+		tasksList += System.lineSeparator();
+		DecimalFormat format = new DecimalFormat("#.00");
+		if (sessionManager.getTotalReward() == 0f){
+			tasksList += "0.00";
+		}else{
+			tasksList += format.format(sessionManager.getTotalReward());
+		}
+		totalRewardDisplay.setText(tasksList);
+	}
+	
 	public void setTasks(PCSessionManager sessionManager) {
 		Round currentRound = sessionManager.getCurrentRound();
 		String jobID = currentRound.getJob();
@@ -177,8 +233,14 @@ public class WarehouseView {
 		tasksList += System.lineSeparator();
 		tasksList += jobID;
 		tasksList += System.lineSeparator();
-		tasksList += new String("Next Pick: ");
-		tasksList += sessionManager.getPickLocation();
+		if (sessionManager.getNumOfPicks() == 0){
+			tasksList += new String("Waiting...");
+		}else if (sessionManager.getNumOfPicks() == -1){
+			tasksList += new String("To drop-off");
+		}else{
+			tasksList += new String("Next Pick: ");
+			tasksList += sessionManager.getPickLocation();
+		}
 		tasksList += System.lineSeparator();
 		if (sessionManager.getNumOfPicks() == 0){
 			tasksList += new String("Waiting...");

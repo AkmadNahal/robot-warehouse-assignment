@@ -2,6 +2,7 @@ package system_control;
 
 import java.util.ArrayList;
 
+import job_selection.Job;
 import job_selection.Round;
 import utils.Direction;
 import utils.Location;
@@ -19,6 +20,8 @@ public class PCSessionManager {
 	private String robotName;
 	private float currentWeight;
 	private ArrayList<Round> cancelledRounds;
+	private float totalReward;
+	private ArrayList<Job> jobs;
 	
 	public PCSessionManager(SuperLocation locationAccess){
 		this.should_send = false;
@@ -30,7 +33,9 @@ public class PCSessionManager {
 		this.currentRound = null;
 		this.robotName = "";
 		this.currentWeight = 0f;
-		this.cancelledRounds = null;
+		this.cancelledRounds = new ArrayList<Round>();
+		this.totalReward = totalReward;
+		this.jobs = new ArrayList<Job>();
 	}
 	
 	public synchronized void setRoute(ArrayList<Direction> value) {
@@ -107,6 +112,22 @@ public class PCSessionManager {
 	
 	public synchronized ArrayList<Round> getCancelledRounds(){
 		return this.cancelledRounds;
+	}
+	
+	public synchronized void setTotalReward(float totalReward){
+		this.totalReward = totalReward;
+	}
+	
+	public synchronized float getTotalReward(){
+		return this.totalReward;
+	}
+	
+	public synchronized void setJobs(ArrayList<Job> jobs) {
+		this.jobs = jobs;
+	}
+
+	public synchronized ArrayList<Job> getJobs() {
+		return this.jobs;
 	}
 	
 }

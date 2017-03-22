@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import job_selection.Item;
+import job_selection.Job;
 import job_selection.Pick;
 import job_selection.Round;
 import route_planning.RoutePlanner;
@@ -30,6 +31,10 @@ public class RouteManager implements Runnable {
 	private NetworkComm networkComm3;
 	private TSP tsp;
 	private WarehouseController warehouseController;
+	private boolean robot1Cancelled = false;
+	private boolean robot2Cancelled = false;
+	private boolean robot3Cancelled = false;
+	private Location[][] map;
 	
 	private static final Logger logger = Logger.getLogger(RouteManager.class);
 	
@@ -49,16 +54,26 @@ public class RouteManager implements Runnable {
 		this.networkComm3 = networkComm3;
 		this.tsp = tsp;
 		this.warehouseController = warehouseController;
+		this.map = planner.getMap();
 	}
 	
 	@Override
 	public void run() {
 		for (int n = 0; n < sortedJobs.size(); n+=3) {
 			Round robot1CurrentRound = sortedJobs.get(n);
+			if (!sessionManager1.getCancelledRounds().contains(robot1CurrentRound)){
+				robot1Cancelled = false;
+			}
 			sessionManager1.setCurrentRound(robot1CurrentRound);
 			Round robot2CurrentRound = sortedJobs.get(n+1);
+			if (!sessionManager2.getCancelledRounds().contains(robot2CurrentRound)){
+				robot2Cancelled = false;
+			}
 			sessionManager2.setCurrentRound(robot2CurrentRound);
 			Round robot3CurrentRound = sortedJobs.get(n+2);
+			if (!sessionManager3.getCancelledRounds().contains(robot3CurrentRound)){
+				robot3Cancelled = false;
+			}
 			sessionManager3.setCurrentRound(robot3CurrentRound);
 			
 			sessionManager1.setCurrentWeight(0f);
@@ -75,6 +90,10 @@ public class RouteManager implements Runnable {
 			ArrayList<Pick> robot1Picks = robot1CurrentRound.getRound();
 			ArrayList<Pick> robot2Picks = robot2CurrentRound.getRound();
 			ArrayList<Pick> robot3Picks = robot3CurrentRound.getRound();
+			
+			robot1Cancelled = false;
+			robot2Cancelled = false;
+			robot3Cancelled = false;
 			
 			for (int i = 0; i < robot1Picks.size(); i++){
 				robot1Picks.get(i).setCount(counts1.get(i));
@@ -111,11 +130,22 @@ public class RouteManager implements Runnable {
 			Location.jamFixer(locationsInJob1, locationsInJob2, locationsInJob3);
 			logger.debug("Fixed jams");
 			
+			for (int i = 0; i < locationsInJob1.size(); i++){
+				logger.debug(locationsInJob1.get(i));
+			}
+			for (int i = 0; i < locationsInJob2.size(); i++){
+				logger.debug(locationsInJob2.get(i));
+			}
+			for (int i = 0; i < locationsInJob3.size(); i++){
+				logger.debug(locationsInJob3.get(i));
+			}
+			
 			// Reorder pick arrays according TSP location array
 			robot1Picks = Round.reorderAccordingTSP(locationsInJob1, robot1Picks);
 			robot2Picks = Round.reorderAccordingTSP(locationsInJob2, robot2Picks);
 			robot3Picks = Round.reorderAccordingTSP(locationsInJob3, robot3Picks);
 			logger.debug("Re-ordered picks, according to TSP");
+		
 			
 			Item lastActualItem1 = robot1Picks.get(robot1Picks.size()-1).getItem();
 			Item lastActualItem2 = robot2Picks.get(robot2Picks.size()-1).getItem();
@@ -146,12 +176,17 @@ public class RouteManager implements Runnable {
 			}
 			Item dropOff1 = new Item("", 0f, 0f, new Location(4,7, LocationType.EMPTY));
 			robot1Picks.add(new Pick(dropOff1, -1));
+			Item moveFromDropOff1 = new Item("", 0f, 0f, new Location(2, 7, LocationType.EMPTY));
+			robot1Picks.add(new Pick(moveFromDropOff1, 0));
 			
 			Item dropOff2 = new Item("", 0f, 0f, new Location(7,7, LocationType.EMPTY));
 			robot2Picks.add(new Pick(dropOff2, -1));
+			Item moveFromDropOff2 = new Item("", 0f, 0f, new Location(5,7, LocationType.EMPTY));
+			robot2Picks.add(new Pick(moveFromDropOff2, 0));
 			
-			Item dropOff3 = new Item("", 0f, 0f, new Location(10,7, LocationType.EMPTY));
-			robot2Picks.add(new Pick(dropOff3, -1));
+			Item twoAwayFromDropOff2 = new Item("", 0f, 0f, new Location(9,7, LocationType.EMPTY));
+			robot3Picks.add(new Pick(twoAwayFromDropOff2, 0));
+			robot3Picks.add(new Pick(dropOff2, -1));
 			
 			logger.debug("Normalises size of picks list");
 			
@@ -206,6 +241,248 @@ public class RouteManager implements Runnable {
 					sessionManager2.setIsRouteComplete(false);
 					sessionManager3.setIsRouteComplete(false);
 					
+					if (robot1Cancelled){
+						if ((target2.equals(currentLocation1) || (target3.equals(currentLocation1)))){
+							if (currentLocation1.getY() == 0){
+								//anyway but down
+								if (map[currentLocation1.getX()][currentLocation1.getY()+1].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()-1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX()-1, currentLocation1.getY(), LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()+1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX()+1, currentLocation1.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation1.getY() == 7){
+								//anyway but up
+								if (map[currentLocation1.getX()][currentLocation1.getY()-1].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()-1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX()-1, currentLocation1.getY(), LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()+1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX()+1, currentLocation1.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation1.getX() == 0){
+								//anyway but left
+								if (map[currentLocation1.getX()][currentLocation1.getY()-1].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()][currentLocation1.getY()+1].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()+1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX()+1, currentLocation1.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation1.getX() == 11){
+								//anyway but right
+								if (map[currentLocation1.getX()][currentLocation1.getY()-1].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()][currentLocation1.getY()+1].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()-1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX()-1, currentLocation1.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation1.getX() == 0 && currentLocation1.getY() == 0){
+								//move right or up
+								if (map[currentLocation1.getX()][currentLocation1.getY()+1].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()+1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX()+1, currentLocation1.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation1.getX() == 0 && currentLocation1.getY() == 7){
+								//move right or down
+								if (map[currentLocation1.getX()][currentLocation1.getY()-1].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()+1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX()+1, currentLocation1.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation1.getX() == 11 && currentLocation1.getY() == 0){
+								//move up or left
+								if (map[currentLocation1.getX()][currentLocation1.getY()+1].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()-1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX()-1, currentLocation1.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation1.getX() == 11 && currentLocation1.getY() == 7){
+								//move down or left
+								if (map[currentLocation1.getX()][currentLocation1.getY()-1].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation1.getX()-1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
+									target1 = new Location(currentLocation1.getX()-1, currentLocation1.getY(), LocationType.EMPTY);
+								}
+							}
+						}else{
+							target1 = currentLocation1;
+						}
+						sessionManager2.setNumOfPicks(0);
+					}
+					if (robot2Cancelled){
+						if ((target1.equals(currentLocation2) || (target3.equals(currentLocation2)))){
+							if (currentLocation2.getY() == 0){
+								//anyway but down
+								if (map[currentLocation2.getX()][currentLocation2.getY()+1].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()-1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX()-1, currentLocation2.getY(), LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()+1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX()+1, currentLocation2.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation2.getY() == 7){
+								//anyway but up
+								if (map[currentLocation2.getX()][currentLocation2.getY()-1].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()-1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX()-1, currentLocation2.getY(), LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()+1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX()+1, currentLocation2.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation2.getX() == 0){
+								//anyway but left
+								if (map[currentLocation2.getX()][currentLocation2.getY()-1].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()][currentLocation2.getY()+1].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()+1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX()+1, currentLocation2.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation2.getX() == 11){
+								//anyway but right
+								if (map[currentLocation2.getX()][currentLocation2.getY()-1].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()][currentLocation2.getY()+1].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()-1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX()-1, currentLocation2.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation2.getX() == 0 && currentLocation2.getY() == 0){
+								//move right or up
+								if (map[currentLocation2.getX()][currentLocation2.getY()+1].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()+1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX()+1, currentLocation2.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation2.getX() == 0 && currentLocation2.getY() == 7){
+								//move right or down
+								if (map[currentLocation2.getX()][currentLocation2.getY()-1].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()+1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX()+1, currentLocation2.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation2.getX() == 11 && currentLocation2.getY() == 0){
+								//move up or left
+								if (map[currentLocation2.getX()][currentLocation2.getY()+1].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()-1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX()-1, currentLocation2.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation2.getX() == 11 && currentLocation2.getY() == 7){
+								//move down or left
+								if (map[currentLocation2.getX()][currentLocation2.getY()-1].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation2.getX()-1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
+									target2 = new Location(currentLocation2.getX()-1, currentLocation2.getY(), LocationType.EMPTY);
+								}
+							}
+						}else{
+							target2 = currentLocation2;
+						}
+						sessionManager2.setNumOfPicks(0);
+					}
+					if (robot3Cancelled){
+						if ((target1.equals(currentLocation3) || (target2.equals(currentLocation3)))){
+							if (currentLocation3.getY() == 0){
+								//anyway but down
+								if (map[currentLocation3.getX()][currentLocation3.getY()+1].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()-1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX()-1, currentLocation3.getY(), LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()+1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX()+1, currentLocation3.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation3.getY() == 7){
+								//anyway but up
+								if (map[currentLocation3.getX()][currentLocation3.getY()-1].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()-1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX()-1, currentLocation3.getY(), LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()+1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX()+1, currentLocation3.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation3.getX() == 0){
+								//anyway but left
+								if (map[currentLocation3.getX()][currentLocation3.getY()-1].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()][currentLocation3.getY()+1].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()+1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX()+1, currentLocation3.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation3.getX() == 11){
+								//anyway but right
+								if (map[currentLocation3.getX()][currentLocation3.getY()-1].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()][currentLocation3.getY()+1].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()-1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX()-1, currentLocation3.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation3.getX() == 0 && currentLocation3.getY() == 0){
+								//move right or up
+								if (map[currentLocation3.getX()][currentLocation3.getY()+1].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()+1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX()+1, currentLocation3.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation3.getX() == 0 && currentLocation3.getY() == 7){
+								//move right or down
+								if (map[currentLocation3.getX()][currentLocation3.getY()-1].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()+1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX()+1, currentLocation3.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation3.getX() == 11 && currentLocation3.getY() == 0){
+								//move up or left
+								if (map[currentLocation3.getX()][currentLocation3.getY()+1].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()+1, LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()-1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX()-1, currentLocation3.getY(), LocationType.EMPTY);
+								}
+							}
+							if (currentLocation3.getX() == 11 && currentLocation3.getY() == 7){
+								//move down or left
+								if (map[currentLocation3.getX()][currentLocation3.getY()-1].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()-1, LocationType.EMPTY);
+								}else if (map[currentLocation3.getX()-1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
+									target3 = new Location(currentLocation3.getX()-1, currentLocation3.getY(), LocationType.EMPTY);
+								}
+							}
+						}else{
+							target3 = currentLocation3;
+						}
+						sessionManager2.setNumOfPicks(0);
+					}
+														
+					logger.debug("Lil' Bob cancelled? = " + robot1Cancelled);
+					logger.debug("Lil' Vader cancelled? = " + robot2Cancelled);
+					logger.debug("Lil' Yoda cancelled? = " + robot3Cancelled);
+					
 					HashMap<String, ArrayList<Location>> route = planner.getMultiRobotRoute(currentLocation1, target1, currentLocation2, target2, currentLocation3, target3);
 					ArrayList<Direction> route1 = planner.coordinatesToDirections(route.get("robot1"));
 					ArrayList<Direction> route2 = planner.coordinatesToDirections(route.get("robot2"));
@@ -222,6 +499,8 @@ public class RouteManager implements Runnable {
 					warehouseController.setTasks(sessionManager1);
 					warehouseController.setTasks(sessionManager2);
 					warehouseController.setTasks(sessionManager3);
+					
+					warehouseController.setTotalReward(sessionManager1);
 					
 					sessionManager1.setShouldSend(true);
 					sessionManager2.setShouldSend(true);
@@ -260,7 +539,24 @@ public class RouteManager implements Runnable {
 							e.printStackTrace();
 						}
 					}
-					
+					if (sessionManager1.getCancelledRounds().contains(sessionManager1.getCurrentRound())){
+						robot1Cancelled = true;
+						target1 = currentLocation1;
+						sessionManager1.setNumOfPicks(0);
+						logger.debug("Robot 1 should be cancelled");
+					}
+					if (sessionManager2.getCancelledRounds().contains(sessionManager2.getCurrentRound())){
+						robot2Cancelled = true;
+						target2 = currentLocation2;
+						sessionManager2.setNumOfPicks(0);
+						logger.debug("Robot 2 should be cancelled");
+					}
+					if (sessionManager3.getCancelledRounds().contains(sessionManager3.getCurrentRound())){
+						robot3Cancelled = true;
+						target3 = currentLocation3;
+						sessionManager3.setNumOfPicks(0);
+						logger.debug("Robot 3 should be cancelled");
+					}
 				}
 				
 				logger.debug("At pickup point");
@@ -279,9 +575,24 @@ public class RouteManager implements Runnable {
 				networkComm2.sendAtPickup();
 				networkComm3.sendAtPickup();
 				
-				sessionManager1.setCurrentWeight(sessionManager1.getCurrentWeight() + numOfPick1 * robot1Picks.get(counter).getItem().getWeight());
-				sessionManager2.setCurrentWeight(sessionManager2.getCurrentWeight() + numOfPick2 * robot2Picks.get(counter).getItem().getWeight());
-				sessionManager3.setCurrentWeight(sessionManager3.getCurrentWeight() + numOfPick3 * robot3Picks.get(counter).getItem().getWeight());
+				if (robot1Cancelled){
+					sessionManager1.setCurrentWeight(0f);
+					sessionManager1.setNumOfPicks(0);
+				}else{
+					sessionManager1.setCurrentWeight(sessionManager1.getCurrentWeight() + numOfPick1 * robot1Picks.get(counter).getItem().getWeight());
+				}
+				if (robot2Cancelled){
+					sessionManager2.setCurrentWeight(0f);
+					sessionManager2.setNumOfPicks(0);
+				}else{
+					sessionManager2.setCurrentWeight(sessionManager2.getCurrentWeight() + numOfPick2 * robot2Picks.get(counter).getItem().getWeight());
+				}
+				if (robot3Cancelled){
+					sessionManager3.setCurrentWeight(0f);
+					sessionManager3.setNumOfPicks(0);
+				}else{
+					sessionManager3.setCurrentWeight(sessionManager3.getCurrentWeight() + numOfPick3 * robot3Picks.get(counter).getItem().getWeight());
+				}
 				
 				while (!sessionManager1.getIsRouteComplete() || !sessionManager2.getIsRouteComplete() || !sessionManager3.getIsRouteComplete()){
 					if (notifier1.getChanged()){
@@ -303,136 +614,35 @@ public class RouteManager implements Runnable {
 				
 				logger.debug("Finished executing route, onto next one!");
 				
-				//sessionManager1.getLocationAccess().setCurrentLocation(target1);
-				//sessionManager2.getLocationAccess().setCurrentLocation(target2);
-				//sessionManager3.getLocationAccess().setCurrentLocation(target3);
-				
 			}
-				/*int numOfPicks = r.getCounts().get(i);
-				sessionManager.setNumOfPicks(numOfPicks);
-				sessionManager.setRoute(solution);
-				sessionManager.setShouldSend(true);
-				sessionManager.setIsRouteComplete(false);
-				notifier.setChanged(false);
-				logger.debug("Waiting for route to complete");
-				while(!sessionManager.getIsRouteComplete()) {
-					if(notifier.getChanged()) {
-						logger.debug("Notifier changed");
-						sessionManager.setIsRouteComplete(true);
-					}
-					
-					try {
-						Thread.sleep(20);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+			Job associatedJob1 = null;
+			Job associatedJob2 = null;
+			Job associatedJob3 = null;
+			
+			if (!sortedJobs.get(n+1).getJob().equals(sessionManager1.getCurrentRound().getJob())){
+				for (int i = 0; i < sessionManager1.getJobs().size(); i++){
+					if (sessionManager1.getJobs().get(i).getID().equals(sessionManager1.getCurrentRound().getJob())){
+						associatedJob1 = sessionManager1.getJobs().get(i);
 					}
 				}
-				sessionManager.getLocationAccess().setCurrentLocation(nextGoal);
-				logger.debug("Finished executing route");*/
-				
+				sessionManager1.setTotalReward(sessionManager1.getTotalReward() + associatedJob1.totalReward());
+			}
+			if (!sortedJobs.get(n+2).getJob().equals(sessionManager2.getCurrentRound().getJob())){
+				for (int i = 0; i < sessionManager1.getJobs().size(); i++){
+					if (sessionManager1.getJobs().get(i).getID().equals(sessionManager2.getCurrentRound().getJob())){
+						associatedJob2 = sessionManager1.getJobs().get(i);
+					}
+				}
+				sessionManager2.setTotalReward(sessionManager1.getTotalReward() + associatedJob2.totalReward());
+			}
+			if (!sortedJobs.get(n+3).getJob().equals(sessionManager3.getCurrentRound().getJob())){
+				for (int i = 0; i < sessionManager1.getJobs().size(); i++){
+					if (sessionManager1.getJobs().get(i).getID().equals(sessionManager3.getCurrentRound().getJob())){
+						associatedJob3 = sessionManager1.getJobs().get(i);
+					}
+				}
+				sessionManager3.setTotalReward(sessionManager1.getTotalReward() + associatedJob3.totalReward());
+			}
 		}
-			logger.debug("Finished executing route");
 	}
-		
-		/*ArrayList<Direction> testRoute = new ArrayList<Direction>();
-		testRoute = planner.getRoute(sessionManager.getLocationAccess().getCurrentLocation(), new Location(1,0, LocationType.EMPTY));
-		sessionManager.setNumOfPicks(4);
-		sessionManager.setRoute(testRoute);
-		sessionManager.setShouldSend(true);
-		sessionManager.setIsRouteComplete(false);
-		notifier.setChanged(false);
-		System.out.println("Waiting for route to complete");
-		//maybe replace sessionManager.getIsRouteComplete() with a local boolean??
-		
-		while(!sessionManager.getIsRouteComplete()) {
-			if(notifier.getChanged()) {
-				System.out.println("Notifier changed");
-				sessionManager.setIsRouteComplete(true);
-			}
-			
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		System.out.println("Route 1 complete, about to go to next one");
-		
-		ArrayList<Direction> testRoute2 = new ArrayList<Direction>();
-		testRoute2 = planner.getRoute(new Location(1, 0, LocationType.EMPTY), new Location(0, 0, LocationType.EMPTY));
-		sessionManager.setNumOfPicks(4);
-		sessionManager.setRoute(testRoute2);
-		sessionManager.setShouldSend(true);
-		sessionManager.setIsRouteComplete(false);
-		notifier.setChanged(false);
-		System.out.println("Waiting for second route to complete");
-		
-		while(!sessionManager.getIsRouteComplete()) {
-			if(notifier.getChanged()) {
-				System.out.println("Notifier changed");
-				sessionManager.setIsRouteComplete(true);
-			}
-			
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		System.out.println("Route 2 complete, about to go to next one");
-		
-		ArrayList<Direction> testRoute3 = new ArrayList<Direction>();
-		testRoute2 = planner.getRoute(new Location(0, 0, LocationType.EMPTY), new Location(1, 0, LocationType.EMPTY));
-		sessionManager.setNumOfPicks(4);
-		sessionManager.setRoute(testRoute3);
-		sessionManager.setShouldSend(true);
-		sessionManager.setIsRouteComplete(false);
-		notifier.setChanged(false);
-		System.out.println("Waiting for third route to complete");
-		
-		while(!sessionManager.getIsRouteComplete()) {
-			if(notifier.getChanged()) {
-				System.out.println("Notifier changed");
-				sessionManager.setIsRouteComplete(true);
-			}
-			
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		System.out.println("Route 3 complete, about to go to next one");
-		
-		/*ArrayList<Direction> testRoute4 = new ArrayList<Direction>();
-		testRoute2 = planner.getRoute(new Location(1, 0, LocationType.EMPTY), new Location(0, 0, LocationType.EMPTY));
-		sessionManager.setNumOfPicks(4);
-		sessionManager.setRoute(testRoute4);
-		sessionManager.setShouldSend(true);
-		sessionManager.setIsRouteComplete(false);
-		notifier.setChanged(false);
-		System.out.println("Waiting for fourth route to complete");
-		
-		while(!sessionManager.getIsRouteComplete()) {
-			if(notifier.getChanged()) {
-				System.out.println("Notifier changed");
-				sessionManager.setIsRouteComplete(true);
-			}
-			
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		System.out.println("Route 3 complete, about to go to next one");*/
 }

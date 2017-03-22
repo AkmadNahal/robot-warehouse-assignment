@@ -2,6 +2,8 @@ package warehouse_interface;
 
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 import job_selection.Round;
 import system_control.PCSessionManager;
 
@@ -16,6 +18,8 @@ public class WarehouseModel {
 	private ArrayList<Round> sortedJobs;
 	private ArrayList<Round> cancelledRounds = new ArrayList<Round>();
 	private String cancelledJobID;
+	
+	private static final Logger logger = Logger.getLogger(WarehouseModel.class);
 
 	public WarehouseModel(GridWalker gridWalker1, GridWalker gridWalker2, GridWalker gridWalker3, PCSessionManager sessionManager1,
 			PCSessionManager sessionManager2, PCSessionManager sessionManager3, ArrayList<Round> sortedJobs) {
@@ -37,11 +41,19 @@ public class WarehouseModel {
 			cancelledJobID = sessionManager3.getCurrentRound().getJob();
 		}
 		for (int n = 0; n < sortedJobs.size(); n++){
-			if (sortedJobs.get(i).getJob().equals(cancelledJobID)){
-				cancelledRounds.add(sortedJobs.get(i));
-				sortedJobs.remove(i);
+			if (sortedJobs.get(n).getJob().equals(cancelledJobID)){
+				cancelledRounds.add(sortedJobs.get(n));
 			}
 		}
+		for (int y = 0; y < cancelledRounds.size(); y++){
+			sortedJobs.remove(cancelledRounds.get(y));
+		}
+		for (int x = 0; x < cancelledRounds.size(); x++){
+			System.out.println(cancelledRounds.get(x));
+		}
+		
+		logger.debug("Cancelled Job ID: " + cancelledJobID);
+		
 		sessionManager1.setCancelledRounds(cancelledRounds);
 		sessionManager2.setCancelledRounds(cancelledRounds);
 		sessionManager3.setCancelledRounds(cancelledRounds);

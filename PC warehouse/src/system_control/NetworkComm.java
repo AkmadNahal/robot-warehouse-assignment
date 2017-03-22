@@ -121,7 +121,9 @@ public class NetworkComm implements Runnable {
 	public void sendAtPickup(){
 		try {
 			logger.debug("Sending pickup flag");
+			logger.debug(sessionManager.getRobotName() + ": " + sessionManager.getNumOfPicks());
 			m_dos.writeInt(AT_PICKUP_FLAG);
+			m_dos.writeInt(sessionManager.getNumOfPicks());
 			m_dos.flush();
 			notifier.setAtPickup(true);
 		}catch(IOException e){
