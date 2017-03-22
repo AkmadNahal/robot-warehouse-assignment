@@ -1,23 +1,16 @@
 package nxt_localisation;
 
-import static rp.robotics.mapping.MapUtils.createBox;
-
-import java.util.ArrayList;
-
-import lejos.geom.Line;
-import lejos.geom.Rectangle;
-import rp.robotics.mapping.GridMap;
-import rp.robotics.mapping.LineMap;
-
-
 
 public class DistanceCalculator {
-	private static int maxMapSizeX = 12;
-	private static int maxMapSizeY = 8;
+	private static int maxMapSizeX;
+	private static int maxMapSizeY;
 	private static DataOfJunction[][] map;
 	
-	public DistanceCalculator() {
-		map = new DataOfJunction[maxMapSizeX][maxMapSizeY];
+	public DistanceCalculator(DataOfJunction[][] map, int maxMapSizeX, int maxMapSizeY) {
+		this.map = map;
+		this.maxMapSizeX = maxMapSizeX;
+		this.maxMapSizeY = maxMapSizeY;
+		
 	}
 	
 	public static void fillTheCoordinates(){
@@ -65,13 +58,13 @@ public class DistanceCalculator {
 		if (y == maxMapSizeY-1) {
 			return 0;
 		}
-		if (map[x][y].getType().equals(LocationType.BLOCK)){
+		if (map[x][y+1].getType().equals(LocationType.BLOCK)){
 			return 0;
 		} 
-		if (maxMapSizeY-y > 2){
+		if (maxMapSizeY-1 -y > 2){
 			return 3;
 		}
-		return maxMapSizeY-x;
+		return maxMapSizeY-1 -y;
 	}
 	private static int getXMinus(int x, int y) {
 		if (x == 0) {
@@ -102,10 +95,10 @@ public class DistanceCalculator {
 		if (map[x+2][y].getType()==LocationType.BLOCK){
 			return 1;
 		}
-		if (maxMapSizeX-x>2){
+		if (maxMapSizeX - 1 - x > 2){
 			return 3;
 		} 
-		return maxMapSizeX-x;
+		return maxMapSizeX-1-x;
 	}
 	public static void createMap() {
 		
