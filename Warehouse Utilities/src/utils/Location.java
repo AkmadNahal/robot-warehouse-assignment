@@ -39,10 +39,23 @@ public class Location {
 	}
 
 	public static void jamFixer(ArrayList<Location> route1,
-			ArrayList<Location> route2/* ,ArrayList<Location> route3 */) {
-		int minSize = route1.size() < route2.size() ? route1.size() : route2.size();
-		//int minSize = route1.size() < route3.size() ? route1.size() : route3.size();
-		//int minSize = route2.size() < route3.size() ? route2.size() : route3.size();
+			ArrayList<Location> route2, ArrayList<Location> route3) {
+		int minSize;
+		
+		if(route1.size() < route2.size()) {
+			if(route1.size() < route3.size()) {
+				minSize = route1.size();
+			} else {
+				minSize = route3.size();
+			}
+		} else {
+			if(route2.size() < route3.size()) {
+				minSize = route2.size();
+			} else {
+				minSize = route3.size();
+			}
+		}
+		
 		boolean ok = false;
 		
 		while(!ok) {
@@ -65,6 +78,48 @@ public class Location {
 						
 						if(j < route1.size()) {
 							Collections.swap(route1, i, j);
+						}
+					}
+				}
+				
+				if(route1.get(i).equalsTo(route3.get(i))) {
+					ok = false;
+					int j = i + 1;
+					while(route1.get(i).equalsTo(route3.get(j))) {
+						j++;
+					}
+					
+					if(j < route3.size()) {
+						Collections.swap(route3, i, j);
+					} else {
+						j = i+1;
+						while(route3.get(i).equalsTo(route1.get(j))) {
+							j++;
+						}
+						
+						if(j < route1.size()) {
+							Collections.swap(route1, i, j);
+						}
+					}
+				}
+				
+				if(route3.get(i).equalsTo(route2.get(i))) {
+					ok = false;
+					int j = i + 1;
+					while(route3.get(i).equalsTo(route2.get(j))) {
+						j++;
+					}
+					
+					if(j < route2.size()) {
+						Collections.swap(route2, i, j);
+					} else {
+						j = i+1;
+						while(route2.get(i).equalsTo(route3.get(j))) {
+							j++;
+						}
+						
+						if(j < route3.size()) {
+							Collections.swap(route3, i, j);
 						}
 					}
 				}

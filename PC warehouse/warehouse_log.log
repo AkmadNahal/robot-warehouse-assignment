@@ -1,0 +1,27 @@
+system_control.SystemControl.main(SystemControl.java:55) 0    [main] DEBUG system_control.SystemControl  - Successfully set up map
+system_control.SystemControl.main(SystemControl.java:74) 5    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Bob
+system_control.SystemControl.main(SystemControl.java:79) 5    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Vader
+system_control.SystemControl.main(SystemControl.java:84) 5    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Yoda
+system_control.SystemControl.main(SystemControl.java:95) 13   [main] DEBUG system_control.SystemControl  - Successfully ordered jobs, and distributed them
+system_control.RouteManager.run(RouteManager.java:91) 14   [Thread-9] DEBUG system_control.RouteManager  - 5: Size r1
+system_control.RouteManager.run(RouteManager.java:92) 15   [Thread-9] DEBUG system_control.RouteManager  - [(8,4), (6,2), (8,5), (9,5), (6,5)]
+system_control.RouteManager.run(RouteManager.java:94) 16   [Thread-9] DEBUG system_control.RouteManager  - 1: Size r2
+system_control.RouteManager.run(RouteManager.java:95) 16   [Thread-9] DEBUG system_control.RouteManager  - [(3,1)]
+system_control.RouteManager.run(RouteManager.java:97) 16   [Thread-9] DEBUG system_control.RouteManager  - 4: Size r3
+system_control.RouteManager.run(RouteManager.java:98) 17   [Thread-9] DEBUG system_control.RouteManager  - [(8,4), (3,5), (6,5), (3,1)]
+system_control.RouteManager.run(RouteManager.java:108) 54   [Thread-9] DEBUG system_control.RouteManager  - Finished TSP setup
+system_control.RouteManager.run(RouteManager.java:112) 54   [Thread-9] DEBUG system_control.RouteManager  - Fixed jams
+system_control.RouteManager.run(RouteManager.java:118) 54   [Thread-9] DEBUG system_control.RouteManager  - Re-ordered picks, according to TSP
+system_control.RouteManager.run(RouteManager.java:156) 55   [Thread-9] DEBUG system_control.RouteManager  - Normalises size of picks list
+system_control.RouteManager.run(RouteManager.java:177) 55   [Thread-9] DEBUG system_control.RouteManager  - 6: R1 round size
+system_control.RouteManager.run(RouteManager.java:178) 56   [Thread-9] DEBUG system_control.RouteManager  - 2: R2 round size
+system_control.RouteManager.run(RouteManager.java:179) 56   [Thread-9] DEBUG system_control.RouteManager  - 5: R3 round size
+system_control.RouteManager.run(RouteManager.java:181) 56   [Thread-9] DEBUG system_control.RouteManager  - Started next job
+system_control.RouteManager.run(RouteManager.java:184) 56   [Thread-9] DEBUG system_control.RouteManager  - Doing pick 0
+system_control.RouteManager.run(RouteManager.java:192) 56   [Thread-9] DEBUG system_control.RouteManager  - Robot 1 Target: (6,2)
+system_control.RouteManager.run(RouteManager.java:193) 56   [Thread-9] DEBUG system_control.RouteManager  - Robot 2 Target: (3,1)
+system_control.RouteManager.run(RouteManager.java:194) 56   [Thread-9] DEBUG system_control.RouteManager  - Robot 3 Target: (8,4)
+system_control.RouteManager.run(RouteManager.java:230) 84   [Thread-9] DEBUG system_control.RouteManager  - [RIGHT, RIGHT, RIGHT, RIGHT]: Route 1
+system_control.RouteManager.run(RouteManager.java:231) 84   [Thread-9] DEBUG system_control.RouteManager  - [LEFT, FORWARD, FORWARD, FORWARD]: Route 2
+system_control.RouteManager.run(RouteManager.java:232) 84   [Thread-9] DEBUG system_control.RouteManager  - [LEFT, FORWARD, FORWARD, FORWARD]: Route 3
+system_control.RouteManager.run(RouteManager.java:234) 85   [Thread-9] DEBUG system_control.RouteManager  - Waiting for route to complete

@@ -34,10 +34,8 @@ public class TSP {
 
     System.out.println(locations.size());
 
-    System.out.println("Starting SA with temperature: " + startingTemperature + ", # of iterations: " + numberOfIterations + " and colling rate: " + coolingRate);
     double t = startingTemperature;
     double bestDistance = travel.getDistance();
-    System.out.println("Initial distance of travel: " + bestDistance);
     Travel bestSolution = travel;
     Travel currentSolution = new Travel(new ArrayList<Location>(travel.getTravel()), planner);
 
@@ -55,14 +53,7 @@ public class TSP {
         } else {
             continue;
         }
-        if (i % 100 == 0) {
-            System.out.println("Iteration #" + i);
-        }
     }
-
-    System.out.println();
-    System.out.println("--- " + (bestDistance - (bestSolution.getTravel().size()-1)) + " ---");
-    System.out.println();
 
     locations.clear();
     locations.addAll(bestSolution.getTravel());

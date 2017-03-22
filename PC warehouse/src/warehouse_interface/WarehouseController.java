@@ -19,14 +19,16 @@ public class WarehouseController {
 	private WarehouseModel robotModel;
 	private PCSessionManager sessionManager1;
 	private PCSessionManager sessionManager2;
+	private PCSessionManager sessionManager3;
 
-	public WarehouseController(GridMap mapModel, MapBasedSimulation sim, GridWalker gridWalker1, GridWalker gridWalker2/*, GridWalker gridWalker3*/,
-			PCSessionManager sessionManager1, PCSessionManager sessionManager2) {
+	public WarehouseController(GridMap mapModel, MapBasedSimulation sim, GridWalker gridWalker1, GridWalker gridWalker2, GridWalker gridWalker3,
+			PCSessionManager sessionManager1, PCSessionManager sessionManager2, PCSessionManager sessionManager3, ArrayList<Round> rounds) {
 		this.mapModel = mapModel;
 		this.sim = sim;
-		robotModel = new WarehouseModel(gridWalker1, gridWalker2/*, gridWalker3*/);
+		robotModel = new WarehouseModel(gridWalker1, gridWalker2, gridWalker3, sessionManager1, sessionManager2, sessionManager3, rounds);
 		this.sessionManager1 = sessionManager1;
-		this.sessionManager2 = sessionManager2;		
+		this.sessionManager2 = sessionManager2;	
+		this.sessionManager3 = sessionManager3;		
 	}
 
 	public void registerView(WarehouseView view) {
@@ -34,8 +36,7 @@ public class WarehouseController {
 		view.setCancelCallback(new WarehouseView.CancelButtonCallback() {
 			@Override
 			public void cancel(int i) {
-				// TODO Auto-generated method stub
-
+				robotModel.cancel(i);
 			}
 		});
 		view.setRefreshCallback(new WarehouseView.RefreshButtonCallback() {
@@ -46,11 +47,11 @@ public class WarehouseController {
 			}
 		});
 		view.setMap(mapModel, sim);
-		//setTasks(sessionManager1, "Lil' Bob");
+		//setTasks(sessionManager1);
 	}
 
 
-	private void setTasks(PCSessionManager sessionManager, String robotName) {
-		view.setTasks(sessionManager, robotName);
+	public void setTasks(PCSessionManager sessionManager) {
+		view.setTasks(sessionManager);
 	}
 }

@@ -16,6 +16,9 @@ public class PCSessionManager {
 	private Boolean isRouteComplete;
 	private Location pickLocation;
 	private Round currentRound;
+	private String robotName;
+	private float currentWeight;
+	private ArrayList<Round> cancelledRounds;
 	
 	public PCSessionManager(SuperLocation locationAccess){
 		this.should_send = false;
@@ -24,6 +27,10 @@ public class PCSessionManager {
 		this.locationAccess = locationAccess;
 		this.isRouteComplete = false;
 		this.pickLocation = null;
+		this.currentRound = null;
+		this.robotName = "";
+		this.currentWeight = 0f;
+		this.cancelledRounds = null;
 	}
 	
 	public synchronized void setRoute(ArrayList<Direction> value) {
@@ -76,6 +83,30 @@ public class PCSessionManager {
 
 	public synchronized Round getCurrentRound() {
 		return this.currentRound;
+	}
+	
+	public synchronized void setRobotName(String robotName) {
+		this.robotName = robotName;
+	}
+
+	public synchronized String getRobotName() {
+		return this.robotName;
+	}
+	
+	public synchronized void setCurrentWeight(float currentWeight){
+		this.currentWeight = currentWeight;
+	}
+	
+	public synchronized float getCurrentWeight(){
+		return this.currentWeight;
+	}
+	
+	public synchronized void setCancelledRounds(ArrayList<Round> cancelledRounds){
+		this.cancelledRounds = cancelledRounds;
+	}
+	
+	public synchronized ArrayList<Round> getCancelledRounds(){
+		return this.cancelledRounds;
 	}
 	
 }

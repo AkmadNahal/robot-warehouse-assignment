@@ -31,7 +31,7 @@ public class SystemControl {
 
 		SuperLocation locationAccess1 = new SuperLocation(new Location(0, 0, LocationType.EMPTY)); //start location, ROBOT 1
 		SuperLocation locationAccess2 = new SuperLocation(new Location(6, 0, LocationType.EMPTY)); //start location, ROBOT 2
-		//SuperLocation locationAccess3 = new SuperLocation(new Location(11, 0, LocationType.EMPTY)); //start location, ROBOT 3
+		SuperLocation locationAccess3 = new SuperLocation(new Location(11, 0, LocationType.EMPTY)); //start location, ROBOT 3
 		
 		PCSessionManager sessionManager1 = new PCSessionManager(locationAccess1);
 		ChangeNotifier notifier1 = new ChangeNotifier();
@@ -39,26 +39,33 @@ public class SystemControl {
 		PCSessionManager sessionManager2 = new PCSessionManager(locationAccess2);
 		ChangeNotifier notifier2 = new ChangeNotifier();
 		
-		//PCSessionManager sessionManager3 = new PCSessionManager(locationAccess3);
-		//ChangeNotifier notifier3 = new ChangeNotifier();
+		PCSessionManager sessionManager3 = new PCSessionManager(locationAccess3);
+		ChangeNotifier notifier3 = new ChangeNotifier();
+		
+		ArrayList<Round> rounds = orderJobs();
 		
 		GridWalkerManager gridWalkerManager = new GridWalkerManager(MapUtils.createRealWarehouse());
 		gridWalkerManager.setup();
 		GridWalker gridWalker1 = gridWalkerManager.startGridWalker(sessionManager1);
 		GridWalker gridWalker2 = gridWalkerManager.startGridWalker(sessionManager2);
-		//GridWalker gridWalker3 = gridWalkerManager.startGridWalker(sessionManager3);
-		gridWalkerManager.controllerAndView(gridWalker1, gridWalker2/*, gridWalker3*/, sessionManager1, sessionManager2);
+		GridWalker gridWalker3 = gridWalkerManager.startGridWalker(sessionManager3);
+		gridWalkerManager.controllerAndView(gridWalker1, gridWalker2, gridWalker3, sessionManager1, sessionManager2, sessionManager3, rounds);
 		Location[][] map = gridWalkerManager.createMap();
 		
 		logger.debug("Successfully set up map");
+		
+		sessionManager1.setRobotName("Lil' Bob");
+		sessionManager2.setRobotName("Lil' Vader");
+		sessionManager3.setRobotName("Lil' Yoda");
+
 
 		// Setup robot info and networking
-		NXTInfo robot1Info = new NXTInfo (NXTCommFactory.BLUETOOTH, "Lil' Bob",
+		NXTInfo robot1Info = new NXTInfo (NXTCommFactory.BLUETOOTH, sessionManager1.getRobotName(),
 			"0016531AF650");
-		NXTInfo robot2Info = new NXTInfo (NXTCommFactory.BLUETOOTH, "Lil' Vader",
+		NXTInfo robot2Info = new NXTInfo (NXTCommFactory.BLUETOOTH, sessionManager2.getRobotName(),
 				"00165308E541");
-		//NXTInfo robot3Info = new NXTInfo (NXTCommFactory.BLUETOOTH, "Lil' Yoda",
-		//		"0016531817C1");
+		NXTInfo robot3Info = new NXTInfo (NXTCommFactory.BLUETOOTH, sessionManager3.getRobotName(),
+				"0016531B550D");
 		
 		//starts the PC sending/receiving thread
 		NetworkComm robot1 = new NetworkComm(robot1Info, sessionManager1, notifier1);
@@ -71,34 +78,17 @@ public class SystemControl {
 		
 		logger.debug("Successfully connected to Lil' Vader");
 		
-		//NetworkComm robot3 = new NetworkComm(robot3Info, sessionManager3, notifier3);
-		//(new Thread(robot3)).start();
+		NetworkComm robot3 = new NetworkComm(robot3Info, sessionManager3, notifier3);
+		(new Thread(robot3)).start();
 		
-		//logger.debug("Successfully connected to Lil' Yoda");
+		logger.debug("Successfully connected to Lil' Yoda");
 		
 		// Initialise route planner
 		RoutePlanner planner = new RoutePlanner(map,gridWalkerManager.getMapSizeX(),gridWalkerManager.getMapSizeY());
-		
-		ArrayList<Round> rounds = orderJobs();
-		
-		ArrayList<Round> robot1Rounds = new ArrayList<Round>();
-		ArrayList<Round> robot2Rounds = new ArrayList<Round>();
-		//ArrayList<Round> robot3Rounds = new ArrayList<Round>();
-		
-		/*for (int i = 0; i < rounds.size(); i++){
-			if (i > 32){
-				robot1Rounds.add(rounds.get(i));
-			}else if (i < 70){
-				robot2Rounds.add(rounds.get(i));
-			}else{
-				robot3Rounds.add(rounds.get(i));
-			}
-		}*/
-		
-		//distributeRounds() <-- Some method that'll distribute jobs between the robots (In Jerry's component)
-		
-		RouteManager routeManager = new RouteManager(rounds, sessionManager1, sessionManager2,/* sessionManager3,*/ planner,
-				notifier1, notifier2/*, notifier3*/, robot1, robot2, new TSP(map, gridWalkerManager.getMapSizeX(), gridWalkerManager.getMapSizeY()));
+				
+		RouteManager routeManager = new RouteManager(rounds, sessionManager1, sessionManager2, sessionManager3, planner,
+				notifier1, notifier2, notifier3, robot1, robot2, robot3, 
+				new TSP(map, gridWalkerManager.getMapSizeX(), gridWalkerManager.getMapSizeY()), gridWalkerManager.getController());
 		
 		(new Thread (routeManager)).start();
 		

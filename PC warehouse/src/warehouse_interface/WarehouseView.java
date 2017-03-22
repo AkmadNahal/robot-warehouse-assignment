@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 
 import job_selection.Round;
 import rp.robotics.mapping.GridMap;
@@ -78,14 +81,22 @@ public class WarehouseView {
 
 	private void jobsPanelVisualisation(JPanel jobsPanel) {
 		jobsPanel.setLayout(new GridLayout(3, 1));
-		jobsPanel.setPreferredSize(new Dimension(250, 100));
+		jobsPanel.setPreferredSize(new Dimension(120, 100));
 		jobsPanel.add(jobsDisplayRobot1);
 		jobsPanel.add(jobsDisplayRobot2);
 		jobsPanel.add(jobsDisplayRobot3);
 	}
 
 	private JButton createNewCancelRobotButton(final int i) {
-		JButton button = new JButton(String.format("Cancel Robot Number %d", i));
+		String robotName = "";
+		if (i == 1){
+			robotName = "'Lil' Bob'";
+		}else if (i == 2){
+			robotName = "'Lil' Vader'";
+		}else if (i == 3){
+			robotName = "'Lil' Yoda'";
+		}
+		JButton button = new JButton("Cancel " + robotName);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				selectionButtonPressed(i);
@@ -95,7 +106,7 @@ public class WarehouseView {
 	}
 
 	private void cancelationPanelVisualisation(JPanel cancelationPanel) {
-		cancelationPanel.setLayout(new GridLayout(4, 1));
+		cancelationPanel.setLayout(new GridLayout(2, 2));
 		cancelationPanel.setPreferredSize(new Dimension(100, 100));
 
 		refreshRobots.addActionListener(new ActionListener() {
@@ -123,7 +134,8 @@ public class WarehouseView {
 
 	private void frameVisualisation(JFrame frame) {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(700, 700));
+		frame.setPreferredSize(new Dimension(550, 450));
+		frame.setBackground(new Color(255, 255, 255));
 		frame.setJMenuBar(menuBar);
 		frame.pack();
 		frame.setVisible(true);
@@ -133,9 +145,9 @@ public class WarehouseView {
 
 	private JTextArea createDisplayField() {
 		JTextArea field = new JTextArea();
-		field.setPreferredSize(new Dimension(70, 70));
+		field.setPreferredSize(new Dimension(35, 35));
 		field.setBackground(new Color(255, 255, 255));
-		field.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
+		field.setFont(new Font(Font.DIALOG, Font.PLAIN, 13));
 		Border border = BorderFactory.createLineBorder(Color.BLACK);
 		field.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		field.setOpaque(true);
@@ -158,20 +170,36 @@ public class WarehouseView {
 		frame.add(viz);
 	}
 	
-	public void setTasks(PCSessionManager sessionManager, String robotName) {
+	public void setTasks(PCSessionManager sessionManager) {
 		Round currentRound = sessionManager.getCurrentRound();
-		String jobID = currentRound.toString();
-		String tasksList = "  " + robotName;
+		String jobID = currentRound.getJob();
+		String tasksList = sessionManager.getRobotName();
 		tasksList += System.lineSeparator();
-		tasksList += "Job #3e234234";
+		tasksList += jobID;
 		tasksList += System.lineSeparator();
-		tasksList += "Next goal:\n[ " + currentRound.getRoute().get(currentRound.getRoute().size()-1).getX() + " , "
-				+ currentRound.getRoute().get(currentRound.getRoute().size()-1).getY() + " ]" ;
-		if (robotName.equals("Lil' Bob")){
+		tasksList += new String("Next Pick: ");
+		tasksList += sessionManager.getPickLocation();
+		tasksList += System.lineSeparator();
+		if (sessionManager.getNumOfPicks() == 0){
+			tasksList += new String("Waiting...");
+		}else{
+			tasksList += new String("Num. of Picks: ");
+			tasksList += sessionManager.getNumOfPicks();
+		}
+		tasksList += System.lineSeparator();
+		tasksList += new String("Weight: ");
+		float currentWeight = sessionManager.getCurrentWeight();
+		DecimalFormat format = new DecimalFormat("#.00");
+		if (sessionManager.getCurrentWeight() == 0f){
+			tasksList += "0.00";
+		}else{
+			tasksList += format.format(sessionManager.getCurrentWeight());
+		}
+		if (sessionManager.getRobotName().equals("Lil' Bob")){
 			jobsDisplayRobot1.setText(tasksList);
-		}else if (robotName.equals("Lil' Vader")){
+		}else if (sessionManager.getRobotName().equals("Lil' Vader")){
 			jobsDisplayRobot2.setText(tasksList);
-		}else if (robotName.equals("Lil' Yoda")){
+		}else if (sessionManager.getRobotName().equals("Lil' Yoda")){
 			jobsDisplayRobot3.setText(tasksList);
 		}
 	}

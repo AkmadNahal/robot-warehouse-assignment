@@ -64,4 +64,9 @@ public class Job implements Comparable<Job>{
 		}
 		return output;
 	}
+	
+	public String getID() {
+		return jobID;
+	}
+
 }

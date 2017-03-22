@@ -1,7 +1,10 @@
 package system_control;
 
+import java.util.ArrayList;
+
 import org.apache.log4j.Logger;
 
+import job_selection.Round;
 import lejos.robotics.RangeFinder;
 import rp.robotics.MobileRobotWrapper;
 import rp.robotics.mapping.GridMap;
@@ -24,6 +27,7 @@ public class GridWalkerManager {
 	private int mapSizeX;
 	private int mapSizeY;
 	private MapBasedSimulation sim;
+	private WarehouseController control;
 	
 	private static final Logger logger = Logger.getLogger(GridWalkerManager.class);
 	
@@ -68,10 +72,11 @@ public class GridWalkerManager {
 		return controller;
 	}
 	
-	public void controllerAndView(GridWalker gridWalker1, GridWalker gridWalker2/*, GridWalker gridWalker3*/,
-			PCSessionManager sessionManager1, PCSessionManager sessionManager2){
-		WarehouseController control = new WarehouseController(mapModel, sim, gridWalker1, gridWalker2/*, gridWalker3*/,
-				sessionManager1, sessionManager2);
+	public void controllerAndView(GridWalker gridWalker1, GridWalker gridWalker2, GridWalker gridWalker3,
+			PCSessionManager sessionManager1, PCSessionManager sessionManager2, PCSessionManager sessionManager3, 
+			ArrayList<Round> rounds){
+		control = new WarehouseController(mapModel, sim, gridWalker1, gridWalker2, gridWalker3,
+				sessionManager1, sessionManager2, sessionManager3, rounds);
 		WarehouseView view = new WarehouseView(ROBOT_COUNT);
 		control.registerView(view);
 	}
@@ -90,6 +95,10 @@ public class GridWalkerManager {
 	
 	public MapBasedSimulation getSim(){
 		return this.sim;
+	}
+	
+	public WarehouseController getController(){
+		return this.control;
 	}
 
 }
