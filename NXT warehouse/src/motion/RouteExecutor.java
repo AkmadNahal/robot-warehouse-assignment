@@ -32,9 +32,9 @@ public class RouteExecutor implements Runnable {
 			if(movementManager.getShouldExecuteRoute()) {
 				locationManager.setCounter(-1);
 				Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(),
-						config.getRightSensorPort(), config.getDsSensorPort(), movementManager.getRoute(), locationManager);
+						config.getRightSensorPort(), movementManager.getRoute(), locationManager);
 				Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(),
-						config.getRightSensorPort(), movementManager.getRoute(), locationManager, calibratedValue);
+						config.getRightSensorPort(), movementManager.getRoute(), locationManager, calibratedValue, config.getDsSensorPort());
 				Arbitrator arby = new Arbitrator(new Behavior[] { movement, junction }, true);
 				arby.start(); //START THE ARBITRATOR
 				Sound.beepSequence();

@@ -2,48 +2,35 @@ system_control.SystemControl.main(SystemControl.java:55) 0    [main] DEBUG syste
 system_control.SystemControl.main(SystemControl.java:74) 5    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Bob
 system_control.SystemControl.main(SystemControl.java:79) 5    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Vader
 system_control.SystemControl.main(SystemControl.java:84) 5    [main] DEBUG system_control.SystemControl  - Successfully connected to Lil' Yoda
-system_control.RouteManager.run(RouteManager.java:110) 12   [Thread-9] DEBUG system_control.RouteManager  - 5: Size r1
-system_control.RouteManager.run(RouteManager.java:111) 13   [Thread-9] DEBUG system_control.RouteManager  - [(8,4), (6,2), (8,5), (9,5), (6,5)]
-system_control.RouteManager.run(RouteManager.java:113) 14   [Thread-9] DEBUG system_control.RouteManager  - 1: Size r2
-system_control.RouteManager.run(RouteManager.java:114) 15   [Thread-9] DEBUG system_control.RouteManager  - [(3,1)]
-system_control.RouteManager.run(RouteManager.java:116) 15   [Thread-9] DEBUG system_control.RouteManager  - 4: Size r3
-system_control.RouteManager.run(RouteManager.java:117) 15   [Thread-9] DEBUG system_control.RouteManager  - [(8,4), (3,5), (6,5), (3,1)]
-system_control.SystemControl.main(SystemControl.java:95) 17   [main] DEBUG system_control.SystemControl  - Successfully ordered jobs, and distributed them
-system_control.RouteManager.run(RouteManager.java:127) 57   [Thread-9] DEBUG system_control.RouteManager  - Finished TSP setup
-system_control.RouteManager.run(RouteManager.java:133) 57   [Thread-9] DEBUG system_control.RouteManager  - Re-ordered picks, according to TSP
-system_control.RouteManager.run(RouteManager.java:137) 57   [Thread-9] DEBUG system_control.RouteManager  - Fixed jams
-system_control.RouteManager.run(RouteManager.java:140) 57   [Thread-9] DEBUG system_control.RouteManager  - (0,0)
-system_control.RouteManager.run(RouteManager.java:140) 58   [Thread-9] DEBUG system_control.RouteManager  - (6,2)
-system_control.RouteManager.run(RouteManager.java:140) 58   [Thread-9] DEBUG system_control.RouteManager  - (6,5)
-system_control.RouteManager.run(RouteManager.java:140) 58   [Thread-9] DEBUG system_control.RouteManager  - (8,5)
-system_control.RouteManager.run(RouteManager.java:140) 59   [Thread-9] DEBUG system_control.RouteManager  - (9,5)
-system_control.RouteManager.run(RouteManager.java:140) 59   [Thread-9] DEBUG system_control.RouteManager  - (8,4)
-system_control.RouteManager.run(RouteManager.java:143) 59   [Thread-9] DEBUG system_control.RouteManager  - (6,0)
-system_control.RouteManager.run(RouteManager.java:143) 59   [Thread-9] DEBUG system_control.RouteManager  - (3,1)
-system_control.RouteManager.run(RouteManager.java:146) 59   [Thread-9] DEBUG system_control.RouteManager  - (11,0)
-system_control.RouteManager.run(RouteManager.java:146) 59   [Thread-9] DEBUG system_control.RouteManager  - (8,4)
-system_control.RouteManager.run(RouteManager.java:146) 59   [Thread-9] DEBUG system_control.RouteManager  - (6,5)
-system_control.RouteManager.run(RouteManager.java:146) 59   [Thread-9] DEBUG system_control.RouteManager  - (3,5)
-system_control.RouteManager.run(RouteManager.java:146) 59   [Thread-9] DEBUG system_control.RouteManager  - (3,1)
-system_control.RouteManager.run(RouteManager.java:191) 59   [Thread-9] DEBUG system_control.RouteManager  - Normalises size of picks list
-system_control.RouteManager.run(RouteManager.java:212) 60   [Thread-9] DEBUG system_control.RouteManager  - 6: R1 round size
-system_control.RouteManager.run(RouteManager.java:213) 60   [Thread-9] DEBUG system_control.RouteManager  - 2: R2 round size
-system_control.RouteManager.run(RouteManager.java:214) 60   [Thread-9] DEBUG system_control.RouteManager  - 5: R3 round size
-system_control.RouteManager.run(RouteManager.java:216) 60   [Thread-9] DEBUG system_control.RouteManager  - Started next job
-system_control.RouteManager.run(RouteManager.java:219) 60   [Thread-9] DEBUG system_control.RouteManager  - Doing pick 0
-system_control.RouteManager.run(RouteManager.java:227) 60   [Thread-9] DEBUG system_control.RouteManager  - Robot 1 Target: (6,2)
-system_control.RouteManager.run(RouteManager.java:228) 60   [Thread-9] DEBUG system_control.RouteManager  - Robot 2 Target: (3,1)
-system_control.RouteManager.run(RouteManager.java:229) 60   [Thread-9] DEBUG system_control.RouteManager  - Robot 3 Target: (8,4)
-system_control.RouteManager.run(RouteManager.java:482) 61   [Thread-9] DEBUG system_control.RouteManager  - Lil' Bob cancelled? = false
-system_control.RouteManager.run(RouteManager.java:483) 61   [Thread-9] DEBUG system_control.RouteManager  - Lil' Vader cancelled? = false
-system_control.RouteManager.run(RouteManager.java:484) 61   [Thread-9] DEBUG system_control.RouteManager  - Lil' Yoda cancelled? = false
-system_control.RouteManager.run(RouteManager.java:509) 82   [Thread-9] DEBUG system_control.RouteManager  - [RIGHT, RIGHT, RIGHT, RIGHT]: Route 1
-system_control.RouteManager.run(RouteManager.java:510) 82   [Thread-9] DEBUG system_control.RouteManager  - [LEFT, FORWARD, FORWARD, FORWARD]: Route 2
-system_control.RouteManager.run(RouteManager.java:511) 82   [Thread-9] DEBUG system_control.RouteManager  - [LEFT, FORWARD, FORWARD, FORWARD]: Route 3
-system_control.RouteManager.run(RouteManager.java:513) 82   [Thread-9] DEBUG system_control.RouteManager  - Waiting for route to complete
-system_control.NetworkComm.run(NetworkComm.java:109) 5364 [Thread-7] FATAL system_control.NetworkComm  - ERROR - Failed to connect to robot
-system_control.NetworkComm.run(NetworkComm.java:110) 5364 [Thread-7] FATAL system_control.NetworkComm  - lejos.pc.comm.NXTCommException: Open of Lil' Vader failed.
-system_control.NetworkComm.run(NetworkComm.java:109) 10488 [Thread-6] FATAL system_control.NetworkComm  - ERROR - Failed to connect to robot
-system_control.NetworkComm.run(NetworkComm.java:110) 10488 [Thread-6] FATAL system_control.NetworkComm  - lejos.pc.comm.NXTCommException: Open of Lil' Bob failed.
-system_control.NetworkComm.run(NetworkComm.java:109) 15611 [Thread-8] FATAL system_control.NetworkComm  - ERROR - Failed to connect to robot
-system_control.NetworkComm.run(NetworkComm.java:110) 15612 [Thread-8] FATAL system_control.NetworkComm  - lejos.pc.comm.NXTCommException: Open of Lil' Yoda failed.
+system_control.SystemControl.main(SystemControl.java:95) 13   [main] DEBUG system_control.SystemControl  - Successfully ordered jobs, and distributed them
+system_control.RouteManager.run(RouteManager.java:110) 39   [Thread-9] DEBUG system_control.RouteManager  - 5: Size r1
+system_control.RouteManager.run(RouteManager.java:111) 40   [Thread-9] DEBUG system_control.RouteManager  - [(8,4), (6,2), (8,5), (9,5), (6,5)]
+system_control.RouteManager.run(RouteManager.java:113) 40   [Thread-9] DEBUG system_control.RouteManager  - 1: Size r2
+system_control.RouteManager.run(RouteManager.java:114) 40   [Thread-9] DEBUG system_control.RouteManager  - [(3,1)]
+system_control.RouteManager.run(RouteManager.java:116) 40   [Thread-9] DEBUG system_control.RouteManager  - 4: Size r3
+system_control.RouteManager.run(RouteManager.java:117) 41   [Thread-9] DEBUG system_control.RouteManager  - [(8,4), (3,5), (6,5), (3,1)]
+system_control.RouteManager.run(RouteManager.java:127) 80   [Thread-9] DEBUG system_control.RouteManager  - Finished TSP setup
+system_control.RouteManager.run(RouteManager.java:131) 81   [Thread-9] DEBUG system_control.RouteManager  - Fixed jams
+system_control.RouteManager.run(RouteManager.java:141) 81   [Thread-9] DEBUG system_control.RouteManager  - Re-ordered picks, according to TSP
+system_control.RouteManager.run(RouteManager.java:194) 81   [Thread-9] DEBUG system_control.RouteManager  - Normalises size of picks list
+system_control.RouteManager.run(RouteManager.java:215) 81   [Thread-9] DEBUG system_control.RouteManager  - 6: R1 round size
+system_control.RouteManager.run(RouteManager.java:216) 82   [Thread-9] DEBUG system_control.RouteManager  - 2: R2 round size
+system_control.RouteManager.run(RouteManager.java:217) 82   [Thread-9] DEBUG system_control.RouteManager  - 5: R3 round size
+system_control.RouteManager.run(RouteManager.java:219) 82   [Thread-9] DEBUG system_control.RouteManager  - Started next job
+system_control.RouteManager.run(RouteManager.java:222) 82   [Thread-9] DEBUG system_control.RouteManager  - Doing pick 0
+system_control.RouteManager.run(RouteManager.java:230) 82   [Thread-9] DEBUG system_control.RouteManager  - Robot 1 Target: (6,2)
+system_control.RouteManager.run(RouteManager.java:231) 82   [Thread-9] DEBUG system_control.RouteManager  - Robot 2 Target: (3,1)
+system_control.RouteManager.run(RouteManager.java:232) 83   [Thread-9] DEBUG system_control.RouteManager  - Robot 3 Target: (8,4)
+system_control.RouteManager.run(RouteManager.java:485) 83   [Thread-9] DEBUG system_control.RouteManager  - Lil' Bob cancelled? = false
+system_control.RouteManager.run(RouteManager.java:486) 83   [Thread-9] DEBUG system_control.RouteManager  - Lil' Vader cancelled? = false
+system_control.RouteManager.run(RouteManager.java:487) 83   [Thread-9] DEBUG system_control.RouteManager  - Lil' Yoda cancelled? = false
+system_control.RouteManager.run(RouteManager.java:512) 106  [Thread-9] DEBUG system_control.RouteManager  - [RIGHT, RIGHT, RIGHT, RIGHT]: Route 1
+system_control.RouteManager.run(RouteManager.java:513) 106  [Thread-9] DEBUG system_control.RouteManager  - [LEFT, FORWARD, FORWARD, FORWARD]: Route 2
+system_control.RouteManager.run(RouteManager.java:514) 106  [Thread-9] DEBUG system_control.RouteManager  - [LEFT, FORWARD, FORWARD, FORWARD]: Route 3
+system_control.RouteManager.run(RouteManager.java:516) 106  [Thread-9] DEBUG system_control.RouteManager  - Waiting for route to complete
+system_control.NetworkComm.run(NetworkComm.java:109) 5249 [Thread-7] FATAL system_control.NetworkComm  - ERROR - Failed to connect to robot
+system_control.NetworkComm.run(NetworkComm.java:110) 5250 [Thread-7] FATAL system_control.NetworkComm  - lejos.pc.comm.NXTCommException: Open of Lil' Vader failed.
+system_control.NetworkComm.run(NetworkComm.java:109) 10372 [Thread-6] FATAL system_control.NetworkComm  - ERROR - Failed to connect to robot
+system_control.NetworkComm.run(NetworkComm.java:110) 10372 [Thread-6] FATAL system_control.NetworkComm  - lejos.pc.comm.NXTCommException: Open of Lil' Bob failed.
+system_control.NetworkComm.run(NetworkComm.java:109) 15497 [Thread-8] FATAL system_control.NetworkComm  - ERROR - Failed to connect to robot
+system_control.NetworkComm.run(NetworkComm.java:110) 15497 [Thread-8] FATAL system_control.NetworkComm  - lejos.pc.comm.NXTCommException: Open of Lil' Yoda failed.

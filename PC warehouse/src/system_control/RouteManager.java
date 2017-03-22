@@ -130,22 +130,15 @@ public class RouteManager implements Runnable {
 			Location.jamFixer(locationsInJob1, locationsInJob2, locationsInJob3);
 			logger.debug("Fixed jams");
 			
-			for (int i = 0; i < locationsInJob1.size(); i++){
-				logger.debug(locationsInJob1.get(i));
-			}
-			for (int i = 0; i < locationsInJob2.size(); i++){
-				logger.debug(locationsInJob2.get(i));
-			}
-			for (int i = 0; i < locationsInJob3.size(); i++){
-				logger.debug(locationsInJob3.get(i));
-			}
+			System.out.println(locationsInJob1);
+			System.out.println(locationsInJob2);
+			System.out.println(locationsInJob3);
 			
 			// Reorder pick arrays according TSP location array
 			robot1Picks = Round.reorderAccordingTSP(locationsInJob1, robot1Picks);
 			robot2Picks = Round.reorderAccordingTSP(locationsInJob2, robot2Picks);
 			robot3Picks = Round.reorderAccordingTSP(locationsInJob3, robot3Picks);
 			logger.debug("Re-ordered picks, according to TSP");
-		
 			
 			Item lastActualItem1 = robot1Picks.get(robot1Picks.size()-1).getItem();
 			Item lastActualItem2 = robot2Picks.get(robot2Picks.size()-1).getItem();

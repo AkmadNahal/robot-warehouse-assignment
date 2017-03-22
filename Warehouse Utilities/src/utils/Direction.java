@@ -1,7 +1,7 @@
 package utils;
 
 public enum Direction {
-	FORWARD(0), BACKWARDS(180), LEFT(-90), RIGHT(90), STOP(-1);
+	FORWARD(0), BACKWARDS(180), LEFT(-90), RIGHT(90), STOP(-1), SPIN(360);
 
 		private final int value;
 	 	private Direction(int value) {
@@ -24,6 +24,8 @@ public enum Direction {
 					return RIGHT;
 				case -1:
 					return STOP;
+				case 360:
+					return SPIN;
 				default:
 					return null;
         }

@@ -32,10 +32,10 @@ public class RouteFollower extends AbstractBehaviour {
 	private boolean isRouteComplete = false;
 	private Direction move;
 	
-	private LocalisationManager locationManager;
+	private RobotLocationSessionManager locationManager;
 
 	public RouteFollower(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor,
-			SensorPort _irSensor, Direction move, LocalisationManager locationManager) {
+			SensorPort _irSensor, Direction move, RobotLocationSessionManager locationManager) {
 		super(_config);
 
 		this.lhSensor = new LightSensor(_lhSensor);
@@ -67,7 +67,6 @@ public class RouteFollower extends AbstractBehaviour {
 	public void action() {
 
 			while (!isSuppressed) {
-				pilot.stop();
 				
 				if(irSensor.getDistance() > 20){
 

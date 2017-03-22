@@ -2,6 +2,7 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class Location {
 
@@ -38,21 +39,38 @@ public class Location {
 		return (x == location.getX() && y == location.getY());
 	}
 
+
 	public static void jamFixer(ArrayList<Location> route1,
 			ArrayList<Location> route2, ArrayList<Location> route3) {
-		int minSize;
 		
+		ArrayList<Location> shortestRoute = new ArrayList<Location>();
+		ArrayList<Location> middleRoute = new ArrayList<Location>();
+		ArrayList<Location> longestRoute = new ArrayList<Location>();
+				
 		if(route1.size() < route2.size()) {
 			if(route1.size() < route3.size()) {
-				minSize = route1.size();
+				shortestRoute = route1;
+				middleRoute = route3;
+				longestRoute = route2;
 			} else {
-				minSize = route3.size();
+				shortestRoute = route3;
+				middleRoute = route1;
+				longestRoute = route2;
 			}
 		} else {
 			if(route2.size() < route3.size()) {
-				minSize = route2.size();
+				shortestRoute = route2;
+				if (route1.size() < route3.size()){
+					middleRoute = route1;
+					longestRoute = route3;
+				}else{
+					middleRoute = route3;
+					longestRoute = route1;
+				}
 			} else {
-				minSize = route3.size();
+				shortestRoute = route3;
+				middleRoute = route2;
+				longestRoute = route1;
 			}
 		}
 		
@@ -60,8 +78,9 @@ public class Location {
 		
 		while(!ok) {
 			ok = true;
-			for(int i=0;i<minSize;i++) {
+			for(int i=0;i<shortestRoute.size();i++) {
 				if(route1.get(i).equalsTo(route2.get(i))) {
+					System.out.println("hello");
 					ok = false;
 					int j = i + 1;
 					while(route1.get(i).equalsTo(route2.get(j))) {
@@ -83,6 +102,7 @@ public class Location {
 				}
 				
 				if(route1.get(i).equalsTo(route3.get(i))) {
+					System.out.println("hello2");
 					ok = false;
 					int j = i + 1;
 					while(route1.get(i).equalsTo(route3.get(j))) {
@@ -104,6 +124,7 @@ public class Location {
 				}
 				
 				if(route3.get(i).equalsTo(route2.get(i))) {
+					System.out.println("hello3");
 					ok = false;
 					int j = i + 1;
 					while(route3.get(i).equalsTo(route2.get(j))) {
@@ -123,6 +144,30 @@ public class Location {
 						}
 					}
 				}
+			}
+			for(int i=0;i<middleRoute.size();i++) {
+				if(middleRoute.get(i).equalsTo(longestRoute.get(i))) {
+					System.out.println("hello");
+					ok = false;
+					int j = i + 1;
+					while(middleRoute.get(i).equalsTo(longestRoute.get(j))) {
+						j++;
+					}
+					
+					if(j < longestRoute.size()) {
+						Collections.swap(longestRoute, i, j);
+					} else {
+						j = i+1;
+						while(longestRoute.get(i).equalsTo(middleRoute.get(j))) {
+							j++;
+						}
+						
+						if(j < middleRoute.size()) {
+							Collections.swap(middleRoute, i, j);
+						}
+					}
+				}
+				
 			}
 			
 		}
