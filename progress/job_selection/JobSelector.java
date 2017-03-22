@@ -11,8 +11,13 @@ import org.apache.log4j.Logger;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
-import weka.filters.Filter;
 import weka.filters.supervised.attribute.Discretize;
+import weka.filters.unsupervised.attribute.Remove;
+import weka.filters.unsupervised.attribute.RemoveByName;
+import weka.filters.Filter;
+import weka.filters.supervised.attribute.AttributeSelection;
+import weka.classifiers.Evaluation;
+import weka.classifiers.bayes.NaiveBayes;
 
 public class JobSelector {
 	public static void main(String[] args) {
@@ -56,7 +61,7 @@ public class JobSelector {
 		
 		log.debug("Creating WEKA training set ARFF.");
 		JobTraining.makeARFF(trainfile, cfile, itemMap, "files/training.arff");
-		log.debug("Creating WEKA test set ARFF.");
+		log.debug("Creating WEKA job set ARFF.");
 		JobTraining.makeARFF(jfile, itemMap, "files/jobs.arff");
 		log.debug("WEKA files succsessfully created.");
 		
@@ -64,25 +69,63 @@ public class JobSelector {
 			log.debug("Reading ARFF file to training set.");
 			DataSource tsource = new DataSource("files/training.arff");
 			Instances tdata = tsource.getDataSet();
+			tdata.setClass(tdata.attribute(33));
 			log.debug("Successfully created training set.");
 			
-//			log.debug("Discretizing Reward and Weight attributes.");
-//			Discretize d = new Discretize();
-//			d.setInputFormat(tdata);
-//			String[] options = {"-B", "20", "-R", "31-32"};
-//			d.setOptions(options);
-//			
-//			Instances newData = Filter.useFilter(tdata, d);
+			DataSource jsource = new DataSource("files/jobs.arff");
+			Instances jdata = jsource.getDataSet();
 			
 			
+			AttributeSelection aSel = new AttributeSelection();
+			aSel.setInputFormat(tdata);
+			
+			log.debug("Creating discretizer.");
+			Discretize d = new Discretize();
+			String[] options = {"-R", "30-31", "-precision", "4"};
+			d.setOptions(options);
+			d.setInputFormat(tdata);
+			log.debug("Discretizer made.");
+			
+			log.debug("Applying Filters");
+			Instances newData = Filter.useFilter(tdata, d);
+			log.debug("Succesfully applied discretization.");
+			newData = Filter.useFilter(newData, aSel);
+			log.debug("Succesfully applied attribute selection.");
+			
+			NaiveBayes classifier = new NaiveBayes();
+			classifier.buildClassifier(newData);
+			
+			ArrayList<String> rm = new ArrayList<String>();
+			for (int i = 0; i < jdata.numAttributes(); i++) {
+				boolean contains = false;
+				for (int j = 0; j < tdata.numAttributes(); j++) {
+					if (jdata.attribute(i).name().equals(tdata.attribute(j).name())) {
+						System.out.println(jdata.attribute(i).name());
+						contains = true;
+					}
+				}
+				if (!contains) {
+					rm.add(jdata.attribute(i).name());
+				}
+			}
+			
+			RemoveByName rmf = new RemoveByName();
+			for (String s : rm) {
+				String[] rmoptions = {"-E",s};
+				rmf.setOptions(rmoptions);
+				Filter.useFilter(jdata, rmf);
+			}
+			
+			System.out.println(jdata.toString());
 			
 			ArffSaver s = new ArffSaver();
 			s.setFile(new File("files/newTraining.arff"));
-			s.setInstances(tdata);
+			s.setInstances(newData);
 			s.writeBatch();
 			
-			
+			log.debug("Finished");
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

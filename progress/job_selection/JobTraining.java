@@ -86,12 +86,7 @@ public class JobTraining {
 						dataLine += "0,";
 					}
 				}
-				dataLine += j.totalWeight() + "," + j.totalReward();
-				if (j.isCancelled()) {
-					dataLine += ",1";
-				} else {
-					dataLine += ",0";
-				}
+				dataLine += j.totalWeight() + "," + j.totalReward() + ",?";
 				wr.write(dataLine);
 				wr.newLine();
 			}

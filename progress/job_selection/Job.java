@@ -2,14 +2,14 @@ package job_selection;
 
 import java.util.HashMap;
 
-public class Job implements Comparable<Job>{
+public class Job implements Comparable<Job> {
 	private String jobID;
 	private HashMap<String, Integer> picks = new HashMap<String, Integer>();
 	private HashMap<String, Item> itemList;
 	private boolean cancelled;
 	private boolean predictedCancel;
 	private float value;
-	
+
 	public Job(String id, HashMap<String, Item> il, int cancelled) {
 		this.jobID = id;
 		this.itemList = il;
@@ -19,24 +19,23 @@ public class Job implements Comparable<Job>{
 			this.cancelled = false;
 		}
 	}
-	
+
 	public void setPrediction(boolean prediction) {
 		this.predictedCancel = prediction;
 	}
-	
+
 	public void addPick(String item, int count) {
 		if (picks.containsKey(item)) {
 			picks.replace(item, count);
-		}
-		else {
+		} else {
 			picks.put(item, count);
 		}
 	}
-	
+
 	public HashMap<String, Integer> getPicks() {
 		return picks;
 	}
-	
+
 	public float totalReward() {
 		float total = 0;
 		for (String i : picks.keySet()) {
@@ -44,7 +43,7 @@ public class Job implements Comparable<Job>{
 		}
 		return total;
 	}
-	
+
 	public float totalWeight() {
 		float total = 0;
 		for (String i : picks.keySet()) {
@@ -52,7 +51,7 @@ public class Job implements Comparable<Job>{
 		}
 		return total;
 	}
-	
+
 	public int totalItems() {
 		int total = 0;
 		for (Integer i : picks.values()) {
@@ -71,18 +70,18 @@ public class Job implements Comparable<Job>{
 			return 0;
 		}
 	}
-	
+
 	public float getValue() {
 		return this.value;
 	}
-	
+
 	public void calcValue() {
 		float value = 0;
 		value = this.totalReward();
-		
+
 		this.value = value;
 	}
-	
+
 	@Override
 	public String toString() {
 		String output = jobID;
@@ -95,11 +94,11 @@ public class Job implements Comparable<Job>{
 	public String getID() {
 		return jobID;
 	}
-	
+
 	public void setCancelled(boolean c) {
 		this.cancelled = c;
 	}
-	
+
 	public boolean isCancelled() {
 		return this.cancelled;
 	}
