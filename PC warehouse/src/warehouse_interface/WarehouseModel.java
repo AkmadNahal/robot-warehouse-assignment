@@ -40,9 +40,16 @@ public class WarehouseModel {
 		}else if (i == 3){
 			cancelledJobID = sessionManager3.getCurrentRound().getJob();
 		}
-		sessionManager1.setCancelledJobID(cancelledJobID);
-		sessionManager2.setCancelledJobID(cancelledJobID);
-		sessionManager3.setCancelledJobID(cancelledJobID);
+		ArrayList<String> priorCancelledJobs1 = sessionManager1.getCancelledJobIDs();
+		ArrayList<String> priorCancelledJobs2 = sessionManager2.getCancelledJobIDs();
+		ArrayList<String> priorCancelledJobs3 = sessionManager3.getCancelledJobIDs();
+		priorCancelledJobs1.add(cancelledJobID);
+		priorCancelledJobs2.add(cancelledJobID);
+		priorCancelledJobs3.add(cancelledJobID);
+		
+		sessionManager1.setCancelledJobIDs(priorCancelledJobs1);
+		sessionManager2.setCancelledJobIDs(priorCancelledJobs2);
+		sessionManager3.setCancelledJobIDs(priorCancelledJobs3);
 		
 		logger.debug("Cancelled Job ID: " + cancelledJobID);
 	}

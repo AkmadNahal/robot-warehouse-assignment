@@ -19,7 +19,7 @@ public class PCSessionManager {
 	private Round currentRound;
 	private String robotName;
 	private float currentWeight;
-	private String cancelledJobID;
+	private ArrayList<String> cancelledJobIDs;
 	private float totalReward;
 	private ArrayList<Job> jobs;
 	private ArrayList<String> completedJobs;
@@ -34,7 +34,7 @@ public class PCSessionManager {
 		this.currentRound = null;
 		this.robotName = "";
 		this.currentWeight = 0f;
-		this.cancelledJobID = "";
+		this.cancelledJobIDs = new ArrayList<String>();
 		this.totalReward = totalReward;
 		this.jobs = new ArrayList<Job>();
 		this.completedJobs = new ArrayList<String>();
@@ -108,12 +108,12 @@ public class PCSessionManager {
 		return this.currentWeight;
 	}
 	
-	public synchronized void setCancelledJobID(String cancelledJobID){
-		this.cancelledJobID = cancelledJobID;
+	public synchronized void setCancelledJobIDs(ArrayList<String> cancelledJobIDs){
+		this.cancelledJobIDs = cancelledJobIDs;
 	}
 	
-	public synchronized String getCancelledJobID(){
-		return this.cancelledJobID;
+	public synchronized ArrayList<String> getCancelledJobIDs(){
+		return this.cancelledJobIDs;
 	}
 	
 	public synchronized void setTotalReward(float totalReward){

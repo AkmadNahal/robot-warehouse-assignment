@@ -67,17 +67,17 @@ public class RouteManager implements Runnable {
 			robot2Waiting = false;
 			robot3Waiting = false;
 			Round robot1CurrentRound = sortedJobs.get(n);
-			if (!sessionManager1.getCancelledJobID().equals(robot1CurrentRound.getJob())){
+			if (!sessionManager1.getCancelledJobIDs().contains(robot1CurrentRound.getJob())){
 				robot1Cancelled = false;
 			}
 			sessionManager1.setCurrentRound(robot1CurrentRound);
 			Round robot2CurrentRound = sortedJobs.get(n+1);
-			if (!sessionManager2.getCancelledJobID().equals(robot2CurrentRound.getJob())){
+			if (!sessionManager2.getCancelledJobIDs().contains(robot2CurrentRound.getJob())){
 				robot2Cancelled = false;
 			}
 			sessionManager2.setCurrentRound(robot2CurrentRound);
 			Round robot3CurrentRound = sortedJobs.get(n+2);
-			if (!sessionManager3.getCancelledJobID().equals(robot3CurrentRound.getJob())){
+			if (!sessionManager3.getCancelledJobIDs().contains(robot3CurrentRound.getJob())){
 				robot3Cancelled = false;
 			}
 			sessionManager3.setCurrentRound(robot3CurrentRound);
@@ -539,19 +539,19 @@ public class RouteManager implements Runnable {
 							e.printStackTrace();
 						}
 					}
-					if (sessionManager1.getCancelledJobID().equals(sessionManager1.getCurrentRound().getJob())){
+					if (sessionManager1.getCancelledJobIDs().contains(sessionManager1.getCurrentRound().getJob())){
 						robot1Cancelled = true;
 						target1 = currentLocation1;
 						sessionManager1.setNumOfPicks(0);
 						logger.debug("Robot 1 should be cancelled");
 					}
-					if (sessionManager2.getCancelledJobID().equals(sessionManager2.getCurrentRound().getJob())){
+					if (sessionManager2.getCancelledJobIDs().contains(sessionManager2.getCurrentRound().getJob())){
 						robot2Cancelled = true;
 						target2 = currentLocation2;
 						sessionManager2.setNumOfPicks(0);
 						logger.debug("Robot 2 should be cancelled");
 					}
-					if (sessionManager3.getCancelledJobID().equals(sessionManager3.getCurrentRound().getJob())){
+					if (sessionManager3.getCancelledJobIDs().contains(sessionManager3.getCurrentRound().getJob())){
 						robot3Cancelled = true;
 						target3 = currentLocation3;
 						sessionManager3.setNumOfPicks(0);
