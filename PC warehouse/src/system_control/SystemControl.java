@@ -181,7 +181,7 @@ public class SystemControl {
 			s.writeBatch();
 			logger.debug("Results saved");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.fatal(e);
 		}
 		
 		// Sort jobs into highest reward based array

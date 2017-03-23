@@ -64,7 +64,7 @@ public class NetworkComm implements Runnable {
 						notifier.setAtPickup(false);
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.fatal(e);
 				}
 				if(sessionManager.getShouldSend()) {
 					// Notify starting of route sending
@@ -127,7 +127,7 @@ public class NetworkComm implements Runnable {
 			m_dos.flush();
 			notifier.setAtPickup(true);
 		}catch(IOException e){
-			e.printStackTrace();
+			logger.fatal(e);
 		}
 	}
 
@@ -140,7 +140,7 @@ public class NetworkComm implements Runnable {
 
 			return this;
 		} catch (NXTCommException e) {
-			e.printStackTrace();
+			logger.fatal(e);
 		}
 		return null;
 

@@ -536,7 +536,7 @@ public class RouteManager implements Runnable {
 						try {
 							Thread.sleep(20);
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							logger.fatal(e);
 						}
 					}
 					if (sessionManager1.getCancelledJobIDs().contains(sessionManager1.getCurrentRound().getJob())){
