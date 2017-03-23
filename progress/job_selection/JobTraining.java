@@ -73,11 +73,13 @@ public class JobTraining {
 			
 			wr.write("@ATTRIBUTE weight NUMERIC\n");
 			wr.write("@ATTRIBUTE reward NUMERIC\n");
+			wr.write("@ATTRIBUTE itemCount NUMERIC\n");
 			wr.write("@ATTRIBUTE cancelled {0, 1}\n");
 			wr.newLine();
 			
 			wr.write("@DATA\n");
-			for (Job j : training.values()) {
+			for (int i = 10000; i < 10100; i++) {
+				Job j = training.get(Integer.toString(i));
 				String dataLine = "";
 				for (String s : itemNames) {
 					if (j.getPicks().keySet().contains(s)) {
@@ -86,7 +88,7 @@ public class JobTraining {
 						dataLine += "0,";
 					}
 				}
-				dataLine += j.totalWeight() + "," + j.totalReward() + ",?";
+				dataLine += j.totalWeight() + "," + j.totalReward() + "," + j.totalItems() + ",?";
 				wr.write(dataLine);
 				wr.newLine();
 			}

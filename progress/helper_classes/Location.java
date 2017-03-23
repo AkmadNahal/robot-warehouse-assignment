@@ -27,6 +27,10 @@ public class Location {
     return type;
   }
 
+  public void setType(LocationType t) {
+	  this.type = t;
+  }
+  
   public int getDistanceFromLocation(Location l) {
     return Math.abs(x - l.getX()) + Math.abs(y - l.getY());
   }

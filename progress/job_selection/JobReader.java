@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 public class JobReader {
 
 	public static HashMap<String, Job> parseJobs(String file, HashMap<String, Item> il) {
+		JobManager manager = new JobManager();
 		
 		BufferedReader reader;
 		String splitBy = ",";
@@ -24,7 +25,7 @@ public class JobReader {
 			while ((line = reader.readLine()) != null) {
 				String[] job = line.split(splitBy);
 				String jobID = job[0];
-				Job j = new Job(jobID, il, 0);
+				Job j = new Job(jobID, il, 0, manager);
 				int numPicks = (job.length - 1)/2;
 				for (int i = 0; i < numPicks; i++) {
 //					System.out.print(job[(2*i)+1] + ": ");
@@ -46,7 +47,8 @@ public class JobReader {
 	}
 	
 public static HashMap<String, Job> parseJobs(String jfile, String cfile,HashMap<String, Item> il) {
-		
+		JobManager manager = new JobManager();
+	
 		BufferedReader jreader;
 		BufferedReader creader;
 		String splitBy = ",";
@@ -62,7 +64,7 @@ public static HashMap<String, Job> parseJobs(String jfile, String cfile,HashMap<
 				String[] job = jline.split(splitBy);
 				int cancelled = Integer.parseInt((cline.split(","))[1]);
 				String jobID = job[0];
-				Job j = new Job(jobID, il, cancelled);
+				Job j = new Job(jobID, il, cancelled, manager);
 				int numPicks = (job.length - 1)/2;
 				for (int i = 0; i < numPicks; i++) {
 //					System.out.print(job[(2*i)+1] + ": ");

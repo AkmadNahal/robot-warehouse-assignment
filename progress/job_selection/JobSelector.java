@@ -8,16 +8,15 @@ import java.util.HashMap;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
+import weka.attributeSelection.GainRatioAttributeEval;
+import weka.attributeSelection.Ranker;
+import weka.classifiers.meta.AttributeSelectedClassifier;
+import weka.classifiers.meta.Bagging;
+import weka.classifiers.trees.REPTree;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
-import weka.filters.supervised.attribute.Discretize;
-import weka.filters.unsupervised.attribute.Remove;
-import weka.filters.unsupervised.attribute.RemoveByName;
-import weka.filters.Filter;
-import weka.filters.supervised.attribute.AttributeSelection;
-import weka.classifiers.Evaluation;
-import weka.classifiers.bayes.NaiveBayes;
 
 public class JobSelector {
 	public static void main(String[] args) {
@@ -50,6 +49,11 @@ public class JobSelector {
 		ArrayList<Job> jobs = new ArrayList<Job>(jobMap.values());
 		Collections.sort(jobs);
 		log.debug("Jobs sorted!");
+		
+		for (Job j : jobs) {
+			System.out.print(j.getID() + ":");
+			System.out.println(j.totalReward() + " Value: " + j.getValue());
+		}
 
 		log.debug("Creating rounds from jobs...");
 		ArrayList<Round> rounds = new ArrayList<Round>();
@@ -69,58 +73,41 @@ public class JobSelector {
 			log.debug("Reading ARFF file to training set.");
 			DataSource tsource = new DataSource("files/training.arff");
 			Instances tdata = tsource.getDataSet();
-			tdata.setClass(tdata.attribute(33));
+			tdata.setClass(tdata.attribute("cancelled"));
 			log.debug("Successfully created training set.");
 			
 			DataSource jsource = new DataSource("files/jobs.arff");
 			Instances jdata = jsource.getDataSet();
 			
+			log.debug("Successfully created test set.");
 			
-			AttributeSelection aSel = new AttributeSelection();
-			aSel.setInputFormat(tdata);
+			AttributeSelectedClassifier classifier = new AttributeSelectedClassifier();
+			Bagging bc = new Bagging();
+			bc.setClassifier(new REPTree());
+			classifier.setClassifier(bc);
+			classifier.setEvaluator(new GainRatioAttributeEval());
+			classifier.setSearch(new Ranker());
+			classifier.buildClassifier(tdata);
 			
-			log.debug("Creating discretizer.");
-			Discretize d = new Discretize();
-			String[] options = {"-R", "30-31", "-precision", "4"};
-			d.setOptions(options);
-			d.setInputFormat(tdata);
-			log.debug("Discretizer made.");
+			Instances newData = jdata;
 			
-			log.debug("Applying Filters");
-			Instances newData = Filter.useFilter(tdata, d);
-			log.debug("Succesfully applied discretization.");
-			newData = Filter.useFilter(newData, aSel);
-			log.debug("Succesfully applied attribute selection.");
-			
-			NaiveBayes classifier = new NaiveBayes();
-			classifier.buildClassifier(newData);
-			
-			ArrayList<String> rm = new ArrayList<String>();
-			for (int i = 0; i < jdata.numAttributes(); i++) {
-				boolean contains = false;
-				for (int j = 0; j < tdata.numAttributes(); j++) {
-					if (jdata.attribute(i).name().equals(tdata.attribute(j).name())) {
-						System.out.println(jdata.attribute(i).name());
-						contains = true;
-					}
-				}
-				if (!contains) {
-					rm.add(jdata.attribute(i).name());
-				}
+			newData.setClass(newData.attribute("cancelled"));
+//			
+//			
+			log.debug("Starting predictions.");
+			for (int i = 0; i < newData.numInstances(); i++) {
+				Instance j = newData.instance(i);
+				System.out.println(i + " : " + classifier.classifyInstance(j));
 			}
 			
-			RemoveByName rmf = new RemoveByName();
-			for (String s : rm) {
-				String[] rmoptions = {"-E",s};
-				rmf.setOptions(rmoptions);
-				Filter.useFilter(jdata, rmf);
-			}
-			
-			System.out.println(jdata.toString());
+			ArffSaver sj = new ArffSaver();
+			sj.setFile(new File("files/newJobs.arff"));
+			sj.setInstances(jdata);
+			sj.writeBatch();
 			
 			ArffSaver s = new ArffSaver();
 			s.setFile(new File("files/newTraining.arff"));
-			s.setInstances(newData);
+			s.setInstances(tdata);
 			s.writeBatch();
 			
 			log.debug("Finished");

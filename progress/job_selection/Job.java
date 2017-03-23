@@ -1,6 +1,9 @@
 package job_selection;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import route_planning.Location;
 
 public class Job implements Comparable<Job> {
 	private String jobID;
@@ -9,10 +12,13 @@ public class Job implements Comparable<Job> {
 	private boolean cancelled;
 	private boolean predictedCancel;
 	private float value;
+	
+	private JobManager manager;
 
-	public Job(String id, HashMap<String, Item> il, int cancelled) {
+	public Job(String id, HashMap<String, Item> il, int cancelled, JobManager _manager) {
 		this.jobID = id;
 		this.itemList = il;
+		manager = _manager;
 		if (cancelled == 1) {
 			this.cancelled = true;
 		} else {
@@ -72,14 +78,25 @@ public class Job implements Comparable<Job> {
 	}
 
 	public float getValue() {
+		this.calcValue();
 		return this.value;
 	}
 
 	public void calcValue() {
-		float value = 0;
-		value = this.totalReward();
-
+		int distance = manager.getBestDistance(new ArrayList<Location>());
+		
+		
+		float value = this.totalReward();
+		
 		this.value = value;
+	}
+	
+	public ArrayList<Location> getLocations() {
+		ArrayList<Location> l = new ArrayList<Location>();
+		for (String s : picks.keySet()) {
+//			l.add(itemList.get(s).getLoc());
+		}
+		return l;
 	}
 
 	@Override
@@ -102,4 +119,5 @@ public class Job implements Comparable<Job> {
 	public boolean isCancelled() {
 		return this.cancelled;
 	}
+
 }
