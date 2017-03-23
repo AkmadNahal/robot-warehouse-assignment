@@ -6,21 +6,16 @@ import java.util.ArrayList;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
-import lejos.nxt.addon.OpticalDistanceSensor;
 import lejos.nxt.comm.RConsole;
-import localization.DataOfJunction;
 import rp.config.WheeledRobotConfiguration;
 import rp.util.Rate;
 import utils.Direction;
-import utils.LocationType;
-import utils.SuperLocation;
 
 public class JunctionDetection extends AbstractBehaviour {
 
 	private final LightSensor lhSensor;
 	private final LightSensor rhSensor;
-	private final OpticalDistanceSensor irSensor;
-
+	
 	boolean isOnJunction = true;
 	private ArrayList<Direction> route;
 
@@ -32,14 +27,12 @@ public class JunctionDetection extends AbstractBehaviour {
 	private Rate r = new Rate(10);
 
 	public JunctionDetection(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor,
-			ArrayList<Direction> route, RobotLocationSessionManager _locationManager, int calValue, SensorPort _irSensor) {
+			ArrayList<Direction> route, RobotLocationSessionManager _locationManager, int calValue) {
 		super(_config);
 
 		lhSensor = new LightSensor(_lhSensor);
 		rhSensor = new LightSensor(_rhSensor);
 		
-		irSensor = new OpticalDistanceSensor(_irSensor);
-
 		this.route = new ArrayList<Direction>(route);
 		this.locationManager = _locationManager;
 		this.calibratedValue = calValue;
@@ -157,19 +150,7 @@ public class JunctionDetection extends AbstractBehaviour {
 					} else if (currentMove == Direction.STOP){
 						pilot.stop();
 						locationManager.setCounter(route.size());
-					} else if (currentMove == Direction.SPIN){
-						pilot.stop();
-						DataOfJunction dataOfJunction = new DataOfJunction();
-							
-						for(int i = 0; i < 4; i++){
-							addToData(configurateParameter(irSensor.getDistance()), i, dataOfJunction);
-							pilot.rotate(90);
-							pilot.stop();
-						}
-							
-						locationManager.setReadings(dataOfJunction);
-					}
-					
+					} 
 				}
 			} else {
 				if (currentMove == Direction.BACKWARDS) {
@@ -184,54 +165,12 @@ public class JunctionDetection extends AbstractBehaviour {
 				} else if (currentMove == Direction.STOP){
 					pilot.stop();
 					locationManager.setCounter(route.size());
-				} else if(currentMove == Direction.SPIN){
-					pilot.stop();
-					DataOfJunction dataOfJunction = new DataOfJunction();
-						
-					for(int i = 0; i < 4; i++){
-						addToData(configurateParameter(irSensor.getDistance()), i, dataOfJunction);
-						pilot.rotate(90);
-						pilot.stop();
-					}
-						
-					locationManager.setReadings(dataOfJunction);
 				}
 			}
 		}
 		
 		r.sleep(); //remove if buggy!
 		isOnJunction = false;
-	}
-	
-	private void addToData(int distance, int i, DataOfJunction dataOfJunction) {
-		switch(i){
-			case(0):
-				dataOfJunction.setyPlus(distance);
-				break;
-			case(1):
-				dataOfJunction.setxPlus(distance);
-				break;
-			case(2):
-				dataOfJunction.setyMinus(distance);
-				break;
-			case(3):
-				dataOfJunction.setxMinus(distance);
-				break;
-			}
-				
-	}
-
-	private int configurateParameter(int distance) {
-		if (distance<15) {
-			return 0;
-		}
-		if (distance<40 && distance>25) {
-			return 1;
-		}
-		if (distance<70 && distance>55) {
-			return 2;
-		}
-		return 3;
 	}
 
 	protected static void redirectOutput(boolean _useBluetooth) {

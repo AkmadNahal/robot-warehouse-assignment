@@ -35,6 +35,9 @@ public class RouteManager implements Runnable {
 	private boolean robot2Cancelled = false;
 	private boolean robot3Cancelled = false;
 	private Location[][] map;
+	private boolean robot1Waiting = false;
+	private boolean robot2Waiting = false;
+	private boolean robot3Waiting = false;
 	
 	private static final Logger logger = Logger.getLogger(RouteManager.class);
 	
@@ -60,6 +63,9 @@ public class RouteManager implements Runnable {
 	@Override
 	public void run() {
 		for (int n = 0; n < sortedJobs.size(); n+=3) {
+			robot1Waiting = false;
+			robot2Waiting = false;
+			robot3Waiting = false;
 			Round robot1CurrentRound = sortedJobs.get(n);
 			if (!sessionManager1.getCancelledRounds().contains(robot1CurrentRound)){
 				robot1Cancelled = false;
@@ -90,10 +96,6 @@ public class RouteManager implements Runnable {
 			ArrayList<Pick> robot1Picks = robot1CurrentRound.getRound();
 			ArrayList<Pick> robot2Picks = robot2CurrentRound.getRound();
 			ArrayList<Pick> robot3Picks = robot3CurrentRound.getRound();
-			
-			robot1Cancelled = false;
-			robot2Cancelled = false;
-			robot3Cancelled = false;
 			
 			for (int i = 0; i < robot1Picks.size(); i++){
 				robot1Picks.get(i).setCount(counts1.get(i));
@@ -169,12 +171,12 @@ public class RouteManager implements Runnable {
 			}
 			Item dropOff1 = new Item("", 0f, 0f, new Location(4,7, LocationType.EMPTY));
 			robot1Picks.add(new Pick(dropOff1, -1));
-			Item moveFromDropOff1 = new Item("", 0f, 0f, new Location(2, 7, LocationType.EMPTY));
+			Item moveFromDropOff1 = new Item("", 0f, 0f, new Location(3, 7, LocationType.EMPTY));
 			robot1Picks.add(new Pick(moveFromDropOff1, 0));
 			
 			Item dropOff2 = new Item("", 0f, 0f, new Location(7,7, LocationType.EMPTY));
 			robot2Picks.add(new Pick(dropOff2, -1));
-			Item moveFromDropOff2 = new Item("", 0f, 0f, new Location(5,7, LocationType.EMPTY));
+			Item moveFromDropOff2 = new Item("", 0f, 0f, new Location(6,7, LocationType.EMPTY));
 			robot2Picks.add(new Pick(moveFromDropOff2, 0));
 			
 			Item twoAwayFromDropOff2 = new Item("", 0f, 0f, new Location(9,7, LocationType.EMPTY));
@@ -225,6 +227,22 @@ public class RouteManager implements Runnable {
 				int numOfPick2 = robot2Picks.get(counter).getCount();
 				int numOfPick3 = robot3Picks.get(counter).getCount();
 				
+				if (numOfPick1 == 0){
+					robot1Waiting = true;
+				}else if (numOfPick1 == -1){
+					robot1Waiting = false;
+				}
+				if (numOfPick2 == 0){
+					robot2Waiting = true;
+				}else if (numOfPick2 == -1){
+					robot2Waiting = false;
+				}
+				if (numOfPick3 == 0){
+					robot3Waiting  = true;
+				}else if (numOfPick3 == -1){
+					robot3Waiting = false;
+				}
+				
 				System.out.println(numOfPick1);
 				System.out.println(numOfPick2);
 				System.out.println(numOfPick3);
@@ -234,7 +252,7 @@ public class RouteManager implements Runnable {
 					sessionManager2.setIsRouteComplete(false);
 					sessionManager3.setIsRouteComplete(false);
 					
-					if (robot1Cancelled){
+					if (robot1Cancelled || robot1Waiting){
 						if ((target2.equals(currentLocation1) || (target3.equals(currentLocation1)))){
 							if (currentLocation1.getY() == 0){
 								//anyway but down
@@ -313,7 +331,7 @@ public class RouteManager implements Runnable {
 						}
 						sessionManager2.setNumOfPicks(0);
 					}
-					if (robot2Cancelled){
+					if (robot2Cancelled || robot2Waiting){
 						if ((target1.equals(currentLocation2) || (target3.equals(currentLocation2)))){
 							if (currentLocation2.getY() == 0){
 								//anyway but down
@@ -324,8 +342,7 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation2.getX()+1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX()+1, currentLocation2.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation2.getY() == 7){
+							}else if (currentLocation2.getY() == 7){
 								//anyway but up
 								if (map[currentLocation2.getX()][currentLocation2.getY()-1].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()-1, LocationType.EMPTY);
@@ -334,8 +351,7 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation2.getX()+1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX()+1, currentLocation2.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation2.getX() == 0){
+							}else if (currentLocation2.getX() == 0){
 								//anyway but left
 								if (map[currentLocation2.getX()][currentLocation2.getY()-1].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()-1, LocationType.EMPTY);
@@ -344,8 +360,7 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation2.getX()+1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX()+1, currentLocation2.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation2.getX() == 11){
+							}else if (currentLocation2.getX() == 11){
 								//anyway but right
 								if (map[currentLocation2.getX()][currentLocation2.getY()-1].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()-1, LocationType.EMPTY);
@@ -354,45 +369,45 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation2.getX()-1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX()-1, currentLocation2.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation2.getX() == 0 && currentLocation2.getY() == 0){
+							}else if (currentLocation2.getX() == 0 && currentLocation2.getY() == 0){
 								//move right or up
 								if (map[currentLocation2.getX()][currentLocation2.getY()+1].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()+1, LocationType.EMPTY);
 								}else if (map[currentLocation2.getX()+1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX()+1, currentLocation2.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation2.getX() == 0 && currentLocation2.getY() == 7){
+							}else if (currentLocation2.getX() == 0 && currentLocation2.getY() == 7){
 								//move right or down
 								if (map[currentLocation2.getX()][currentLocation2.getY()-1].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()-1, LocationType.EMPTY);
 								}else if (map[currentLocation2.getX()+1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX()+1, currentLocation2.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation2.getX() == 11 && currentLocation2.getY() == 0){
+							}else if (currentLocation2.getX() == 11 && currentLocation2.getY() == 0){
 								//move up or left
 								if (map[currentLocation2.getX()][currentLocation2.getY()+1].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()+1, LocationType.EMPTY);
 								}else if (map[currentLocation2.getX()-1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX()-1, currentLocation2.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation2.getX() == 11 && currentLocation2.getY() == 7){
+							}else if (currentLocation2.getX() == 11 && currentLocation2.getY() == 7){
 								//move down or left
 								if (map[currentLocation2.getX()][currentLocation2.getY()-1].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX(), currentLocation2.getY()-1, LocationType.EMPTY);
 								}else if (map[currentLocation2.getX()-1][currentLocation2.getY()].getType().equals(LocationType.EMPTY)){
 									target2 = new Location(currentLocation2.getX()-1, currentLocation2.getY(), LocationType.EMPTY);
 								}
+							}else{
+								target2 = new Location(currentLocation2.getX(), currentLocation2.getY()-1, LocationType.EMPTY);
 							}
+							
+							
 						}else{
 							target2 = currentLocation2;
 						}
 						sessionManager2.setNumOfPicks(0);
 					}
-					if (robot3Cancelled){
+					if (robot3Cancelled || robot3Waiting){
 						if ((target1.equals(currentLocation3) || (target2.equals(currentLocation3)))){
 							if (currentLocation3.getY() == 0){
 								//anyway but down
@@ -560,6 +575,10 @@ public class RouteManager implements Runnable {
 				sessionManager2.setIsRouteComplete(false);
 				sessionManager3.setIsRouteComplete(false);
 				
+				robot1Waiting = false;
+				robot2Waiting = false;
+				robot3Waiting = false;
+				
 				notifier1.setChanged(false);
 				notifier2.setChanged(false);
 				notifier3.setChanged(false);
@@ -572,19 +591,31 @@ public class RouteManager implements Runnable {
 					sessionManager1.setCurrentWeight(0f);
 					sessionManager1.setNumOfPicks(0);
 				}else{
-					sessionManager1.setCurrentWeight(sessionManager1.getCurrentWeight() + numOfPick1 * robot1Picks.get(counter).getItem().getWeight());
+					if (counter == robot3Picks.size()-1){
+						sessionManager3.setCurrentWeight(0f);
+					}else{
+						sessionManager1.setCurrentWeight(sessionManager1.getCurrentWeight() + numOfPick1 * robot1Picks.get(counter).getItem().getWeight());
+					}
 				}
 				if (robot2Cancelled){
 					sessionManager2.setCurrentWeight(0f);
 					sessionManager2.setNumOfPicks(0);
 				}else{
-					sessionManager2.setCurrentWeight(sessionManager2.getCurrentWeight() + numOfPick2 * robot2Picks.get(counter).getItem().getWeight());
+					if (counter == robot3Picks.size()-1){
+						sessionManager3.setCurrentWeight(0f);
+					}else{
+						sessionManager2.setCurrentWeight(sessionManager2.getCurrentWeight() + numOfPick2 * robot2Picks.get(counter).getItem().getWeight());
+					}
 				}
 				if (robot3Cancelled){
 					sessionManager3.setCurrentWeight(0f);
 					sessionManager3.setNumOfPicks(0);
 				}else{
-					sessionManager3.setCurrentWeight(sessionManager3.getCurrentWeight() + numOfPick3 * robot3Picks.get(counter).getItem().getWeight());
+					if (counter == robot3Picks.size()-1){
+						sessionManager3.setCurrentWeight(0f);
+					}else{
+						sessionManager3.setCurrentWeight(sessionManager3.getCurrentWeight() + numOfPick3 * robot3Picks.get(counter).getItem().getWeight());
+					}
 				}
 				
 				while (!sessionManager1.getIsRouteComplete() || !sessionManager2.getIsRouteComplete() || !sessionManager3.getIsRouteComplete()){

@@ -10,7 +10,7 @@ public class RoutePlanner {
 
 	private Location[][] map;
 	private int maxX, maxY;
-	private final int WINDOW = 5; // basically WINDOW-1 steps ahead
+	private final int WINDOW = 4; // basically WINDOW-1 steps ahead
 
 	public RoutePlanner(Location[][] _map, int _maxX, int _maxY) {
 		map = _map;
@@ -130,7 +130,6 @@ public class RoutePlanner {
 			while (route1.size() < WINDOW) {
 				route1.add(last);
 			}
-			;
 		}
 
 		if (route2.size() == 0) {

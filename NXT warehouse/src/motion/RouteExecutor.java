@@ -2,13 +2,10 @@ package motion;
 
 import java.io.PrintStream;
 
-import lejos.nxt.LightSensor;
-import lejos.nxt.SensorPort;
 import lejos.nxt.Sound;
 import lejos.nxt.comm.RConsole;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
-import lejos.util.Delay;
 import utils.Config;
 
 public class RouteExecutor implements Runnable {
@@ -34,7 +31,7 @@ public class RouteExecutor implements Runnable {
 				Behavior movement = new RouteFollower(config.getConfig(), config.getLeftSensorPort(),
 						config.getRightSensorPort(), movementManager.getRoute(), locationManager);
 				Behavior junction = new JunctionDetection(config.getConfig(), config.getLeftSensorPort(),
-						config.getRightSensorPort(), movementManager.getRoute(), locationManager, calibratedValue, config.getDsSensorPort());
+						config.getRightSensorPort(), movementManager.getRoute(), locationManager, calibratedValue);
 				Arbitrator arby = new Arbitrator(new Behavior[] { movement, junction }, true);
 				arby.start(); //START THE ARBITRATOR
 				Sound.beepSequence();

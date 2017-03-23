@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
-import lejos.nxt.addon.OpticalDistanceSensor;
 import lejos.nxt.comm.RConsole;
 import rp.config.WheeledRobotConfiguration;
 import rp.util.Rate;
@@ -29,7 +28,6 @@ public class RouteFollower extends AbstractBehaviour {
 	private Rate r = new Rate(20);
 
 	private boolean isRouteComplete = false;
-	private OpticalDistanceSensor irSensor;
 	private ArrayList<Direction> route;
 	
 	private RobotLocationSessionManager locationManager;
@@ -56,29 +54,6 @@ public class RouteFollower extends AbstractBehaviour {
 
 	}
 	
-	public RouteFollower(WheeledRobotConfiguration _config, SensorPort _lhSensor, SensorPort _rhSensor, 
-			ArrayList<Direction> route, RobotLocationSessionManager locationManager, SensorPort _irSensor){
-		super(_config);
-
-		this.lhSensor = new LightSensor(_lhSensor);
-		this.rhSensor = new LightSensor(_rhSensor);
-		this.irSensor = new OpticalDistanceSensor(_irSensor);
-
-		this.route = route;
-
-		minRange = 0;
-		maxRange = 100;
-		rangeDiff = maxRange - minRange;
-
-		minValue = -200;
-		maxValue = 200;
-		valDiff = maxValue - minValue;
-
-		P = 1f;
-		
-		this.locationManager = locationManager;
-
-	}
 
 	@Override
 	public boolean takeControl() {
@@ -91,41 +66,30 @@ public class RouteFollower extends AbstractBehaviour {
 		if (!(locationManager.getCounter() == (route.size()))) {
 			while (!isSuppressed) {
 
-				// Ensures the robot will not collide into walls/ other robots
-				// If the safe distance is breached, route following will stop
-				
-				if(irSensor.getDistance() > 20){
+				float rHValue = rhSensor.getLightValue();
+				float lHValue = lhSensor.getLightValue();
 
-					float rHValue = rhSensor.getLightValue();
-					float lHValue = lhSensor.getLightValue();
+				float rHRatio = (rHValue - minRange) / rangeDiff;
+				float lHRatio = (lHValue - minRange) / rangeDiff;
 
-					float rHRatio = (rHValue - minRange) / rangeDiff;
-					float lHRatio = (lHValue - minRange) / rangeDiff;
+				float rHOutput = minValue + (valDiff * rHRatio);
+				float lHOutput = minValue + (valDiff * lHRatio);
 
-					float rHOutput = minValue + (valDiff * rHRatio);
-					float lHOutput = minValue + (valDiff * lHRatio);
+				float turnDiff = (rHOutput - lHOutput) + 8;
 
-					float turnDiff = (rHOutput - lHOutput) + 8;
+				float turnOut = P * turnDiff;
 
-					float turnOut = P * turnDiff;
-
-					pilot.steer(turnOut);
-					r.sleep();
-				}
-				else{
-					
-				}
+				pilot.steer(turnOut);
+				r.sleep();
 			}
 			if(locationManager.getCounter() == route.size()){
 				isRouteComplete = true;
-				locationManager.setCorrectlyExecuted(true);
 			}
 			else{
 				isSuppressed = false;
 			}
 		} else {
 			isRouteComplete = true;
-			locationManager.setCorrectlyExecuted(true);
 		}
 	}
 
