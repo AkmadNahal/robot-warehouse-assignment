@@ -325,7 +325,7 @@ public class RouteManager implements Runnable {
 						}else{
 							target1 = currentLocation1;
 						}
-						sessionManager2.setNumOfPicks(0);
+						sessionManager1.setNumOfPicks(0);
 					}
 					if (robot2Cancelled || robot2Waiting){
 						if ((target1.equals(currentLocation2) || (target3.equals(currentLocation2)))){
@@ -401,7 +401,7 @@ public class RouteManager implements Runnable {
 						}else{
 							target2 = currentLocation2;
 						}
-						sessionManager2.setNumOfPicks(0);
+						sessionManager1.setNumOfPicks(0);
 					}
 					if (robot3Cancelled || robot3Waiting){
 						if ((target1.equals(currentLocation3) || (target2.equals(currentLocation3)))){
@@ -475,7 +475,7 @@ public class RouteManager implements Runnable {
 						}else{
 							target3 = currentLocation3;
 						}
-						sessionManager2.setNumOfPicks(0);
+						sessionManager1.setNumOfPicks(0);
 					}
 														
 					logger.debug("Lil' Bob cancelled? = " + robot1Cancelled);
@@ -643,7 +643,7 @@ public class RouteManager implements Runnable {
 					}
 				}
 				ArrayList<String> priorCompletedJobs = sessionManager1.getCompletedJobs();
-				if (!priorCompletedJobs.contains(robot1CurrentRound.getJob())) {
+				if (!priorCompletedJobs.contains(robot1CurrentRound.getJob()) && !robot1Cancelled) {
 					priorCompletedJobs.add(robot1CurrentRound.getJob());
 					sessionManager1.setCompletedJobs(priorCompletedJobs);
 					sessionManager2.setCompletedJobs(priorCompletedJobs);
@@ -658,7 +658,7 @@ public class RouteManager implements Runnable {
 					}
 				}
 				ArrayList<String> priorCompletedJobs = sessionManager2.getCompletedJobs();
-				if (!priorCompletedJobs.contains(robot3CurrentRound.getJob())) {
+				if (!priorCompletedJobs.contains(robot3CurrentRound.getJob()) && !robot2Cancelled) {
 					priorCompletedJobs.add(robot2CurrentRound.getJob());
 					sessionManager1.setCompletedJobs(priorCompletedJobs);
 					sessionManager2.setCompletedJobs(priorCompletedJobs);
@@ -674,7 +674,7 @@ public class RouteManager implements Runnable {
 				}
 				sessionManager3.setTotalReward(sessionManager3.getTotalReward() + associatedJob3.totalReward());
 				ArrayList<String> priorCompletedJobs = sessionManager3.getCompletedJobs();
-				if (!priorCompletedJobs.contains(robot3CurrentRound.getJob())){
+				if (!priorCompletedJobs.contains(robot3CurrentRound.getJob()) && !robot3Cancelled){
 					priorCompletedJobs.add(robot3CurrentRound.getJob());
 					sessionManager1.setCompletedJobs(priorCompletedJobs);
 					sessionManager2.setCompletedJobs(priorCompletedJobs);
@@ -682,6 +682,10 @@ public class RouteManager implements Runnable {
 					sessionManager1.setTotalReward(sessionManager1.getTotalReward() + associatedJob3.totalReward());
 				}
 			}
+			
+			robot1Cancelled = false;
+			robot2Cancelled = false;
+			robot3Cancelled = false;
 		}
 	}
 }
