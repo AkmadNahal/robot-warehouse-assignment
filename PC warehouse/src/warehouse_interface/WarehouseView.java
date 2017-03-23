@@ -25,6 +25,7 @@ import javax.swing.border.Border;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import job_selection.Job;
 import job_selection.Round;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.simulation.MapBasedSimulation;
@@ -224,6 +225,17 @@ public class WarehouseView {
 			tasksList += format.format(sessionManager.getTotalReward());
 		}
 		totalRewardDisplay.setText(tasksList);
+	}
+	
+	public void setCompletedJobs(PCSessionManager sessionManager){
+		ArrayList<String> completedJobs = sessionManager.getCompletedJobs();
+		String tasksList = "Completed Jobs:";
+		tasksList += System.lineSeparator();
+		for (int i = 0; i < completedJobs.size(); i++){
+			tasksList += completedJobs.get(i);
+			tasksList += System.lineSeparator();
+		}
+		completedJobsDisplay.setText(tasksList);
 	}
 	
 	public void setTasks(PCSessionManager sessionManager) {

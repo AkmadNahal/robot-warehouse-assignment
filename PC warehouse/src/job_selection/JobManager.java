@@ -2,8 +2,8 @@ package job_selection;
 
 import java.util.ArrayList;
 
-import route_planning.Location;
-import route_planning.LocationType;
+import utils.Location;
+import utils.LocationType;
 import route_planning.RoutePlanner;
 import route_planning.Travel;
 import route_planning.TSP;

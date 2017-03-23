@@ -67,17 +67,17 @@ public class RouteManager implements Runnable {
 			robot2Waiting = false;
 			robot3Waiting = false;
 			Round robot1CurrentRound = sortedJobs.get(n);
-			if (!sessionManager1.getCancelledRounds().contains(robot1CurrentRound)){
+			if (!sessionManager1.getCancelledJobID().equals(robot1CurrentRound.getJob())){
 				robot1Cancelled = false;
 			}
 			sessionManager1.setCurrentRound(robot1CurrentRound);
 			Round robot2CurrentRound = sortedJobs.get(n+1);
-			if (!sessionManager2.getCancelledRounds().contains(robot2CurrentRound)){
+			if (!sessionManager2.getCancelledJobID().equals(robot2CurrentRound.getJob())){
 				robot2Cancelled = false;
 			}
 			sessionManager2.setCurrentRound(robot2CurrentRound);
 			Round robot3CurrentRound = sortedJobs.get(n+2);
-			if (!sessionManager3.getCancelledRounds().contains(robot3CurrentRound)){
+			if (!sessionManager3.getCancelledJobID().equals(robot3CurrentRound.getJob())){
 				robot3Cancelled = false;
 			}
 			sessionManager3.setCurrentRound(robot3CurrentRound);
@@ -238,6 +238,7 @@ public class RouteManager implements Runnable {
 					robot2Waiting = false;
 				}
 				if (numOfPick3 == 0){
+					System.out.println("I'M HERE");
 					robot3Waiting  = true;
 				}else if (numOfPick3 == -1){
 					robot3Waiting = false;
@@ -263,8 +264,7 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation1.getX()+1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX()+1, currentLocation1.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation1.getY() == 7){
+							}else if (currentLocation1.getY() == 7){
 								//anyway but up
 								if (map[currentLocation1.getX()][currentLocation1.getY()-1].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()-1, LocationType.EMPTY);
@@ -273,8 +273,7 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation1.getX()+1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX()+1, currentLocation1.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation1.getX() == 0){
+							}else if (currentLocation1.getX() == 0){
 								//anyway but left
 								if (map[currentLocation1.getX()][currentLocation1.getY()-1].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()-1, LocationType.EMPTY);
@@ -283,8 +282,7 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation1.getX()+1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX()+1, currentLocation1.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation1.getX() == 11){
+							}else if (currentLocation1.getX() == 11){
 								//anyway but right
 								if (map[currentLocation1.getX()][currentLocation1.getY()-1].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()-1, LocationType.EMPTY);
@@ -293,38 +291,36 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation1.getX()-1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX()-1, currentLocation1.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation1.getX() == 0 && currentLocation1.getY() == 0){
+							}else if (currentLocation1.getX() == 0 && currentLocation1.getY() == 0){
 								//move right or up
 								if (map[currentLocation1.getX()][currentLocation1.getY()+1].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()+1, LocationType.EMPTY);
 								}else if (map[currentLocation1.getX()+1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX()+1, currentLocation1.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation1.getX() == 0 && currentLocation1.getY() == 7){
+							}else if (currentLocation1.getX() == 0 && currentLocation1.getY() == 7){
 								//move right or down
 								if (map[currentLocation1.getX()][currentLocation1.getY()-1].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()-1, LocationType.EMPTY);
 								}else if (map[currentLocation1.getX()+1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX()+1, currentLocation1.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation1.getX() == 11 && currentLocation1.getY() == 0){
+							}else if (currentLocation1.getX() == 11 && currentLocation1.getY() == 0){
 								//move up or left
 								if (map[currentLocation1.getX()][currentLocation1.getY()+1].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()+1, LocationType.EMPTY);
 								}else if (map[currentLocation1.getX()-1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX()-1, currentLocation1.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation1.getX() == 11 && currentLocation1.getY() == 7){
+							}else if (currentLocation1.getX() == 11 && currentLocation1.getY() == 7){
 								//move down or left
 								if (map[currentLocation1.getX()][currentLocation1.getY()-1].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX(), currentLocation1.getY()-1, LocationType.EMPTY);
 								}else if (map[currentLocation1.getX()-1][currentLocation1.getY()].getType().equals(LocationType.EMPTY)){
 									target1 = new Location(currentLocation1.getX()-1, currentLocation1.getY(), LocationType.EMPTY);
 								}
+							}else{
+								target1 = new Location(currentLocation1.getX(), currentLocation1.getY()-1, LocationType.EMPTY);
 							}
 						}else{
 							target1 = currentLocation1;
@@ -418,8 +414,7 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation3.getX()+1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX()+1, currentLocation3.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation3.getY() == 7){
+							}else if (currentLocation3.getY() == 7){
 								//anyway but up
 								if (map[currentLocation3.getX()][currentLocation3.getY()-1].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()-1, LocationType.EMPTY);
@@ -428,8 +423,7 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation3.getX()+1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX()+1, currentLocation3.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation3.getX() == 0){
+							}else if (currentLocation3.getX() == 0){
 								//anyway but left
 								if (map[currentLocation3.getX()][currentLocation3.getY()-1].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()-1, LocationType.EMPTY);
@@ -438,8 +432,7 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation3.getX()+1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX()+1, currentLocation3.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation3.getX() == 11){
+							}else if (currentLocation3.getX() == 11){
 								//anyway but right
 								if (map[currentLocation3.getX()][currentLocation3.getY()-1].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()-1, LocationType.EMPTY);
@@ -448,38 +441,36 @@ public class RouteManager implements Runnable {
 								}else if (map[currentLocation3.getX()-1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX()-1, currentLocation3.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation3.getX() == 0 && currentLocation3.getY() == 0){
+							}else if (currentLocation3.getX() == 0 && currentLocation3.getY() == 0){
 								//move right or up
 								if (map[currentLocation3.getX()][currentLocation3.getY()+1].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()+1, LocationType.EMPTY);
 								}else if (map[currentLocation3.getX()+1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX()+1, currentLocation3.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation3.getX() == 0 && currentLocation3.getY() == 7){
+							}else if (currentLocation3.getX() == 0 && currentLocation3.getY() == 7){
 								//move right or down
 								if (map[currentLocation3.getX()][currentLocation3.getY()-1].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()-1, LocationType.EMPTY);
 								}else if (map[currentLocation3.getX()+1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX()+1, currentLocation3.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation3.getX() == 11 && currentLocation3.getY() == 0){
+							}else if (currentLocation3.getX() == 11 && currentLocation3.getY() == 0){
 								//move up or left
 								if (map[currentLocation3.getX()][currentLocation3.getY()+1].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()+1, LocationType.EMPTY);
 								}else if (map[currentLocation3.getX()-1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX()-1, currentLocation3.getY(), LocationType.EMPTY);
 								}
-							}
-							if (currentLocation3.getX() == 11 && currentLocation3.getY() == 7){
+							}else if (currentLocation3.getX() == 11 && currentLocation3.getY() == 7){
 								//move down or left
 								if (map[currentLocation3.getX()][currentLocation3.getY()-1].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX(), currentLocation3.getY()-1, LocationType.EMPTY);
 								}else if (map[currentLocation3.getX()-1][currentLocation3.getY()].getType().equals(LocationType.EMPTY)){
 									target3 = new Location(currentLocation3.getX()-1, currentLocation3.getY(), LocationType.EMPTY);
 								}
+							}else{
+								target3 = new Location(currentLocation3.getX(), currentLocation3.getY()-1, LocationType.EMPTY);
 							}
 						}else{
 							target3 = currentLocation3;
@@ -509,6 +500,7 @@ public class RouteManager implements Runnable {
 					warehouseController.setTasks(sessionManager3);
 					
 					warehouseController.setTotalReward(sessionManager1);
+					warehouseController.setCompletedJobs(sessionManager1);
 					
 					sessionManager1.setShouldSend(true);
 					sessionManager2.setShouldSend(true);
@@ -547,19 +539,19 @@ public class RouteManager implements Runnable {
 							e.printStackTrace();
 						}
 					}
-					if (sessionManager1.getCancelledRounds().contains(sessionManager1.getCurrentRound())){
+					if (sessionManager1.getCancelledJobID().equals(sessionManager1.getCurrentRound().getJob())){
 						robot1Cancelled = true;
 						target1 = currentLocation1;
 						sessionManager1.setNumOfPicks(0);
 						logger.debug("Robot 1 should be cancelled");
 					}
-					if (sessionManager2.getCancelledRounds().contains(sessionManager2.getCurrentRound())){
+					if (sessionManager2.getCancelledJobID().equals(sessionManager2.getCurrentRound().getJob())){
 						robot2Cancelled = true;
 						target2 = currentLocation2;
 						sessionManager2.setNumOfPicks(0);
 						logger.debug("Robot 2 should be cancelled");
 					}
-					if (sessionManager3.getCancelledRounds().contains(sessionManager3.getCurrentRound())){
+					if (sessionManager3.getCancelledJobID().equals(sessionManager3.getCurrentRound().getJob())){
 						robot3Cancelled = true;
 						target3 = currentLocation3;
 						sessionManager3.setNumOfPicks(0);
@@ -568,8 +560,6 @@ public class RouteManager implements Runnable {
 				}
 				
 				logger.debug("At pickup point");
-				
-				counter++;
 				
 				sessionManager1.setIsRouteComplete(false);
 				sessionManager2.setIsRouteComplete(false);
@@ -591,8 +581,8 @@ public class RouteManager implements Runnable {
 					sessionManager1.setCurrentWeight(0f);
 					sessionManager1.setNumOfPicks(0);
 				}else{
-					if (counter == robot3Picks.size()-1){
-						sessionManager3.setCurrentWeight(0f);
+					if (counter == robot1Picks.size()-1){
+						sessionManager1.setCurrentWeight(0f);
 					}else{
 						sessionManager1.setCurrentWeight(sessionManager1.getCurrentWeight() + numOfPick1 * robot1Picks.get(counter).getItem().getWeight());
 					}
@@ -601,8 +591,8 @@ public class RouteManager implements Runnable {
 					sessionManager2.setCurrentWeight(0f);
 					sessionManager2.setNumOfPicks(0);
 				}else{
-					if (counter == robot3Picks.size()-1){
-						sessionManager3.setCurrentWeight(0f);
+					if (counter == robot2Picks.size()-1){
+						sessionManager2.setCurrentWeight(0f);
 					}else{
 						sessionManager2.setCurrentWeight(sessionManager2.getCurrentWeight() + numOfPick2 * robot2Picks.get(counter).getItem().getWeight());
 					}
@@ -617,6 +607,7 @@ public class RouteManager implements Runnable {
 						sessionManager3.setCurrentWeight(sessionManager3.getCurrentWeight() + numOfPick3 * robot3Picks.get(counter).getItem().getWeight());
 					}
 				}
+				
 				
 				while (!sessionManager1.getIsRouteComplete() || !sessionManager2.getIsRouteComplete() || !sessionManager3.getIsRouteComplete()){
 					if (notifier1.getChanged()){
@@ -636,6 +627,8 @@ public class RouteManager implements Runnable {
 					}
 				}
 				
+				counter++;
+				
 				logger.debug("Finished executing route, onto next one!");
 				
 			}
@@ -649,7 +642,14 @@ public class RouteManager implements Runnable {
 						associatedJob1 = sessionManager1.getJobs().get(i);
 					}
 				}
-				sessionManager1.setTotalReward(sessionManager1.getTotalReward() + associatedJob1.totalReward());
+				ArrayList<String> priorCompletedJobs = sessionManager1.getCompletedJobs();
+				if (!priorCompletedJobs.contains(robot1CurrentRound.getJob())) {
+					priorCompletedJobs.add(robot1CurrentRound.getJob());
+					sessionManager1.setCompletedJobs(priorCompletedJobs);
+					sessionManager2.setCompletedJobs(priorCompletedJobs);
+					sessionManager3.setCompletedJobs(priorCompletedJobs);
+					sessionManager1.setTotalReward(sessionManager1.getTotalReward() + associatedJob1.totalReward());
+				}
 			}
 			if (!sortedJobs.get(n+2).getJob().equals(sessionManager2.getCurrentRound().getJob())){
 				for (int i = 0; i < sessionManager1.getJobs().size(); i++){
@@ -657,7 +657,14 @@ public class RouteManager implements Runnable {
 						associatedJob2 = sessionManager1.getJobs().get(i);
 					}
 				}
-				sessionManager2.setTotalReward(sessionManager1.getTotalReward() + associatedJob2.totalReward());
+				ArrayList<String> priorCompletedJobs = sessionManager2.getCompletedJobs();
+				if (!priorCompletedJobs.contains(robot3CurrentRound.getJob())) {
+					priorCompletedJobs.add(robot2CurrentRound.getJob());
+					sessionManager1.setCompletedJobs(priorCompletedJobs);
+					sessionManager2.setCompletedJobs(priorCompletedJobs);
+					sessionManager3.setCompletedJobs(priorCompletedJobs);
+					sessionManager1.setTotalReward(sessionManager1.getTotalReward() + associatedJob2.totalReward());
+				}
 			}
 			if (!sortedJobs.get(n+3).getJob().equals(sessionManager3.getCurrentRound().getJob())){
 				for (int i = 0; i < sessionManager1.getJobs().size(); i++){
@@ -665,7 +672,15 @@ public class RouteManager implements Runnable {
 						associatedJob3 = sessionManager1.getJobs().get(i);
 					}
 				}
-				sessionManager3.setTotalReward(sessionManager1.getTotalReward() + associatedJob3.totalReward());
+				sessionManager3.setTotalReward(sessionManager3.getTotalReward() + associatedJob3.totalReward());
+				ArrayList<String> priorCompletedJobs = sessionManager3.getCompletedJobs();
+				if (!priorCompletedJobs.contains(robot3CurrentRound.getJob())){
+					priorCompletedJobs.add(robot3CurrentRound.getJob());
+					sessionManager1.setCompletedJobs(priorCompletedJobs);
+					sessionManager2.setCompletedJobs(priorCompletedJobs);
+					sessionManager3.setCompletedJobs(priorCompletedJobs);
+					sessionManager1.setTotalReward(sessionManager1.getTotalReward() + associatedJob3.totalReward());
+				}
 			}
 		}
 	}

@@ -57,4 +57,8 @@ public class WarehouseController {
 	public void setTotalReward(PCSessionManager sessionManager) {
 		view.setReward(sessionManager);
 	}
+	
+	public void setCompletedJobs(PCSessionManager sessionManager){
+		view.setCompletedJobs(sessionManager);
+	}
 }

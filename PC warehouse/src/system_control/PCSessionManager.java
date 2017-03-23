@@ -19,9 +19,10 @@ public class PCSessionManager {
 	private Round currentRound;
 	private String robotName;
 	private float currentWeight;
-	private ArrayList<Round> cancelledRounds;
+	private String cancelledJobID;
 	private float totalReward;
 	private ArrayList<Job> jobs;
+	private ArrayList<String> completedJobs;
 	
 	public PCSessionManager(SuperLocation locationAccess){
 		this.should_send = false;
@@ -33,9 +34,10 @@ public class PCSessionManager {
 		this.currentRound = null;
 		this.robotName = "";
 		this.currentWeight = 0f;
-		this.cancelledRounds = new ArrayList<Round>();
+		this.cancelledJobID = "";
 		this.totalReward = totalReward;
 		this.jobs = new ArrayList<Job>();
+		this.completedJobs = new ArrayList<String>();
 	}
 	
 	public synchronized void setRoute(ArrayList<Direction> value) {
@@ -106,12 +108,12 @@ public class PCSessionManager {
 		return this.currentWeight;
 	}
 	
-	public synchronized void setCancelledRounds(ArrayList<Round> cancelledRounds){
-		this.cancelledRounds = cancelledRounds;
+	public synchronized void setCancelledJobID(String cancelledJobID){
+		this.cancelledJobID = cancelledJobID;
 	}
 	
-	public synchronized ArrayList<Round> getCancelledRounds(){
-		return this.cancelledRounds;
+	public synchronized String getCancelledJobID(){
+		return this.cancelledJobID;
 	}
 	
 	public synchronized void setTotalReward(float totalReward){
@@ -128,6 +130,14 @@ public class PCSessionManager {
 
 	public synchronized ArrayList<Job> getJobs() {
 		return this.jobs;
+	}
+	
+	public synchronized void setCompletedJobs(ArrayList<String> completedJobs) {
+		this.completedJobs = completedJobs;
+	}
+
+	public synchronized ArrayList<String> getCompletedJobs() {
+		return this.completedJobs;
 	}
 	
 }

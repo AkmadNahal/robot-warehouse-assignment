@@ -40,23 +40,11 @@ public class WarehouseModel {
 		}else if (i == 3){
 			cancelledJobID = sessionManager3.getCurrentRound().getJob();
 		}
-		for (int n = 0; n < sortedJobs.size(); n++){
-			if (sortedJobs.get(n).getJob().equals(cancelledJobID)){
-				cancelledRounds.add(sortedJobs.get(n));
-			}
-		}
-		for (int y = 0; y < cancelledRounds.size(); y++){
-			sortedJobs.remove(cancelledRounds.get(y));
-		}
-		for (int x = 0; x < cancelledRounds.size(); x++){
-			System.out.println(cancelledRounds.get(x));
-		}
+		sessionManager1.setCancelledJobID(cancelledJobID);
+		sessionManager2.setCancelledJobID(cancelledJobID);
+		sessionManager3.setCancelledJobID(cancelledJobID);
 		
 		logger.debug("Cancelled Job ID: " + cancelledJobID);
-		
-		sessionManager1.setCancelledRounds(cancelledRounds);
-		sessionManager2.setCancelledRounds(cancelledRounds);
-		sessionManager3.setCancelledRounds(cancelledRounds);
 	}
 
 	public void refresh() {

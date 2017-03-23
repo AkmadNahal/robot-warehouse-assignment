@@ -1,5 +1,6 @@
 package system_control;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import job_selection.Item;
 import job_selection.ItemReader;
 import job_selection.Job;
 import job_selection.JobReader;
+import job_selection.JobTraining;
 import job_selection.Round;
 import job_selection.RoundCreator;
 import lejos.pc.comm.NXTCommFactory;
@@ -21,6 +23,16 @@ import utils.Location;
 import utils.LocationType;
 import utils.SuperLocation;
 import warehouse_interface.GridWalker;
+import weka.attributeSelection.GainRatioAttributeEval;
+import weka.attributeSelection.Ranker;
+import weka.classifiers.meta.AttributeSelectedClassifier;
+import weka.classifiers.meta.Bagging;
+import weka.classifiers.trees.REPTree;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.converters.ArffSaver;
+import weka.core.converters.ConverterUtils.DataSource;
+
 
 
 public class SystemControl {
@@ -90,24 +102,93 @@ public class SystemControl {
 				notifier1, notifier2, notifier3, robot1, robot2, robot3, 
 				new TSP(map, gridWalkerManager.getMapSizeX(), gridWalkerManager.getMapSizeY()), gridWalkerManager.getController());
 		
-		(new Thread (routeManager)).start();
-		
-		logger.debug("Successfully ordered jobs, and distributed them");
-	
+		(new Thread (routeManager)).start();	
 	}
 	
 	public static ArrayList<Round> orderJobs(PCSessionManager sessionManager){
 		// Read job files
-		String jfile = "src/job_selection/jobs.csv";
-		String wrfile = "src/job_selection/items.csv";
-		String lfile = "src/job_selection/locations.csv";
+		String jfile = "files/jobs.csv";
+		String trainfile = "files/training_jobs.csv";
+		
+		String wrfile = "files/items.csv";
+		String lfile = "files/locations.csv";
+		
+		String cfile = "files/cancellations.csv";
+		
+		logger.debug("Started reading files");
 		HashMap<String, Item> itemMap = ItemReader.parseItems(wrfile, lfile);
 		HashMap<String, Job> jobMap = JobReader.parseJobs(jfile, itemMap);
-
-		// Sort jobs into highest reward based array
+		logger.debug("Finished reading files");
 		ArrayList<Job> jobs = new ArrayList<Job>(jobMap.values());
+		logger.debug("Creating WEKA training set ARFF.");
+		JobTraining.makeARFF(trainfile, cfile, itemMap, "files/training.arff");
+		logger.debug("Creating WEKA job set ARFF.");
+		JobTraining.makeARFF(jfile, itemMap, "files/jobs.arff");
+		logger.debug("WEKA files succsessfully created.");
+		
+		try {
+			logger.debug("Reading ARFF file to training set.");
+			DataSource tsource = new DataSource("files/training.arff");
+			Instances tdata = tsource.getDataSet();
+			tdata.setClass(tdata.attribute("cancelled"));
+			logger.debug("Successfully created training set.");
+			
+			logger.debug("Reading ARFF file to job set");
+			DataSource jsource = new DataSource("files/jobs.arff");
+			Instances jdata = jsource.getDataSet();
+			
+			logger.debug("Successfully created job set.");
+			logger.debug("Setting up classifier");
+			
+			AttributeSelectedClassifier classifier = new AttributeSelectedClassifier();
+			Bagging bc = new Bagging();
+			bc.setClassifier(new REPTree());
+			classifier.setClassifier(bc);
+			classifier.setEvaluator(new GainRatioAttributeEval());
+			classifier.setSearch(new Ranker());
+			logger.debug("Classifier configured");
+			logger.debug("Building classifier");
+			classifier.buildClassifier(tdata);
+			logger.debug("Classifier successfully built");
+			
+			Instances newData = jdata;
+			
+			newData.setClass(newData.attribute("cancelled"));
+		
+			logger.debug("Starting predictions.");
+			for (int i = 0; i < newData.numInstances(); i++) {
+				Instance j = newData.instance(i);
+				double prediction = classifier.classifyInstance(j);
+				if (prediction == 1.0){
+					jobMap.get(Integer.toString(10000 + i)).setPrediction(true);
+				}
+				else {
+					jobMap.get(Integer.toString(10000 + i)).setPrediction(false);
+				}
+			}
+			
+			logger.debug("Successfully finished predictions");
+			
+			logger.debug("Saving results...");
+			ArffSaver sj = new ArffSaver();
+			sj.setFile(new File("files/newJobs.arff"));
+			sj.setInstances(jdata);
+			sj.writeBatch();
+			
+			ArffSaver s = new ArffSaver();
+			s.setFile(new File("files/newTraining.arff"));
+			s.setInstances(tdata);
+			s.writeBatch();
+			logger.debug("Results saved");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		// Sort jobs into highest reward based array
+		logger.debug("Sorting jobs");
 		Collections.sort(jobs);
 		sessionManager.setJobs(jobs);
+		logger.debug("Jobs ordered");
 
 		// Splits the jobs by weights - no job over 50
 		return RoundCreator.createRounds(50f, itemMap, jobs);

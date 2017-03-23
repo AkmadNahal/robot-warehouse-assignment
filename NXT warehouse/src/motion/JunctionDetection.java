@@ -66,7 +66,6 @@ public class JunctionDetection extends AbstractBehaviour {
 	public void action() {
 		pilot.stop();
 		locationManager.setCounter(locationManager.getCounter()+1);
-		System.out.println(locationManager.getCounter() + ": COUNTER");
 		if (locationManager.getCounter() != 0) {
 			
 			int rightAvg = 0;
@@ -83,11 +82,9 @@ public class JunctionDetection extends AbstractBehaviour {
 			leftAvg = leftAvg/10;
 			
 			if((rightAvg - calibratedValue < error) && (leftAvg - calibratedValue < error )){
-				System.out.println("TRUE");
 				pilot.travel(0.05);
 			}
 			else{
-				System.out.println("FALSE");
 				locationManager.setCounter(locationManager.getCounter()-1);
 				isOnJunction = false;
 				return;
