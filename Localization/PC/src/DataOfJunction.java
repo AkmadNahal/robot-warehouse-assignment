@@ -1,5 +1,3 @@
-
-
 public class DataOfJunction {
 	private int xPlus;
 	private int xMinus;

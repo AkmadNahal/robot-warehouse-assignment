@@ -1,14 +1,7 @@
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
-import rp.robotics.mapping.MapUtils;
 import utils.Location;
 import utils.LocationType;
-import utils.SuperLocation;
 
 
 public class Main {
