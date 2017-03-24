@@ -12,13 +12,10 @@ public class Job implements Comparable<Job> {
 	private boolean cancelled;
 	private boolean predictedCancel;
 	private float value;
-	
-	private JobManager manager;
 
-	public Job(String id, HashMap<String, Item> il, int cancelled, JobManager _manager) {
+	public Job(String id, HashMap<String, Item> il, int cancelled) {
 		this.jobID = id;
 		this.itemList = il;
-		manager = _manager;
 		if (cancelled == 1) {
 			this.cancelled = true;
 		} else {
@@ -83,20 +80,9 @@ public class Job implements Comparable<Job> {
 	}
 
 	public void calcValue() {
-		int distance = manager.getBestDistance(new ArrayList<Location>());
-		
-		
 		float value = this.totalReward();
 		
 		this.value = value;
-	}
-	
-	public ArrayList<Location> getLocations() {
-		ArrayList<Location> l = new ArrayList<Location>();
-		for (String s : picks.keySet()) {
-//			l.add(itemList.get(s).getLoc());
-		}
-		return l;
 	}
 
 	@Override

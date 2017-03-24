@@ -18,34 +18,42 @@ public class JobInputTest {
 	HashMap<String, Item> itemMap = ItemReader.parseItems(wrfile, lfile);
 	HashMap<String, Job> jobMap = JobReader.parseJobs(jfile, itemMap);
 	
+	//Tests that the number of items read are correct.
 	@Test
 	public void ItemTest() {
 		assertTrue(itemMap.size() == 30);
 	}
 	
-	//Test that jobs are read form file properly. It does this by comparing expected items
-	//with the string produced by Job.toString().
+	//Tests that the number of jobs read are correct.
+	//Also tests that jobs only contain items from the given set of items.
 	@Test
 	public void JobReadTest() {
-		
 		assertTrue(jobMap.size() == 100);
+		
+		for (Job j : jobMap.values()) {
+			for (String s : j.getPicks().keySet()) {
+				assertTrue(itemMap.keySet().contains(s));
+			}
+		}
 	}
 	
-	//Test that the jobs are sorted based on reward by checking that each job reward is
+	//Test that the jobs are sorted based on value by checking that each job reward is
 	//greater than that of the next job in the list.
 	@Test
 	public void JobSortTest() {
 		ArrayList<Job> jobs = new ArrayList<Job>(jobMap.values());
 		Collections.sort(jobs);
-		boolean descending = true;
+		boolean descending = false;
 		for (int i = 0; i < jobs.size() - 2; i++) {
-			if (jobs.get(i+1).totalReward() > jobs.get(i).totalReward()) {
+			if (jobs.get(i+1).getValue() > jobs.get(i).getValue()) {
 				descending = true;
 			}
 		}
 		assertTrue(descending);
 	}
 	
+	//Tests that Jobs are divided into rounds correctly, such that rounds
+	//are all less than 50 weight.
 	@Test
 	public void JobRoundTest() {
 		ArrayList<Job> jobs = new ArrayList<Job>(jobMap.values());
